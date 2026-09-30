@@ -1,2 +1,58 @@
-# student-organization
-A website for our student organization
+# Intelligent Systems Club — website
+
+Landing page for the university's Intelligent Systems Club. React + TypeScript + Vite + Tailwind CSS v4.
+
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # type-check + production build to dist/
+npm run preview  # serve the production build
+```
+
+## Languages
+
+The site ships in two languages as two HTML entries:
+
+| URL    | Entry           | Language          |
+| ------ | --------------- | ----------------- |
+| `/`    | `index.html`    | Turkish (default) |
+| `/en/` | `en/index.html` | English           |
+
+Both load `src/main.tsx`, which picks the copy from `<html lang>`. The TR/EN button in the navbar links
+between the two. Page titles and meta descriptions live in the HTML files.
+
+## Editing content
+
+- [`src/content/tr.ts`](src/content/tr.ts) and [`src/content/en.ts`](src/content/en.ts) hold all visible copy:
+  club name, hero, stats, areas, projects, events, team, sponsor tiers, footer. Both must match the
+  `Content` type in `src/content/types.ts`, so the build fails if one language is missing a field.
+  Lists (team, events, projects) are per language: add a new member or event to **both** files.
+- [`src/content/site.ts`](src/content/site.ts) holds language-independent data: email, sign-up link
+  (`club.joinUrl`), social links, the sponsor list and sponsorship settings.
+
+Other notes:
+
+- Team avatars are geometric placeholders (`src/components/Avatar.tsx`); swap for `<img>` when photos exist.
+- Project previews are drawn in `src/components/ProjectArt.tsx`; swap for screenshots the same way.
+- Sponsors: add entries to `sponsors` in `site.ts`, logos go in `public/sponsors/`.
+- Once the site has a domain, add `<link rel="alternate" hreflang="…">` tags with **absolute** URLs to both
+  HTML files so search engines pair the two languages.
+
+## Design system
+
+Tokens (colors, fonts, hard shadows, easing, animations) are defined in the `@theme` block of
+[`src/index.css`](src/index.css), followed by reusable classes: `.btn` + variants, `.glass`, `.card-brut`,
+`.lift` (hard-shadow hover; set `--sc` to recolor the shadow), `.pill`, `.tag`, `.grid-lines`,
+`.display-xl/lg/md`, `.text-outline`, `.highlight`.
+
+| Token          | Value     | Use                                  |
+| -------------- | --------- | ------------------------------------ |
+| `violet`       | `#621FE9` | Dominant brand color                 |
+| `lime`         | `#B7E90A` | Accents, CTAs, highlights            |
+| `paper`        | `#FEFEFE` | Main white                           |
+| `fog`          | `#E7E7E7` | Off-white section backgrounds        |
+| `ink`          | `#000000` | Borders, hard shadows, text          |
+| `violet-deep`  | `#4A12BF` | Depth shade of the brand violet      |
+| `violet-night` | `#22075C` | Footer, project art backgrounds      |
+
+Motion respects `prefers-reduced-motion`.

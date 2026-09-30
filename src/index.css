@@ -1,0 +1,368 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/*  Design tokens                                                      */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  /* Brand */
+  --color-violet: #621fe9;
+  --color-violet-deep: #4a12bf; /* shade of brand violet, for depth */
+  --color-violet-night: #22075c; /* darkest violet, footer + art */
+  --color-lime: #b7e90a;
+  --color-paper: #fefefe;
+  --color-fog: #e7e7e7;
+  --color-ink: #000000;
+
+  /* Type */
+  --font-display: "Space Grotesk Variable", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Hard (neo-brutalist) shadows */
+  --shadow-brut-sm: 3px 3px 0 0 var(--color-ink);
+  --shadow-brut: 6px 6px 0 0 var(--color-ink);
+  --shadow-brut-lg: 10px 10px 0 0 var(--color-ink);
+  --shadow-brut-lime: 8px 8px 0 0 var(--color-lime);
+  --shadow-brut-violet: 6px 6px 0 0 var(--color-violet);
+
+  /* Easing */
+  --ease-snap: cubic-bezier(0.2, 0.9, 0.25, 1.15);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Animations */
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-spin-slow: spin 18s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-float-alt: float-alt 9s ease-in-out infinite;
+  --animate-pulse-dot: pulse-dot 1.8s ease-out infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -12px;
+    }
+  }
+  @keyframes float-alt {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 6px 10px;
+    }
+  }
+  @keyframes pulse-dot {
+    0% {
+      box-shadow: 0 0 0 0 rgb(0 0 0 / 0.55);
+    }
+    100% {
+      box-shadow: 0 0 0 9px rgb(0 0 0 / 0);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+
+@layer base {
+  html {
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+    overflow-x: clip;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    @apply bg-lime text-ink;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-lime);
+    outline-offset: 3px;
+    border-radius: 6px;
+    box-shadow: 0 0 0 6px var(--color-ink);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Components                                                         */
+/* ------------------------------------------------------------------ */
+
+@layer components {
+  /* Layout */
+  .container-x {
+    @apply mx-auto w-full max-w-[88rem] px-4 sm:px-6 lg:px-10;
+  }
+  .section-y {
+    @apply py-24 md:py-32;
+  }
+
+  /* Display type scale */
+  .display-xl {
+    @apply font-display font-bold uppercase;
+    font-size: clamp(4.4rem, 25vw, 14.5rem);
+    line-height: 0.82;
+    letter-spacing: -0.055em;
+  }
+  /* Marker highlight that survives line wraps */
+  .highlight {
+    background: linear-gradient(
+      transparent 58%,
+      var(--color-lime) 58%,
+      var(--color-lime) 90%,
+      transparent 90%
+    );
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding-inline: 0.04em;
+  }
+  .display-lg {
+    @apply font-display font-bold;
+    font-size: clamp(2.9rem, 9vw, 7.5rem);
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+  }
+  .display-md {
+    @apply font-display font-bold;
+    font-size: clamp(2rem, 4.6vw, 3.6rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+  }
+  /* Turkish capitals carry marks above (Ü, Ö, Ğ, İ) and below (Ş, Ç): open up the tight display leading. */
+  :lang(tr) .display-xl {
+    line-height: 1;
+  }
+  :lang(tr) .display-lg {
+    line-height: 0.96;
+  }
+  .meta {
+    @apply font-display text-[0.8125rem] font-medium tracking-tight;
+  }
+
+  /* Outlined display text */
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 0.028em var(--outline-color, var(--color-ink));
+  }
+  .text-outline-white {
+    --outline-color: var(--color-paper);
+    color: transparent;
+    -webkit-text-stroke: 0.028em var(--outline-color);
+  }
+
+  /* Buttons */
+  .btn {
+    @apply relative inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border-2 border-ink px-6 font-display text-base font-bold tracking-tight whitespace-nowrap select-none;
+    transition:
+      transform 180ms var(--ease-snap),
+      box-shadow 180ms var(--ease-snap),
+      background-color 180ms ease;
+  }
+  .btn:hover {
+    transform: translate(-2px, -2px);
+  }
+  .btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 0 var(--color-ink);
+  }
+  .btn-lime {
+    @apply bg-lime text-ink;
+    box-shadow: var(--shadow-brut-sm);
+  }
+  .btn-lime:hover {
+    box-shadow: 5px 5px 0 0 var(--color-ink);
+  }
+  .btn-violet {
+    @apply bg-violet text-paper;
+    box-shadow: var(--shadow-brut-sm);
+  }
+  .btn-violet:hover {
+    box-shadow: 5px 5px 0 0 var(--color-ink);
+  }
+  .btn-paper {
+    @apply bg-paper text-ink;
+    box-shadow: var(--shadow-brut-sm);
+  }
+  .btn-paper:hover {
+    box-shadow: 5px 5px 0 0 var(--color-ink);
+  }
+  .btn-glass {
+    @apply border-paper/35 bg-paper/10 text-paper backdrop-blur-md;
+  }
+  .btn-glass:hover {
+    @apply border-paper/70 bg-paper/20;
+  }
+
+  /* Surfaces */
+  .glass {
+    background: rgb(254 254 254 / 0.1);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgb(254 254 254 / 0.22);
+    box-shadow: inset 0 1px 0 0 rgb(254 254 254 / 0.18);
+  }
+  .glass-violet {
+    background: rgb(74 18 191 / 0.8);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    backdrop-filter: blur(16px) saturate(160%);
+    border: 1px solid rgb(254 254 254 / 0.2);
+  }
+  .card-brut {
+    @apply rounded-[1.75rem] border-2 border-ink bg-paper;
+    box-shadow: var(--shadow-brut);
+  }
+  /* Hard-shadow card that lifts on hover. Set --sc to recolor the shadow. */
+  .lift {
+    box-shadow: 6px 6px 0 0 var(--sc, var(--color-ink));
+    transition:
+      transform 220ms var(--ease-snap),
+      box-shadow 220ms var(--ease-snap);
+  }
+  .lift:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 10px 10px 0 0 var(--sc, var(--color-ink));
+  }
+
+  /* Pills & tags */
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border-[1.5px] px-3 py-1 font-display text-[0.8125rem] leading-none font-semibold tracking-tight whitespace-nowrap;
+  }
+  .tag {
+    @apply inline-flex items-center rounded-md border-[1.5px] border-current px-2 py-1 font-display text-xs leading-none font-medium;
+  }
+
+  /* Backgrounds */
+  .grid-lines {
+    --grid-color: rgb(254 254 254 / 0.09);
+    --grid-size: 72px;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+    background-position: -1px -1px;
+  }
+  .grid-lines-dark {
+    --grid-color: rgb(0 0 0 / 0.07);
+  }
+  .grid-fade {
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);
+  }
+  /* Diagonal hatching for "reserved" placeholders */
+  .hatch {
+    background-image: repeating-linear-gradient(135deg, rgb(0 0 0 / 0.07) 0 1.5px, transparent 1.5px 11px);
+  }
+  .dot-grid {
+    background-image: radial-gradient(currentColor 1.2px, transparent 1.2px);
+    background-size: 14px 14px;
+  }
+}
+
+/* Utility (not component) so it can take responsive variants: md:btn-lg */
+@utility btn-lg {
+  min-height: 4rem;
+  padding-inline: 2.25rem;
+  font-size: var(--text-lg);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Motion                                                             */
+/* ------------------------------------------------------------------ */
+
+/* Hero load sequence: lines rise, arrows draw, instruments land */
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 900ms var(--ease-out-expo) both;
+    animation-delay: calc(var(--i, 0) * 110ms + 80ms);
+  }
+  .land {
+    animation: land 900ms var(--ease-out-expo) both;
+    animation-delay: calc(var(--i, 0) * 120ms + 520ms);
+  }
+  .draw path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 1100ms var(--ease-out-expo) forwards;
+    animation-delay: calc(var(--i, 0) * 180ms + 900ms);
+  }
+  .draw path + path {
+    animation-delay: calc(var(--i, 0) * 180ms + 1500ms);
+    animation-duration: 400ms;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 700ms var(--ease-out-expo),
+      transform 700ms var(--ease-out-expo),
+      rotate 300ms var(--ease-snap),
+      translate 300ms var(--ease-snap),
+      box-shadow 300ms var(--ease-snap);
+    transition-delay: calc(var(--i, 0) * 90ms), calc(var(--i, 0) * 90ms), 0ms, 0ms, 0ms;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em) skewY(4deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes land {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
