@@ -1,5 +1,5 @@
 import { useContent } from "../content/i18n";
-import { club, sponsors, sponsorship, type SponsorTier } from "../content/site";
+import { sponsors, sponsorship, type SponsorTier } from "../content/site";
 import type { Content } from "../content/types";
 import { ButtonLink } from "./ui/Button";
 import { Marquee } from "./ui/Marquee";
@@ -14,8 +14,6 @@ const lane: Record<SponsorTier, { card: string; duration: number; reverse: boole
   partner: { card: "h-24 w-52 md:h-28 md:w-64", duration: 50, reverse: true },
   supporter: { card: "h-20 w-44 md:h-24 md:w-52", duration: 42, reverse: false },
 };
-
-const mailto = (subject: string) => `mailto:${club.email}?subject=${encodeURIComponent(subject)}`;
 
 function SponsorCard({ sponsor, size }: { sponsor: Sponsor; size: string }) {
   const t = useContent();
@@ -40,19 +38,18 @@ function SponsorCard({ sponsor, size }: { sponsor: Sponsor; size: string }) {
   );
 }
 
-function OpenSlot({ tier, size }: { tier: Tier; size: string }) {
+/** Static placeholder for an unfilled sponsor spot (not a link). */
+function OpenSlot({ size }: { size: string }) {
   const { sponsors: s } = useContent();
   return (
-    <a
-      href={mailto(s.tierSubject(tier.name))}
-      className={`group/slot flex flex-col items-center justify-center gap-2 rounded-2xl hatch border-2 border-dashed border-ink/45 bg-paper text-ink/70 transition-colors duration-300 hover:border-solid hover:border-ink hover:bg-lime hover:text-ink ${size}`}
+    <div
+      className={`flex flex-col items-center justify-center gap-2 rounded-2xl hatch border-2 border-dashed border-ink/45 bg-paper text-ink/70 ${size}`}
     >
       <span aria-hidden="true" className="grid size-9 place-items-center rounded-full border-2 border-current font-display text-xl leading-none">
         +
       </span>
-      <span className="rounded-full bg-paper px-2 font-display transition-colors group-hover/slot:bg-transparent text-base font-semibold">{s.yourLogo}</span>
-      <span className="sr-only">{s.becomeTier(tier.name)}</span>
-    </a>
+      <span className="rounded-full bg-paper px-2 font-display text-base font-semibold">{s.yourLogo}</span>
+    </div>
   );
 }
 
@@ -64,7 +61,7 @@ function SponsorLane({ tier }: { tier: Tier }) {
 
   const items = [
     ...list.map((s) => ({ key: s.name, node: <SponsorCard sponsor={s} size={card} /> })),
-    ...Array.from({ length: open }, (_, i) => ({ key: `open-${i}`, node: <OpenSlot tier={tier} size={card} /> })),
+    ...Array.from({ length: open }, (_, i) => ({ key: `open-${i}`, node: <OpenSlot size={card} /> })),
   ];
 
   return (
@@ -123,14 +120,11 @@ export function Sponsors() {
             <div className="lg:col-span-5">
               <h3 className="display-md">{s.cta.title}</h3>
               <p className="mt-5 max-w-md text-lg leading-relaxed text-paper/85">{s.cta.body}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <ButtonLink href={mailto(s.generalSubject)}>{s.cta.button}</ButtonLink>
-                {sponsorship.deckUrl && (
-                  <ButtonLink href={sponsorship.deckUrl} variant="glass" target="_blank" rel="noreferrer">
-                    {s.cta.deck}
-                  </ButtonLink>
-                )}
-              </div>
+              {sponsorship.deckUrl && (
+                <ButtonLink href={sponsorship.deckUrl} variant="lime" target="_blank" rel="noreferrer" className="mt-8">
+                  {s.cta.deck}
+                </ButtonLink>
+              )}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-3 lg:col-span-7">

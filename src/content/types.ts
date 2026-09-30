@@ -104,10 +104,7 @@ export interface Content {
     tiers: { key: SponsorTier; name: string; perks: string[] }[];
     count: (sponsors: number, open: number) => string;
     yourLogo: string;
-    becomeTier: (tier: string) => string;
-    tierSubject: (tier: string) => string;
-    generalSubject: string;
-    cta: { title: string; body: string; button: string; deck: string };
+    cta: { title: string; body: string; deck: string };
   };
 
   join: {

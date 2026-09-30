@@ -1,8 +1,8 @@
 import type { Content } from "./types";
 
 const club = {
-  name: "Intelligent Systems Club",
-  wordmark: ["Intelligent", "Systems Club"] as [string, string],
+  name: "Smart Systems Club",
+  wordmark: ["Smart", "Systems Club"] as [string, string],
   university: "Kocaeli University",
   semester: "Fall 2026",
 };
@@ -256,13 +256,9 @@ export const en: Content = {
         .filter(Boolean)
         .join(", "),
     yourLogo: "Your logo here",
-    becomeTier: (tier) => `: become a ${tier} sponsor`,
-    tierSubject: (tier) => `${tier} sponsorship`,
-    generalSubject: "Sponsorship",
     cta: {
       title: "Put your logo on the robots.",
       body: `We're building our first sponsor lineup for ${club.semester}. Pick a tier, or tell us what you'd like to support and we'll shape a package around it.`,
-      button: "Become a sponsor",
       deck: "Sponsorship deck (PDF)",
     },
   },

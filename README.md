@@ -1,6 +1,6 @@
-# Intelligent Systems Club — website
+# Smart Systems Club (Akıllı Sistemler Kulübü) — website
 
-Landing page for the university's Intelligent Systems Club. React + TypeScript + Vite + Tailwind CSS v4.
+Landing page for the Kocaeli University Smart Systems Club (Akıllı Sistemler Kulübü). React + TypeScript + Vite + Tailwind CSS v4.
 
 ```bash
 npm install

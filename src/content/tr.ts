@@ -258,13 +258,9 @@ export const tr: Content = {
     count: (sponsors, open) =>
       [sponsors > 0 ? `${sponsors} sponsor` : "", open > 0 ? `${open} yer açık` : ""].filter(Boolean).join(", "),
     yourLogo: "Logonuz burada",
-    becomeTier: (tier) => `: ${tier} olun`,
-    tierSubject: (tier) => `Sponsorluk: ${tier}`,
-    generalSubject: "Sponsorluk",
     cta: {
       title: "Logonuz robotlarımızda yer alsın.",
       body: `${club.semester} için ilk sponsor kadromuzu oluşturuyoruz. Bir kademe seçin ya da neyi desteklemek istediğinizi anlatın; paketi birlikte şekillendirelim.`,
-      button: "Sponsor olun",
       deck: "Sponsorluk dosyası (PDF)",
     },
   },
