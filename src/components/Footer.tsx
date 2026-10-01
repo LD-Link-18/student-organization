@@ -2,7 +2,8 @@ import { isExternal, useContent, useResolveLink } from "../content/i18n";
 import { club } from "../content/site";
 import { Logo } from "./Logo";
 
-export function Footer() {
+/** `base` prefixes the section anchors on pages other than the homepage. */
+export function Footer({ base = "" }: { base?: string }) {
   const t = useContent();
   const resolve = useResolveLink();
   const year = new Date().getFullYear();
@@ -11,7 +12,7 @@ export function Footer() {
       <div className="container-x py-16 md:py-20">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <Logo />
+            {base ? <Logo href={base} label={t.common.homeLabel} /> : <Logo />}
             <p className="mt-6 max-w-sm leading-relaxed text-paper/70">
               {t.footer.blurb}
             </p>
@@ -28,7 +29,7 @@ export function Footer() {
             <ul className="mt-4 grid gap-2">
               {t.nav.map((l) => (
                 <li key={l.href}>
-                  <a href={l.href} className="font-display text-lg font-medium hover:text-lime">
+                  <a href={base + l.href} className="font-display text-lg font-medium hover:text-lime">
                     {l.label}
                   </a>
                 </li>

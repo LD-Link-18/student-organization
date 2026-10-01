@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { useContent } from "../content/i18n";
 import { club } from "../content/site";
 import { ButtonLink } from "./ui/Button";
+import type { Locale } from "../content/types";
 import { LangSwitch } from "./LangSwitch";
 import { Logo } from "./Logo";
 
-export function Navbar() {
+/**
+ * `base` prefixes the section anchors ("/#about") on pages other than the homepage, where the logo
+ * also links home; `hrefFor` sets the language switch targets for such pages.
+ */
+export function Navbar({ base = "", hrefFor }: { base?: string; hrefFor?: (code: Locale) => string }) {
   const t = useContent();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -35,13 +40,13 @@ export function Navbar() {
             scrolled ? "shadow-[0_18px_40px_-18px_rgb(34_7_92/0.7)]" : ""
           }`}
         >
-          <Logo />
+          {base ? <Logo href={base} label={t.common.homeLabel} /> : <Logo />}
 
           <ul className="hidden items-center gap-0.5 xl:flex">
             {t.nav.map((l) => (
               <li key={l.href}>
                 <a
-                  href={l.href}
+                  href={base + l.href}
                   className="rounded-full px-3.5 py-2 font-display text-[0.95rem] font-medium whitespace-nowrap text-paper/85 transition-colors hover:bg-paper/12 hover:text-paper"
                 >
                   {l.label}
@@ -51,7 +56,7 @@ export function Navbar() {
           </ul>
 
           <div className="flex items-center gap-2">
-            <LangSwitch />
+            <LangSwitch hrefFor={hrefFor} />
             <ButtonLink href={club.joinUrl} className="hidden sm:inline-flex">
               {t.common.joinClub}
             </ButtonLink>
@@ -81,7 +86,7 @@ export function Navbar() {
             {t.nav.map((l) => (
               <li key={l.href}>
                 <a
-                  href={l.href}
+                  href={base + l.href}
                   onClick={() => setOpen(false)}
                   className="flex items-center justify-between rounded-2xl px-4 py-3 font-display text-2xl font-bold tracking-tight hover:bg-lime"
                 >

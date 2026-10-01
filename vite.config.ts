@@ -5,9 +5,18 @@ import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
+/** Rewrites from vercel.json ("/projeler/:slug" → "/projeler/index.html"), compiled to regexes. */
+const rewrites: { pattern: RegExp; destination: string }[] = (
+  JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "vercel.json"), "utf-8")).rewrites ?? []
+).map((r: { source: string; destination: string }) => ({
+  pattern: new RegExp(`^${r.source.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/:\w+/g, "[^/]+")}$`),
+  destination: r.destination,
+}));
+
 /**
  * Makes `npm run dev` and `npm run preview` route pages the way Vercel does (see vercel.json):
  * - a folder URL without its trailing slash (/yakinda) redirects to /yakinda/
+ * - vercel.json rewrites apply (project pages share one HTML file per language)
  * - any other unknown page URL gets 404.html with status 404
  * Vite's default would quietly serve the homepage instead.
  */
@@ -22,9 +31,14 @@ function vercelLikeRouting(): Plugin {
       const isFile = (p: string) => roots.some((r) => fs.statSync(path.join(r, p), { throwIfNoEntry: false })?.isFile());
 
       if (isFile(pathname) || (pathname.endsWith("/") && isFile(path.join(pathname, "index.html")))) return next();
-      if (!pathname.endsWith("/") && isFile(path.join(pathname, "index.html"))) {
+      const rewrite = rewrites.find((r) => r.pattern.test(pathname));
+      if (!pathname.endsWith("/") && (isFile(path.join(pathname, "index.html")) || rewrite)) {
         res.writeHead(308, { Location: `${pathname}/${url.search}` });
         return res.end();
+      }
+      if (rewrite) {
+        req.url = rewrite.destination + url.search;
+        return next();
       }
       render(fs.readFileSync(path.join(pageRoot, "404.html"), "utf-8"), req.originalUrl ?? "/404.html")
         .then((html) => {
@@ -47,9 +61,10 @@ function vercelLikeRouting(): Plugin {
   };
 }
 
-// Turkish at / (default) and English at /en/, plus a "coming soon" page per language for
-// links that aren't set up yet, and a shared 404 page. All load src/main.tsx, which picks the
-// language from <html lang> and the page from <html data-page>.
+// Turkish at / (default) and English at /en/, project pages (/projeler/, /en/projects/), a
+// "coming soon" page per language for links that aren't set up yet, and a shared 404 page.
+// All load src/main.tsx, which picks the language from <html lang> and the page from
+// <html data-page>.
 export default defineConfig({
   appType: "mpa",
   plugins: [react(), tailwindcss(), vercelLikeRouting()],
@@ -60,6 +75,8 @@ export default defineConfig({
         en: path.resolve(import.meta.dirname, "en/index.html"),
         soonTr: path.resolve(import.meta.dirname, "yakinda/index.html"),
         soonEn: path.resolve(import.meta.dirname, "en/coming-soon/index.html"),
+        projectsTr: path.resolve(import.meta.dirname, "projeler/index.html"),
+        projectsEn: path.resolve(import.meta.dirname, "en/projects/index.html"),
         // Served by Vercel (and most static hosts) for unknown URLs.
         notFound: path.resolve(import.meta.dirname, "404.html"),
       },

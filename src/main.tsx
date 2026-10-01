@@ -6,6 +6,7 @@ import "./index.css";
 import App from "./App";
 import { ComingSoon } from "./components/ComingSoon";
 import { NotFound } from "./components/NotFound";
+import { ProjectPage } from "./components/ProjectPage";
 import { ContentProvider, detectLocale } from "./content/i18n";
 
 const page = document.documentElement.dataset.page;
@@ -15,7 +16,7 @@ if (page === "404") {
   document.documentElement.lang = /^\/en(\/|$)/.test(window.location.pathname) ? "en" : "tr";
 }
 
-const pages = { soon: <ComingSoon />, "404": <NotFound /> } as const;
+const pages = { soon: <ComingSoon />, "404": <NotFound />, project: <ProjectPage /> } as const;
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

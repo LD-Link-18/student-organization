@@ -25,6 +25,10 @@ export const club = {
 /** Channels a placeholder link can come from; the coming-soon page tailors its message to each. */
 export type LinkSource = "instagram" | "discord" | "linkedin" | "github";
 
+/** Project pages: the list lives here and each project at `<path><slug>/` (see vercel.json rewrites). */
+export const projectsPath: Record<"tr" | "en", string> = { tr: "/projeler/", en: "/en/projects/" };
+export const projectHref = (locale: "tr" | "en", slug: string) => `${projectsPath[locale]}${slug}/`;
+
 /** The "coming soon" page per language (separate HTML entries, see vite.config.ts). */
 export const comingSoonPath: Record<"tr" | "en", string> = { tr: "/yakinda/", en: "/en/coming-soon/" };
 

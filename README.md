@@ -17,6 +17,8 @@ The site ships in two languages as two HTML entries:
 | ------------------ | --------------------------- | ---------------------------- |
 | `/`                | `index.html`                | Turkish site (default)       |
 | `/en/`             | `en/index.html`             | English site                 |
+| `/projeler/…`      | `projeler/index.html`       | Turkish project list + pages |
+| `/en/projects/…`   | `en/projects/index.html`    | English project list + pages |
 | `/yakinda/`        | `yakinda/index.html`        | Turkish "coming soon" page   |
 | `/en/coming-soon/` | `en/coming-soon/index.html` | English "coming soon" page   |
 | any unknown URL    | `404.html`                  | 404 page (EN under `/en/…`)  |
@@ -46,6 +48,32 @@ Other notes:
   point there automatically.
 - Once the site has a domain, add `<link rel="alternate" hreflang="…">` tags with **absolute** URLs to both
   HTML files so search engines pair the two languages.
+
+## Project pages
+
+Every project gets its own page from one template (`src/components/ProjectPage.tsx`):
+`/projeler/<slug>/` and `/en/projects/<slug>/`. `/projeler/` lists them all. The homepage cards link to
+these pages automatically.
+
+**To add a project**, append an entry to `projects.items` in **both** `src/content/tr.ts` and
+`src/content/en.ts`, with the same `slug` in both. No HTML file or route is needed: `vercel.json`
+rewrites every `/projeler/<slug>/` to the shared page, and the dev server reads the same rules.
+
+| Field | Shown as |
+| --- | --- |
+| `slug` | URL part (`visioncore` → `/projeler/visioncore/`); lowercase, no spaces |
+| `name`, `category`, `status`, `description`, `stack`, `visual` | Homepage card (and page header) |
+| `started`, `overview` | Page header |
+| `highlights` | 2–4 headline numbers under the header |
+| `sections` | Story blocks (Problem / How it works / What's next …) |
+| `timeline` | Milestones, oldest first; the last one is highlighted |
+| `team` *(optional)* | Team cards; hidden when missing or empty |
+| `repo` *(optional)* | "Source code" button; `""` links to the coming-soon page, omit to hide |
+| `demo` *(optional)* | "Live demo" button; hidden when missing or empty |
+
+`visual` picks one of the drawn previews in `src/components/ProjectArt.tsx`; add a new case there for a new
+look, or swap in a screenshot. An unknown slug shows the 404 page (with HTTP status 200, since the
+shared HTML exists).
 
 ## Design system
 

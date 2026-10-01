@@ -1,4 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "trailingSlash": true
+  "trailingSlash": true,
+  "rewrites": [
+    { "source": "/projeler/:slug", "destination": "/projeler/index.html" },
+    { "source": "/projeler/:slug/", "destination": "/projeler/index.html" },
+    { "source": "/en/projects/:slug", "destination": "/en/projects/index.html" },
+    { "source": "/en/projects/:slug/", "destination": "/en/projects/index.html" }
+  ]
 }

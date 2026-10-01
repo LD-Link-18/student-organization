@@ -2,6 +2,37 @@ import type { AreaKey, AvatarVariant, LinkSource, ProjectStatus, ProjectVisual, 
 
 export type Locale = "tr" | "en";
 
+/**
+ * One project: the card on the homepage and its own page at /projeler/<slug>/ (/en/projects/<slug>/).
+ * `slug` must be the same in tr.ts and en.ts so the language switch finds the other version.
+ */
+export interface Project {
+  slug: string;
+  name: string;
+  category: string;
+  status: ProjectStatus;
+  /** One or two sentences for the homepage card. */
+  description: string;
+  stack: string[];
+  visual: ProjectVisual;
+  /** e.g. "Eylül 2025" */
+  started: string;
+  /** Lead paragraph at the top of the project page. */
+  overview: string;
+  /** 2–4 headline numbers. */
+  highlights: { value: string; label: string }[];
+  /** Story blocks, e.g. Problem / How it works / What's next. */
+  sections: { title: string; body: string }[];
+  /** Milestones, oldest first. */
+  timeline: { date: string; text: string }[];
+  /** Optional: hidden when empty or missing. */
+  team?: { name: string; role: string }[];
+  /** Source code. "" = not public yet (links to the coming-soon page); omit to hide the button. */
+  repo?: string;
+  /** Live demo. Omit or leave empty to hide the button. */
+  demo?: string;
+}
+
 /** Every piece of visible copy. tr.ts and en.ts must both satisfy this shape. */
 export interface Content {
   locale: Locale;
@@ -70,14 +101,28 @@ export interface Content {
     statusLabel: string;
     status: Record<ProjectStatus, string>;
     seatsFree: string;
-    items: {
-      name: string;
-      category: string;
-      status: ProjectStatus;
-      description: string;
-      stack: string[];
-      visual: ProjectVisual;
-    }[];
+    /** Card label linking to the project's own page. */
+    view: string;
+    items: Project[];
+  };
+
+  /** Labels used on every project page (the template). */
+  projectPage: {
+    home: string;
+    breadcrumb: string;
+    started: string;
+    statusLabel: string;
+    teamSize: (n: number) => string;
+    repo: string;
+    demo: string;
+    highlights: string;
+    stack: string;
+    timeline: string;
+    team: string;
+    join: { title: string; body: string; cta: string; pitch: string };
+    next: string;
+    docTitle: (name: string) => string;
+    listDocTitle: string;
   };
 
   events: {

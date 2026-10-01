@@ -120,8 +120,10 @@ export const en: Content = {
     statusLabel: "Status: ",
     status: { live: "Live", progress: "In progress", prototype: "Prototype" },
     seatsFree: "seats free",
+    view: "View project",
     items: [
       {
+        slug: "visioncore",
         name: "VisionCore",
         category: "Computer Vision",
         status: "live",
@@ -129,8 +131,44 @@ export const en: Content = {
           "Real-time object detection for the campus library entrance — counts occupancy and pushes free-seat estimates to a public dashboard.",
         stack: ["YOLOv8", "OpenCV", "FastAPI", "Jetson Nano"],
         visual: "vision",
+        started: "September 2025",
+        overview:
+          "A single camera at the library entrance counts how many people are inside in real time and publishes a free-seat estimate on a public dashboard. During exam weeks it answers \"is there room?\" before you walk over.",
+        highlights: [
+          { value: "~30 fps", label: "real-time detection on a Jetson Nano" },
+          { value: "94%", label: "accuracy counting people in and out" },
+          { value: "0", label: "images stored; only the head count leaves the device" },
+        ],
+        sections: [
+          {
+            title: "The problem",
+            body: "During exam season students walked to the library only to find no seats. There was no way to check how full it was beforehand.",
+          },
+          {
+            title: "How it works",
+            body: "The entrance camera feed runs through YOLOv8 on a Jetson Nano. People are tracked and counted when they cross a virtual line, and the count is pushed to the dashboard through FastAPI every few seconds.",
+          },
+          {
+            title: "Privacy",
+            body: "Images never leave the device and are never saved. Only the live head count is sent out.",
+          },
+          { title: "What's next", body: "A camera for the second entrance and occupancy per floor." },
+        ],
+        timeline: [
+          { date: "Sep 2025", text: "Idea posted on Discord, team formed" },
+          { date: "Nov 2025", text: "First prototype tested in the lab" },
+          { date: "Feb 2026", text: "Pilot started with the library staff" },
+          { date: "Apr 2026", text: "Occupancy dashboard opened to everyone" },
+        ],
+        team: [
+          { name: "Full Name", role: "Computer vision" },
+          { name: "Full Name", role: "Hardware" },
+          { name: "Full Name", role: "Web dashboard" },
+        ],
+        repo: "",
       },
       {
+        slug: "smart-rover",
         name: "Smart Rover",
         category: "Robotics",
         status: "progress",
@@ -138,8 +176,39 @@ export const en: Content = {
           "A six-wheel rover that maps the engineering courtyard on its own using LiDAR SLAM. Currently learning not to fear curbs.",
         stack: ["ROS 2", "LiDAR", "Raspberry Pi 5", "C++"],
         visual: "rover",
+        started: "October 2025",
+        overview:
+          "A six-wheel rover that maps the engineering courtyard on its own. It scans its surroundings with LiDAR, builds a map and is learning to get from one point to another without hitting anything.",
+        highlights: [
+          { value: "6", label: "wheels on a rocker-bogie chassis" },
+          { value: "360°", label: "LiDAR scanning" },
+          { value: "~1.2 km", label: "driven autonomously so far" },
+        ],
+        sections: [
+          {
+            title: "Why",
+            body: "We wanted to build an autonomous system that works in the real world, end to end: mechanics, electronics and software in one team.",
+          },
+          {
+            title: "How it works",
+            body: "ROS 2 runs on a Raspberry Pi 5. LiDAR data feeds SLAM, Nav2 plans the route, and motor control lives on a separate microcontroller.",
+          },
+          {
+            title: "Where it stands",
+            body: "Mapping is reliable. A depth camera is being added so the rover can see height changes like curbs and ramps.",
+          },
+          { title: "What's next", body: "Small delivery runs around campus." },
+        ],
+        timeline: [
+          { date: "Oct 2025", text: "Chassis design and first parts" },
+          { date: "Jan 2026", text: "First drive by remote control" },
+          { date: "Apr 2026", text: "First autonomous map of the courtyard" },
+          { date: "Nov 2026", text: "Depth camera integration (planned)" },
+        ],
+        repo: "",
       },
       {
+        slug: "neural-lab",
         name: "Neural Lab",
         category: "Machine Learning",
         status: "live",
@@ -147,16 +216,95 @@ export const en: Content = {
           "An in-browser playground where first-years train tiny neural nets and watch every weight update as it happens.",
         stack: ["TypeScript", "WebGPU", "React"],
         visual: "neural",
+        started: "February 2026",
+        overview:
+          "A neural-network playground that runs in the browser with nothing to install. First-years drag layers together into small networks, start training and watch every weight change live.",
+        highlights: [
+          { value: "0", label: "installs; a browser is enough" },
+          { value: "WebGPU", label: "accelerates training in the browser" },
+          { value: "3", label: "workshops have used it as course material" },
+        ],
+        sections: [
+          {
+            title: "Why",
+            body: "In a first lecture, neural networks feel like a black box to most students. We wanted a tool that lets them look inside.",
+          },
+          {
+            title: "How it works",
+            body: "The model and training loop are written in TypeScript, with the matrix math running on WebGPU. The React interface updates the weights and the loss chart at every step.",
+          },
+          { title: "What's next", body: "Convolutional layers and ready-made datasets (MNIST, simple shapes)." },
+        ],
+        timeline: [
+          { date: "Feb 2026", text: "First draft" },
+          { date: "Mar 2026", text: "Training moved to WebGPU" },
+          { date: "Apr 2026", text: "Used in its first workshop" },
+          { date: "Sep 2026", text: "Turkish and English interface" },
+        ],
+        repo: "",
       },
       {
+        slug: "gesture-interface",
         name: "Gesture Interface",
         category: "Embedded + ML",
         status: "prototype",
         description: "A wristband that turns hand gestures into keyboard shortcuts with an on-device model under 40 KB.",
         stack: ["ESP32-S3", "TinyML", "IMU", "Edge Impulse"],
         visual: "gesture",
+        started: "May 2026",
+        overview:
+          "A small device on your wrist recognizes hand gestures and sends them to your computer as keyboard shortcuts. The model runs on the device itself; no internet or phone needed.",
+        highlights: [
+          { value: "< 40 KB", label: "model size" },
+          { value: "8", label: "gestures recognized" },
+          { value: "~15 ms", label: "to recognize a gesture" },
+        ],
+        sections: [
+          {
+            title: "Why",
+            body: "We were looking for a more natural way to control a computer while presenting, drawing or with our hands full.",
+          },
+          {
+            title: "How it works",
+            body: "The IMU on an ESP32-S3 records the motion. A small model trained with Edge Impulse classifies the gesture, and the device acts as a Bluetooth keyboard to send the shortcut.",
+          },
+          {
+            title: "Where it stands",
+            body: "The prototype works on the desk. Battery life and the case are being reworked for everyday use.",
+          },
+        ],
+        timeline: [
+          { date: "May 2026", text: "Idea and first experiments" },
+          { date: "Jun 2026", text: "Gesture data collected from 12 volunteers" },
+          { date: "Aug 2026", text: "First working prototype" },
+          { date: "Dec 2026", text: "3D-printed case (planned)" },
+        ],
+        repo: "",
       },
     ],
+  },
+
+  projectPage: {
+    home: "Home",
+    breadcrumb: "Projects",
+    started: "Started",
+    statusLabel: "Status",
+    teamSize: (n) => `${n} ${n === 1 ? "person" : "people"}`,
+    repo: "Source code",
+    demo: "Live demo",
+    highlights: "Highlights",
+    stack: "Built with",
+    timeline: "Timeline",
+    team: "Team",
+    join: {
+      title: "Want to work on this?",
+      body: "Our projects take new members every semester, no experience required. Join the club or bring an idea of your own.",
+      cta: "Join the club",
+      pitch: "Pitch a project",
+    },
+    next: "Next project",
+    docTitle: (name) => `${name} | ${club.name}`,
+    listDocTitle: `Projects | ${club.name}`,
   },
 
   events: {
