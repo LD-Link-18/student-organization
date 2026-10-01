@@ -5,7 +5,7 @@
 
 export const club = {
   short: "ISC",
-  email: "hello@isclub.dev",
+  email: "kou.akillisistemler@gmail.com",
   /** Membership form: every "Join the club" button points here. */
   joinUrl: "https://forms.gle/KdrEV5KYtnu5nBre9",
   /** Project proposal form: the "Pitch a project" button points here. */

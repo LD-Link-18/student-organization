@@ -17,7 +17,7 @@ export function Footer() {
             </p>
             <a
               href={`mailto:${club.email}`}
-              className="mt-6 inline-block font-display text-2xl font-bold tracking-tight text-lime underline decoration-2 underline-offset-[6px] hover:decoration-paper md:text-3xl"
+              className="mt-6 inline-block max-w-full font-display text-lg font-bold tracking-tight [overflow-wrap:anywhere] text-lime underline decoration-2 underline-offset-[6px] hover:decoration-paper min-[400px]:text-xl sm:text-2xl md:text-3xl"
             >
               {club.email}
             </a>
