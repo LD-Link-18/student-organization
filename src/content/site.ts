@@ -6,9 +6,12 @@
 export const club = {
   short: "ISC",
   email: "hello@isclub.dev",
-  joinUrl: "#join", // replace with your sign-up form (Google Form, Typeform, …)
+  /** Membership form: every "Join the club" button points here. */
+  joinUrl: "https://forms.gle/KdrEV5KYtnu5nBre9",
+  /** Project proposal form: the "Pitch a project" button points here. */
+  projectUrl: "https://forms.gle/FF1eCvrVfPww6fzPA",
   socials: [
-    { label: "Instagram", href: "https://instagram.com/" },
+    { label: "Instagram", href: "https://www.instagram.com/kou.akillisistemlerkulubu/" },
     { label: "Discord", href: "https://discord.gg/" },
     { label: "LinkedIn", href: "https://linkedin.com/" },
     { label: "GitHub", href: "https://github.com/" },

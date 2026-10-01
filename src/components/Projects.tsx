@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { useContent } from "../content/i18n";
-import { discordUrl, type ProjectStatus } from "../content/site";
+import { club, type ProjectStatus } from "../content/site";
 import { ProjectArt } from "./ProjectArt";
 import { Arrow } from "./ui/Arrow";
 import { ButtonLink } from "./ui/Button";
@@ -38,7 +38,7 @@ export function Projects() {
           </Reveal>
           <Reveal i={1} className="relative lg:col-span-5 lg:pb-3">
             <p className="max-w-md text-lg leading-relaxed text-paper/85">{projects.intro}</p>
-            <ButtonLink href={discordUrl} variant="lime" className="mt-6">
+            <ButtonLink href={club.projectUrl} variant="lime" className="mt-6">
               {projects.pitch}
             </ButtonLink>
             <Arrow variant="zig" className="absolute -bottom-20 left-48 hidden w-32 rotate-[40deg] text-lime lg:block" />

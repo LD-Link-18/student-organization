@@ -1,6 +1,7 @@
 import { useContent } from "../content/i18n";
 import { club } from "../content/site";
 import { Avatar } from "./Avatar";
+import { ButtonLink } from "./ui/Button";
 import { Reveal } from "./ui/Reveal";
 
 /** Per-card tilt + offset. Offsets make a wave: middle column at md (3 cols), every other card at xl (6 cols). */
@@ -65,9 +66,9 @@ export function Team() {
                 {team.members}
               </p>
             </div>
-            <a href={club.joinUrl} className="btn btn-violet">
+            <ButtonLink href={club.joinUrl} variant="violet">
               {team.takeSeat}
-            </a>
+            </ButtonLink>
           </div>
         </Reveal>
       </div>
