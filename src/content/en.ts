@@ -22,6 +22,7 @@ export const en: Content = {
     closeMenu: "Close menu",
     mainNav: "Main",
     footerNav: "Footer",
+    homeLabel: `${club.name}, homepage`,
   },
 
   nav: [
@@ -283,5 +284,39 @@ export const en: Content = {
     explore: "Explore",
     follow: "Follow along",
     rights: (year) => `© ${year} ${club.name}, ${club.university}`,
+  },
+
+  soon: {
+    headline: ["Coming", "soon."],
+    lead: {
+      default: "This link isn't live yet.",
+      discord: "Our Discord server is on its way.",
+      linkedin: "Our LinkedIn page is in the works.",
+      github: "Our GitHub organization is being set up.",
+      instagram: "This link isn't live yet.",
+    },
+    body: "We're still setting up the club's new channels. Until then, follow us on Instagram for announcements and events.",
+    instagram: "Follow on Instagram",
+    join: "Join the club",
+    home: "Back to the homepage",
+    status: {
+      title: "status",
+      steps: [
+        ["plan", "done"],
+        ["setup", "in progress"],
+        ["launch", "next"],
+      ],
+    },
+    sticker: `Coming soon / ${club.semester} / `,
+  },
+
+  notFound: {
+    title: `Page not found | ${club.name}`,
+    lead: "We couldn't detect this page.",
+    body: "The link may be outdated, or the address mistyped. Whatever you're looking for is probably on the homepage.",
+    home: "Back to the homepage",
+    projects: "Browse projects",
+    quickLinks: "Maybe one of these:",
+    camera: { feed: "cam_01 / site", scanning: "scanning", box: "page 0.00", empty: "no object found", chip: "0 results" },
   },
 };

@@ -22,6 +22,7 @@ export const tr: Content = {
     closeMenu: "Menüyü kapat",
     mainNav: "Ana menü",
     footerNav: "Alt menü",
+    homeLabel: `${club.name}, ana sayfa`,
   },
 
   nav: [
@@ -285,5 +286,39 @@ export const tr: Content = {
     explore: "Keşfet",
     follow: "Takip et",
     rights: (year) => `© ${year} ${club.name}, ${club.university}`,
+  },
+
+  soon: {
+    headline: ["Çok", "yakında."],
+    lead: {
+      default: "Bu bağlantı henüz hazır değil.",
+      discord: "Discord sunucumuz kuruluyor.",
+      linkedin: "LinkedIn sayfamız hazırlanıyor.",
+      github: "GitHub organizasyonumuz kuruluyor.",
+      instagram: "Bu bağlantı henüz hazır değil.",
+    },
+    body: "Kulübün yeni kanallarını kuruyoruz. O zamana kadar duyurular ve etkinlikler için bizi Instagram'dan takip et.",
+    instagram: "Instagram'da takip et",
+    join: "Kulübe katıl",
+    home: "Ana sayfaya dön",
+    status: {
+      title: "durum",
+      steps: [
+        ["plan", "hazır"],
+        ["kurulum", "sürüyor"],
+        ["yayın", "sırada"],
+      ],
+    },
+    sticker: `Çok yakında / ${club.semester} / `,
+  },
+
+  notFound: {
+    title: `Sayfa bulunamadı | ${club.name}`,
+    lead: "Bu sayfayı algılayamadık.",
+    body: "Bağlantı eskimiş ya da adres yanlış yazılmış olabilir. Aradığın şey büyük ihtimalle ana sayfada.",
+    home: "Ana sayfaya dön",
+    projects: "Projelere göz at",
+    quickLinks: "Belki şunlardan biri:",
+    camera: { feed: "cam_01 / site", scanning: "aranıyor", box: "sayfa 0.00", empty: "nesne bulunamadı", chip: "0 sonuç" },
   },
 };

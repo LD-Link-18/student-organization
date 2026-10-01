@@ -13,12 +13,17 @@ npm run preview  # serve the production build
 
 The site ships in two languages as two HTML entries:
 
-| URL    | Entry           | Language          |
-| ------ | --------------- | ----------------- |
-| `/`    | `index.html`    | Turkish (default) |
-| `/en/` | `en/index.html` | English           |
+| URL                | Entry                       | Page                         |
+| ------------------ | --------------------------- | ---------------------------- |
+| `/`                | `index.html`                | Turkish site (default)       |
+| `/en/`             | `en/index.html`             | English site                 |
+| `/yakinda/`        | `yakinda/index.html`        | Turkish "coming soon" page   |
+| `/en/coming-soon/` | `en/coming-soon/index.html` | English "coming soon" page   |
+| any unknown URL    | `404.html`                  | 404 page (EN under `/en/…`)  |
 
-Both load `src/main.tsx`, which picks the copy from `<html lang>`. The TR/EN button in the navbar links
+All load `src/main.tsx`, which picks the copy from `<html lang>` and the page from `<html data-page>`.
+The 404 page is a single file that static hosts (Netlify, Cloudflare Pages, GitHub Pages, Vercel) serve for
+every unknown URL, so it reads its language from the path instead. The TR/EN button in the navbar links
 between the two. Page titles and meta descriptions live in the HTML files.
 
 ## Editing content
@@ -35,6 +40,10 @@ Other notes:
 - Team avatars are geometric placeholders (`src/components/Avatar.tsx`); swap for `<img>` when photos exist.
 - Project previews are drawn in `src/components/ProjectArt.tsx`; swap for screenshots the same way.
 - Sponsors: add entries to `sponsors` in `site.ts`, logos go in `public/sponsors/`.
+- Channels that don't exist yet: leave their `href` empty in `club.socials` (`site.ts`). Every link to them
+  (footer, event RSVPs, "Say hi on Discord") then goes to the "coming soon" page in the visitor's language,
+  with `?l=discord` / `linkedin` / `github` so the page names the channel. Fill in the real URL and the links
+  point there automatically.
 - Once the site has a domain, add `<link rel="alternate" hreflang="…">` tags with **absolute** URLs to both
   HTML files so search engines pair the two languages.
 

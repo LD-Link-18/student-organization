@@ -1,4 +1,4 @@
-import type { AreaKey, AvatarVariant, ProjectStatus, ProjectVisual, SponsorTier } from "./site";
+import type { AreaKey, AvatarVariant, LinkSource, ProjectStatus, ProjectVisual, SponsorTier } from "./site";
 
 export type Locale = "tr" | "en";
 
@@ -26,6 +26,8 @@ export interface Content {
     closeMenu: string;
     mainNav: string;
     footerNav: string;
+    /** Logo link label on standalone pages, where it goes to the homepage. */
+    homeLabel: string;
   };
 
   nav: { label: string; href: string }[];
@@ -119,4 +121,33 @@ export interface Content {
   };
 
   footer: { blurb: string; explore: string; follow: string; rights: (year: number) => string };
+
+  /** "Coming soon" page that placeholder links point to. */
+  soon: {
+    /** Two-line headline; the second word sits on the lime block. */
+    headline: [string, string];
+    /** Lead sentence, tailored to where the visitor came from (`?l=…`). */
+    lead: Record<LinkSource | "default", string>;
+    body: string;
+    instagram: string;
+    join: string;
+    home: string;
+    /** Decorative status card. */
+    status: { title: string; steps: [string, string][] };
+    sticker: string;
+  };
+
+  /** 404 page (one 404.html for every unknown URL; language comes from the path). */
+  notFound: {
+    /** Document title and the heading's accessible name. */
+    title: string;
+    lead: string;
+    body: string;
+    home: string;
+    projects: string;
+    /** Label before the quick links to homepage sections. */
+    quickLinks: string;
+    /** Decorative "camera found nothing" card. */
+    camera: { feed: string; scanning: string; box: string; empty: string; chip: string };
+  };
 }

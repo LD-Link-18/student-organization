@@ -1,9 +1,10 @@
-import { useContent } from "../content/i18n";
-import { discordUrl } from "../content/site";
+import { useContent, useResolveLink } from "../content/i18n";
+import { discordHref } from "../content/site";
 import { Reveal } from "./ui/Reveal";
 
 export function Events() {
   const { events } = useContent();
+  const rsvpHref = useResolveLink()(discordHref, "discord");
 
   return (
     <section id="events" aria-labelledby="events-title" className="section-y relative bg-paper">
@@ -43,7 +44,7 @@ export function Events() {
                 </div>
 
                 <a
-                  href={discordUrl}
+                  href={rsvpHref}
                   className="btn btn-paper col-span-2 w-full md:col-span-1 md:col-start-3 md:row-span-2 md:row-start-1 md:w-auto lg:col-start-4 lg:row-span-1"
                 >
                   {events.rsvp}

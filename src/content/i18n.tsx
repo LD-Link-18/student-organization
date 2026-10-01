@@ -1,4 +1,5 @@
 import { createContext, useContext, type ReactNode } from "react";
+import { comingSoonPath, type LinkSource } from "./site";
 import { en } from "./en";
 import { tr } from "./tr";
 import type { Content, Locale } from "./types";
@@ -17,3 +18,11 @@ export function ContentProvider({ locale, children }: { locale: Locale; children
 }
 
 export const useContent = () => useContext(ContentContext);
+
+/** Returns the real href, or this language's coming-soon page (tagged with the source) when the link isn't set up yet. */
+export function useResolveLink() {
+  const { locale } = useContent();
+  return (href: string, source: LinkSource) => href || `${comingSoonPath[locale]}?l=${source}`;
+}
+
+export const isExternal = (href: string) => /^https?:\/\//.test(href);

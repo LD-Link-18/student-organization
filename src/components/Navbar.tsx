@@ -1,41 +1,9 @@
 import { useEffect, useState } from "react";
 import { useContent } from "../content/i18n";
-import { club, languages } from "../content/site";
+import { club } from "../content/site";
 import { ButtonLink } from "./ui/Button";
+import { LangSwitch } from "./LangSwitch";
 import { Logo } from "./Logo";
-
-/** TR | EN segmented switch: the active language is highlighted, the other one links to its page. */
-function LangSwitch() {
-  const { locale, switcher } = useContent();
-  const segment = "grid size-9 place-items-center rounded-full font-display text-sm font-bold sm:size-10";
-  return (
-    <div
-      role="group"
-      aria-label={switcher.groupLabel}
-      className="flex items-center gap-0.5 rounded-full border border-paper/35 bg-paper/10 p-1"
-    >
-      {languages.map((l) =>
-        l.code === locale ? (
-          <span key={l.code} lang={l.code} aria-current="true" className={`${segment} bg-lime text-ink ring-2 ring-ink`}>
-            <span aria-hidden="true">{l.label}</span>
-            <span className="sr-only">{l.name}</span>
-          </span>
-        ) : (
-          <a
-            key={l.code}
-            href={l.href}
-            hrefLang={l.code}
-            lang={l.code}
-            className={`${segment} text-paper/80 transition-colors hover:bg-paper/15 hover:text-paper`}
-          >
-            <span aria-hidden="true">{l.label}</span>
-            <span className="sr-only">{l.name}</span>
-          </a>
-        ),
-      )}
-    </div>
-  );
-}
 
 export function Navbar() {
   const t = useContent();

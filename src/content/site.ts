@@ -10,13 +10,23 @@ export const club = {
   joinUrl: "https://forms.gle/KdrEV5KYtnu5nBre9",
   /** Project proposal form: the "Pitch a project" button points here. */
   projectUrl: "https://forms.gle/FF1eCvrVfPww6fzPA",
+  /**
+   * Leave `href` empty ("") for channels that don't exist yet: links to them go to the
+   * "coming soon" page instead. Fill in the real address and they link out automatically.
+   */
   socials: [
-    { label: "Instagram", href: "https://www.instagram.com/kou.akillisistemlerkulubu/" },
-    { label: "Discord", href: "https://discord.gg/" },
-    { label: "LinkedIn", href: "https://linkedin.com/" },
-    { label: "GitHub", href: "https://github.com/" },
-  ],
+    { label: "Instagram", source: "instagram", href: "https://www.instagram.com/kou.akillisistemlerkulubu/" },
+    { label: "Discord", source: "discord", href: "" },
+    { label: "LinkedIn", source: "linkedin", href: "" },
+    { label: "GitHub", source: "github", href: "" },
+  ] as { label: string; source: LinkSource; href: string }[],
 };
+
+/** Channels a placeholder link can come from; the coming-soon page tailors its message to each. */
+export type LinkSource = "instagram" | "discord" | "linkedin" | "github";
+
+/** The "coming soon" page per language (separate HTML entries, see vite.config.ts). */
+export const comingSoonPath: Record<"tr" | "en", string> = { tr: "/yakinda/", en: "/en/coming-soon/" };
 
 /** Site languages, in switcher order. `name` is written in its own language (used as the link's accessible name). */
 export const languages: { code: "tr" | "en"; label: string; name: string; href: string }[] = [
@@ -24,7 +34,9 @@ export const languages: { code: "tr" | "en"; label: string; name: string; href: 
   { code: "en", label: "EN", name: "English", href: "/en/" },
 ];
 
-export const discordUrl = club.socials.find((s) => s.label === "Discord")?.href ?? club.joinUrl;
+const social = (source: LinkSource) => club.socials.find((s) => s.source === source)!;
+export const discordHref = social("discord").href;
+export const instagramHref = social("instagram").href;
 
 export type AreaKey = "ai" | "ml" | "robotics" | "vision" | "embedded" | "automation";
 export type ProjectStatus = "live" | "progress" | "prototype";

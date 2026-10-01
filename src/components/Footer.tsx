@@ -1,9 +1,10 @@
-import { useContent } from "../content/i18n";
+import { isExternal, useContent, useResolveLink } from "../content/i18n";
 import { club } from "../content/site";
 import { Logo } from "./Logo";
 
 export function Footer() {
   const t = useContent();
+  const resolve = useResolveLink();
   const year = new Date().getFullYear();
   return (
     <footer className="bg-violet-night text-paper">
@@ -38,14 +39,22 @@ export function Footer() {
           <div className="md:col-span-3">
             <h2 className="meta text-paper/60">{t.footer.follow}</h2>
             <ul className="mt-4 grid gap-2">
-              {club.socials.map((s) => (
-                <li key={s.label}>
-                  <a href={s.href} target="_blank" rel="noreferrer" className="font-display text-lg font-medium hover:text-lime">
-                    {s.label}
-                    <span className="sr-only">{t.common.newTab}</span>
-                  </a>
-                </li>
-              ))}
+              {club.socials.map((s) => {
+                const href = resolve(s.href, s.source);
+                const external = isExternal(href);
+                return (
+                  <li key={s.label}>
+                    <a
+                      href={href}
+                      {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+                      className="font-display text-lg font-medium hover:text-lime"
+                    >
+                      {s.label}
+                      {external && <span className="sr-only">{t.common.newTab}</span>}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

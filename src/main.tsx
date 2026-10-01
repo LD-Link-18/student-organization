@@ -4,12 +4,23 @@ import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/inter";
 import "./index.css";
 import App from "./App";
+import { ComingSoon } from "./components/ComingSoon";
+import { NotFound } from "./components/NotFound";
 import { ContentProvider, detectLocale } from "./content/i18n";
+
+const page = document.documentElement.dataset.page;
+
+// Hosts serve the same 404.html for every unknown URL, so its language comes from the path.
+if (page === "404") {
+  document.documentElement.lang = /^\/en(\/|$)/.test(window.location.pathname) ? "en" : "tr";
+}
+
+const pages = { soon: <ComingSoon />, "404": <NotFound /> } as const;
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ContentProvider locale={detectLocale()}>
-      <App />
+      {pages[page as keyof typeof pages] ?? <App />}
     </ContentProvider>
   </StrictMode>,
 );
