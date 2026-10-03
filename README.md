@@ -39,6 +39,10 @@ between the two. Page titles and meta descriptions live in the HTML files.
 
 Other notes:
 
+- Events (`events.items` in both language files): `day` takes one day (`"14"`) or a range (`"13–15"`, en dash).
+  The "Join" button is shown disabled until you add `rsvpOpen: true` to the event; then it links to Discord.
+- Team cards: add `href: "…"` to a member in **both** `tr.ts` and `en.ts` and the whole card links there (new
+  tab). Leave it out and the card is a plain, non-clickable card. Adding `role: "…"` shows a role pill.
 - Team avatars are geometric placeholders (`src/components/Avatar.tsx`); swap for `<img>` when photos exist.
 - Project previews are drawn in `src/components/ProjectArt.tsx`; swap for screenshots the same way.
 - Sponsors: add entries to `sponsors` in `site.ts`, logos go in `public/sponsors/`.

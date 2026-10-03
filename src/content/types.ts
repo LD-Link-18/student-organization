@@ -132,7 +132,19 @@ export interface Content {
     rsvp: string;
     /** Screen-reader-only text appended to the RSVP button. */
     rsvpFor: (title: string) => string;
-    items: { day: string; month: string; title: string; category: string; description: string; place: string }[];
+    /** Screen-reader-only text appended to a disabled RSVP button. */
+    rsvpClosed: string;
+    items: {
+      /** One day ("14") or a range ("13–15", with an en dash). */
+      day: string;
+      month: string;
+      title: string;
+      category: string;
+      description: string;
+      place: string;
+      /** Turn the RSVP button on. Left out (or false) the button is shown disabled. */
+      rsvpOpen?: boolean;
+    }[];
   };
 
   team: {
@@ -141,8 +153,11 @@ export interface Content {
     focus: (focus: string) => string;
     members: string;
     takeSeat: string;
-    /** `role` is optional: the role pill is only shown when it is set. */
-    people: { name: string; role?: string; focus: string; avatar: AvatarVariant }[];
+    /**
+     * `role` is optional: the role pill is only shown when it is set.
+     * `href` is optional: the whole card links to it (LinkedIn, personal site …) in a new tab.
+     */
+    people: { name: string; role?: string; focus: string; avatar: AvatarVariant; href?: string }[];
   };
 
   sponsors: {
@@ -159,7 +174,6 @@ export interface Content {
     body: string;
     primary: string;
     secondary: string;
-    details: { k: string; v: string }[];
     memberName: string;
     memberSince: string;
     sticker: string;

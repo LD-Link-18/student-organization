@@ -72,15 +72,6 @@ export function JoinSection() {
               </ButtonLink>
             </div>
           </Reveal>
-
-          <Reveal as="dl" i={1} className="grid gap-3 sm:grid-cols-3 lg:col-span-6 lg:grid-cols-1 xl:grid-cols-3">
-            {join.details.map((d) => (
-              <div key={d.k} className="rounded-2xl border-2 border-ink bg-paper p-4" style={{ boxShadow: "var(--shadow-brut-sm)" }}>
-                <dt className="meta text-violet">{d.k}</dt>
-                <dd className="mt-1 font-display text-lg font-bold tracking-tight">{d.v}</dd>
-              </div>
-            ))}
-          </Reveal>
         </div>
 
         <div className="absolute top-[24rem] left-[52rem] hidden xl:block">

@@ -2,6 +2,10 @@ import { useContent, useResolveLink } from "../content/i18n";
 import { discordHref } from "../content/site";
 import { Reveal } from "./ui/Reveal";
 
+/** Grid placement shared by the active and the disabled RSVP button. */
+const RSVP_PLACEMENT =
+  "col-span-2 w-full md:col-span-1 md:col-start-3 md:row-span-2 md:row-start-1 md:w-auto lg:col-start-4 lg:row-span-1";
+
 export function Events() {
   const { events } = useContent();
   const rsvpHref = useResolveLink()(discordHref, "discord");
@@ -27,9 +31,16 @@ export function Events() {
                 aria-hidden="true"
                 className="absolute inset-0 origin-left scale-x-0 bg-lime transition-transform duration-500 ease-[var(--ease-out-expo)] group-focus-within:scale-x-100 group-hover:scale-x-100"
               />
-              <article className="relative grid grid-cols-[auto_1fr] items-start gap-x-5 gap-y-4 py-7 sm:gap-x-8 md:grid-cols-[8.5rem_1fr_auto] md:items-center md:py-9 lg:grid-cols-[9rem_1fr_11rem_auto] lg:gap-x-8 xl:grid-cols-[10rem_1fr_15rem_auto] xl:gap-x-10">
-                <p className="font-display leading-none transition-transform duration-500 group-hover:translate-x-2">
-                  <span className="block text-6xl font-bold tracking-[-0.06em] md:text-7xl lg:text-8xl">{e.day}</span>
+              <article className="relative grid grid-cols-[auto_1fr] items-start gap-x-5 gap-y-4 py-7 sm:gap-x-8 md:grid-cols-[auto_1fr_auto] md:items-center md:py-9 lg:grid-cols-[auto_1fr_11rem_auto] lg:gap-x-8 xl:grid-cols-[auto_1fr_15rem_auto] xl:gap-x-10">
+                {/* min widths keep single-day dates aligned; a range ("13–15") is set smaller and widens its column */}
+                <p className="font-display leading-none transition-transform duration-500 group-hover:translate-x-2 md:min-w-[8.5rem] lg:min-w-[9rem] xl:min-w-[10rem]">
+                  <span
+                    className={`block font-bold tracking-[-0.06em] ${
+                      e.day.length > 2 ? "text-5xl md:text-6xl lg:text-7xl" : "text-6xl md:text-7xl lg:text-8xl"
+                    }`}
+                  >
+                    {e.day}
+                  </span>
                   <span className="mt-1 block text-lg font-semibold">{e.month}</span>
                 </p>
 
@@ -43,13 +54,20 @@ export function Events() {
                   <span className="meta text-ink/70">{e.place}</span>
                 </div>
 
-                <a
-                  href={rsvpHref}
-                  className="btn btn-paper col-span-2 w-full md:col-span-1 md:col-start-3 md:row-span-2 md:row-start-1 md:w-auto lg:col-start-4 lg:row-span-1"
-                >
-                  {events.rsvp}
-                  <span className="sr-only">{events.rsvpFor(e.title)}</span>
-                </a>
+                {e.rsvpOpen ? (
+                  <a href={rsvpHref} className={`btn btn-paper ${RSVP_PLACEMENT}`}>
+                    {events.rsvp}
+                    <span className="sr-only">{events.rsvpFor(e.title)}</span>
+                  </a>
+                ) : (
+                  <button type="button" disabled className={`btn btn-paper ${RSVP_PLACEMENT}`}>
+                    {events.rsvp}
+                    <span className="sr-only">
+                      {events.rsvpFor(e.title)}
+                      {events.rsvpClosed}
+                    </span>
+                  </button>
+                )}
               </article>
               {i === 0 && (
                 <span

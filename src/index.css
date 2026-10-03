@@ -198,6 +198,14 @@
     transform: translate(3px, 3px);
     box-shadow: 0 0 0 0 var(--color-ink);
   }
+  /* Disabled: flat, dashed, no hover motion */
+  .btn:disabled,
+  .btn:disabled:hover,
+  .btn:disabled:active {
+    @apply cursor-not-allowed border-dashed bg-fog text-ink/45;
+    transform: none;
+    box-shadow: none;
+  }
   .btn-lime {
     @apply bg-lime text-ink;
     box-shadow: var(--shadow-brut-sm);
