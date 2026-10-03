@@ -1,8 +1,8 @@
 import { useEffect, type CSSProperties } from "react";
 import { useContent, useResolveLink } from "../content/i18n";
-import { club, projectHref, projectsPath } from "../content/site";
+import { club, projectHref, projectsPath, type AvatarVariant } from "../content/site";
 import type { Project } from "../content/types";
-import { Avatar } from "./Avatar";
+import { MemberCard } from "./MemberCard";
 import { NotFound } from "./NotFound";
 import { ProjectArt } from "./ProjectArt";
 import { StatusBadge } from "./ProjectCard";
@@ -20,11 +20,6 @@ const HIGHLIGHT_LOOKS = [
   { card: "bg-violet text-paper rotate-2", label: "text-paper/80" },
 ];
 const HIGHLIGHT_COLS: Record<number, string> = { 2: "sm:grid-cols-2", 3: "sm:grid-cols-3", 4: "sm:grid-cols-2 lg:grid-cols-4" };
-
-const initials = (name: string) => {
-  const w = name.trim().split(/\s+/);
-  return w.length > 1 ? w[0][0] + w[w.length - 1][0] : w[0][0];
-};
 
 function Fact({ label, value }: { label: string; value: string }) {
   return (
@@ -82,7 +77,7 @@ function ProjectDetail({ project: p, next }: { project: Project; next: Project }
             </div>
             {/* names stay as written: Turkish uppercasing would turn "VisionCore" into "VİSİONCORE" */}
             <h1
-              className="rise display-xl mt-5 normal-case [overflow-wrap:anywhere]"
+              className="rise display-xl mt-5 tracking-[-0.035em] normal-case [overflow-wrap:anywhere]"
               style={{ fontSize: "clamp(3.25rem, 12vw, 8.5rem)", "--i": 2 } as CSSProperties}
             >
               {p.name}
@@ -202,18 +197,21 @@ function ProjectDetail({ project: p, next }: { project: Project; next: Project }
             <Reveal as="h2" id="team-title" className="display-md">
               {pp.team}
             </Reveal>
-            <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-6 md:grid-cols-3 md:gap-8 lg:grid-cols-5">
-              {team.map((m, i) => (
-                <Reveal as="li" key={`${m.name}-${m.role}`} i={i}>
-                  <article className="card-brut lift group h-full rounded-[1.25rem] p-2 sm:rounded-[1.75rem] sm:p-3">
-                    <Avatar variant={(i % 6) as 0 | 1 | 2 | 3 | 4 | 5} initials={initials(m.name)} />
-                    <div className="px-1 pt-4 pb-2 sm:px-2">
-                      <p className="pill border-ink bg-lime text-xs leading-tight whitespace-normal sm:text-[0.8125rem]">{m.role}</p>
-                      <h3 className="mt-3 text-lg leading-tight font-bold tracking-tight sm:text-2xl">{m.name}</h3>
-                    </div>
-                  </article>
-                </Reveal>
-              ))}
+            <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-6 md:grid-cols-4 md:gap-8 lg:grid-cols-5">
+              {team.map((m, i) => {
+                // members who are also on the club team keep their avatar and link
+                const known = t.team.people.find((c) => c.name === m.name);
+                return (
+                  <Reveal as="li" key={m.name} i={i}>
+                    <MemberCard
+                      name={m.name}
+                      role={m.role}
+                      avatar={known?.avatar ?? ((i + 2) % 6) as AvatarVariant}
+                      href={known?.href}
+                    />
+                  </Reveal>
+                );
+              })}
             </ul>
           </div>
         </section>

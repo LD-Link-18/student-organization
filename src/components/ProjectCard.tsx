@@ -5,7 +5,7 @@ import type { Project } from "../content/types";
 import { ProjectArt } from "./ProjectArt";
 
 const statusStyle: Record<ProjectStatus, string> = {
-  live: "border-ink bg-lime text-ink",
+  done: "border-ink bg-lime text-ink",
   progress: "border-ink bg-paper text-ink",
   prototype: "border-dashed border-paper bg-violet-night text-paper",
 };
@@ -14,7 +14,12 @@ export function StatusBadge({ status, className = "" }: { status: ProjectStatus;
   const { projects } = useContent();
   return (
     <span className={`pill border-2 px-3 py-1.5 ${statusStyle[status]} ${className}`}>
-      {status === "live" && <span className="size-2 animate-pulse-dot rounded-full bg-ink" aria-hidden="true" />}
+      {status === "done" && (
+        <svg viewBox="0 0 24 24" className="size-3.5" fill="none" aria-hidden="true">
+          <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+      {status === "progress" && <span className="size-2 animate-pulse-dot rounded-full bg-ink" aria-hidden="true" />}
       <span className="sr-only">{projects.statusLabel}</span>
       {projects.status[status]}
     </span>

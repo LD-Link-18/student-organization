@@ -66,18 +66,24 @@ rewrites every `/projeler/<slug>/` to the shared page, and the dev server reads 
 | Field | Shown as |
 | --- | --- |
 | `slug` | URL part (`visioncore` → `/projeler/visioncore/`); lowercase, no spaces |
-| `name`, `category`, `status`, `description`, `stack`, `visual` | Homepage card (and page header) |
+| `name`, `category`, `description`, `stack` | Homepage card (and page header) |
+| `status` | `"done"` (Tamamlandı), `"progress"` (Devam ediyor) or `"prototype"`; the badge on card and page |
+| `visual` | Cover drawing: `"koubot"`, `"scribble"`, `"traffic"` or `"quill"` |
 | `started`, `overview` | Page header |
 | `highlights` | 2–4 headline numbers under the header |
 | `sections` | Story blocks (Problem / How it works / What's next …) |
 | `timeline` | Milestones, oldest first; the last one is highlighted |
-| `team` *(optional)* | Team cards; hidden when missing or empty |
+| `team` *(optional)* | Team cards (name, optional `role`); a member who is also on the club team gets their avatar and link; hidden when missing or empty |
 | `repo` *(optional)* | "Source code" button; `""` links to the coming-soon page, omit to hide |
 | `demo` *(optional)* | "Live demo" button; hidden when missing or empty |
 
-`visual` picks one of the drawn previews in `src/components/ProjectArt.tsx`; add a new case there for a new
-look, or swap in a screenshot. An unknown slug shows the 404 page (with HTTP status 200, since the
-shared HTML exists).
+Each `visual` is a small SVG scene in `src/components/ProjectArt.tsx` (no text in them, so both languages share
+it). For a new project, add a case there with a new name (and to `ProjectVisual` in `site.ts`), or swap in a
+screenshot. An unknown slug shows the 404 page (with HTTP status 200, since the shared HTML exists).
+
+The text under each project's `items` comment in `tr.ts` / `en.ts` (stack, dates, highlights, sections and
+timeline) is drafted placeholder content around the real name, description, team and status: replace it with the
+project's real details.
 
 ## Design system
 

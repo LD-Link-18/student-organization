@@ -25,8 +25,11 @@ export interface Project {
   sections: { title: string; body: string }[];
   /** Milestones, oldest first. */
   timeline: { date: string; text: string }[];
-  /** Optional: hidden when empty or missing. */
-  team?: { name: string; role: string }[];
+  /**
+   * Optional: hidden when empty or missing. A member who is also on the club team (`team.people`) gets
+   * that member's avatar and link automatically; `role` is optional and only shown when set.
+   */
+  team?: { name: string; role?: string }[];
   /** Source code. "" = not public yet (links to the coming-soon page); omit to hide the button. */
   repo?: string;
   /** Live demo. Omit or leave empty to hide the button. */
@@ -100,7 +103,6 @@ export interface Content {
     stackLabel: string;
     statusLabel: string;
     status: Record<ProjectStatus, string>;
-    seatsFree: string;
     /** Card label linking to the project's own page. */
     view: string;
     items: Project[];

@@ -43,8 +43,10 @@ export const discordHref = social("discord").href;
 export const instagramHref = social("instagram").href;
 
 export type AreaKey = "ai" | "ml" | "robotics" | "vision" | "embedded" | "automation";
-export type ProjectStatus = "live" | "progress" | "prototype";
-export type ProjectVisual = "vision" | "rover" | "neural" | "gesture";
+/** Project states: finished, being worked on, or an early prototype. */
+export type ProjectStatus = "done" | "progress" | "prototype";
+/** Drawn cover per project, see components/ProjectArt.tsx. */
+export type ProjectVisual = "koubot" | "scribble" | "traffic" | "quill";
 export type AvatarVariant = 0 | 1 | 2 | 3 | 4 | 5;
 export type SponsorTier = "core" | "partner" | "supporter";
 
