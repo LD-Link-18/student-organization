@@ -314,14 +314,20 @@
 /*  Motion                                                             */
 /* ------------------------------------------------------------------ */
 
-/* Hero load sequence: lines rise, arrows draw, instruments land */
+/*
+ * Hero load sequence: lines rise, arrows draw, instruments land.
+ * `rise` / `land` animate opacity and wrap glass (backdrop-filter) elements, so they use
+ * `animation-fill-mode: backwards`, not `both`: in Chrome a finished animation that keeps filling forwards
+ * still makes its element a "backdrop root", which cuts the glass inside it off from what is behind it
+ * (the blur disappears). `backwards` hides the element during its delay and lets go once it has finished.
+ */
 @media (prefers-reduced-motion: no-preference) {
   .rise {
-    animation: rise 900ms var(--ease-out-expo) both;
+    animation: rise 900ms var(--ease-out-expo) backwards;
     animation-delay: calc(var(--i, 0) * 110ms + 80ms);
   }
   .land {
-    animation: land 900ms var(--ease-out-expo) both;
+    animation: land 900ms var(--ease-out-expo) backwards;
     animation-delay: calc(var(--i, 0) * 120ms + 520ms);
   }
   .draw path {
