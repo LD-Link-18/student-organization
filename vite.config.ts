@@ -61,13 +61,66 @@ function vercelLikeRouting(): Plugin {
   };
 }
 
+/**
+ * Absolute site address for social previews (og:image must be an absolute URL).
+ * Vercel provides VERCEL_PROJECT_PRODUCTION_URL at build time (the production domain, even on preview
+ * deployments); SITE_URL overrides it on other hosts. Without either, image URLs stay relative.
+ */
+const siteUrl = (
+  process.env.SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "")
+).replace(/\/$/, "");
+
+const ogImageAlt = {
+  tr: "Akıllı Sistemler Kulübü: Algıla. Düşün. Yap. Kocaeli Üniversitesi'nde bir öğrenci topluluğu.",
+  en: "Smart Systems Club: Sense. Think. Act. A student community at Kocaeli University.",
+};
+
+/**
+ * Adds Open Graph and Twitter card tags to every page, built from the page's own <title>,
+ * description and language, so the HTML entries only keep those. The images live in public/og/.
+ */
+function socialMeta(): Plugin {
+  const attr = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+  return {
+    name: "social-meta",
+    transformIndexHtml(html, ctx) {
+      if (ctx.path.startsWith("/tools/")) return html; // the OG image renderer itself
+      const lang = /<html lang="en"/.test(html) ? "en" : "tr";
+      const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? "";
+      const description = /<meta name="description" content="([^"]*)"/.exec(html)?.[1];
+      const page = ctx.path.replace(/index\.html$/, "");
+      const image = `${siteUrl}/og/og-${lang}.png`;
+      const tags: [string, string, string][] = [
+        ["property", "og:type", "website"],
+        ["property", "og:site_name", lang === "en" ? "Smart Systems Club" : "Akıllı Sistemler Kulübü"],
+        ["property", "og:locale", lang === "en" ? "en_US" : "tr_TR"],
+        ["property", "og:locale:alternate", lang === "en" ? "tr_TR" : "en_US"],
+        ["property", "og:title", title],
+        ["property", "og:image", image],
+        ["property", "og:image:width", "1200"],
+        ["property", "og:image:height", "630"],
+        ["property", "og:image:alt", ogImageAlt[lang]],
+        ["name", "twitter:card", "summary_large_image"],
+        ["name", "twitter:title", title],
+        ["name", "twitter:image", image],
+        ["name", "twitter:image:alt", ogImageAlt[lang]],
+      ];
+      if (description) tags.push(["property", "og:description", description], ["name", "twitter:description", description]);
+      if (siteUrl && !page.endsWith(".html")) tags.push(["property", "og:url", siteUrl + page]);
+      const meta = tags.map(([k, n, v]) => `    <meta ${k}="${n}" content="${attr(v)}" />`).join("\n");
+      return html.replace("</head>", `${meta}\n  </head>`);
+    },
+  };
+}
+
 // Turkish at / (default) and English at /en/, project pages (/projeler/, /en/projects/), a
 // "coming soon" page per language for links that aren't set up yet, and a shared 404 page.
 // All load src/main.tsx, which picks the language from <html lang> and the page from
 // <html data-page>.
 export default defineConfig({
   appType: "mpa",
-  plugins: [react(), tailwindcss(), vercelLikeRouting()],
+  plugins: [react(), tailwindcss(), vercelLikeRouting(), socialMeta()],
   build: {
     rollupOptions: {
       input: {

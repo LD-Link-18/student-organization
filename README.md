@@ -85,6 +85,24 @@ The text under each project's `items` comment in `tr.ts` / `en.ts` (stack, dates
 timeline) is drafted placeholder content around the real name, description, team and status: replace it with the
 project's real details.
 
+## Link previews (OG image)
+
+When a page is shared (WhatsApp, Instagram DM, X, LinkedIn, Discord …) the preview card shows
+`public/og/og-tr.png` or `public/og/og-en.png` (1200×630), depending on the page's language. The `socialMeta`
+plugin in `vite.config.ts` adds the Open Graph / Twitter tags to every page at build time, using the page's
+own `<title>` and description. Project pages share the `/projeler/` preview, since crawlers don't run JavaScript.
+
+Image URLs must be absolute. On Vercel the plugin uses `VERCEL_PROJECT_PRODUCTION_URL` (the production domain,
+so previews from preview deployments also work); keep **Settings → Environment Variables → Automatically
+expose System Environment Variables** turned on (the default). On another host, set `SITE_URL`
+(e.g. `SITE_URL=https://example.com npm run build`).
+
+**To regenerate the images** after changing the headline, name or colors: the card is a React page built from
+the site's own components (`src/og/OgImage.tsx`), so run `npm run dev`, open
+`http://localhost:5173/tools/og/` (Turkish) and `http://localhost:5173/tools/og/?lang=en`, and save a
+1200×630 screenshot of each over the files in `public/og/` (in Chrome DevTools: device toolbar at
+1200×630, then ⋮ → *Capture screenshot*). `tools/og/` is not part of the build.
+
 ## Design system
 
 Tokens (colors, fonts, hard shadows, easing, animations) are defined in the `@theme` block of
