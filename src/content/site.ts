@@ -7,7 +7,7 @@ export const club = {
   short: "ISC",
   email: "kou.akillisistemler@gmail.com",
   /** Membership form: every "Join the club" button points here. */
-  joinUrl: "https://basvuru.kouakillisistemler.org",
+  joinUrl: "https://kouakillisistemler.org/basvuru",
   /** Project proposal form: the "Pitch a project" button points here. */
   projectUrl: "https://forms.gle/FF1eCvrVfPww6fzPA",
   /**
