@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kocaeli Üniversitesi Akıllı Sistemler Kulübü (ASK) Başvuru Formu">
+    <title>Başvuru | Akıllı Sistemler Kulübü</title>
+    <link rel="icon" type="image/svg+xml" href="https://kouakillisistemler.org/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+    <div class="container">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h1 class="glow-text">Akıllı Sistemler Kulübü</h1>
+                <h2>Başvuru Formu</h2>
+            </div>
+
+            <form id="applicationForm" novalidate>
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">E-posta Adresi</label>
+                    <input type="email" id="email" name="email" placeholder="ornek@ogr.kocaeli.edu.tr" required>
+                    <span class="error-msg" id="emailError"></span>
+                </div>
+
+                <!-- Name and Surname -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">İsim</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="Adınız" required minlength="2">
+                        <span class="error-msg" id="firstNameError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Soyisim</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Soyadınız" required minlength="2">
+                        <span class="error-msg" id="lastNameError"></span>
+                    </div>
+                </div>
+
+                <!-- Student Number -->
+                <div class="form-group">
+                    <label for="studentNo">Öğrenci Numarası</label>
+                    <input type="text" id="studentNo" name="studentNo" required inputmode="numeric" maxlength="9">
+                    <span class="error-msg" id="studentNoError"></span>
+                </div>
+
+                <!-- Phone -->
+                <div class="form-group phone-group">
+                    <label for="phone">Telefon Numarası</label>
+                    <div class="phone-input-wrapper">
+                        <span class="phone-prefix">+90</span>
+                        <input type="text" id="phone" name="phone" placeholder="5XX XXX XX XX" required inputmode="numeric">
+                    </div>
+                    <span class="error-msg" id="phoneError"></span>
+                </div>
+
+                <!-- Department -->
+                <div class="form-group">
+                    <label for="departmentInput">Bölüm</label>
+                    <div class="custom-select" id="departmentSelect">
+                        <input type="text" id="departmentInput" name="department" placeholder="Bölümünüzü arayın veya seçin" autocomplete="off" required>
+                        <div class="dropdown-list" id="departmentList"></div>
+                    </div>
+                    <span class="error-msg" id="departmentError"></span>
+                </div>
+
+                <!-- Class -->
+                <div class="form-group">
+                    <label for="classYearInput">Sınıf</label>
+                    <div class="custom-select" id="classYearSelect">
+                        <input type="text" id="classYearInput" name="classYear" placeholder="Sınıfınızı seçin" autocomplete="off" readonly required style="cursor: pointer;">
+                        <div class="select-arrow" style="pointer-events: none;"></div>
+                        <div class="dropdown-list" id="classYearList">
+                            <div class="dropdown-item">Hazırlık</div>
+                            <div class="dropdown-item">1. Sınıf</div>
+                            <div class="dropdown-item">2. Sınıf</div>
+                            <div class="dropdown-item">3. Sınıf</div>
+                            <div class="dropdown-item">4. Sınıf</div>
+                        </div>
+                    </div>
+                    <span class="error-msg" id="classYearError"></span>
+                </div>
+
+                <button type="submit" id="submitBtn" class="submit-btn">
+                    <span class="btn-text">Başvuruyu Gönder</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+        </div>
+
+        <footer>
+            © 2024 Akıllı Sistemler Kulübü - Kocaeli Üniversitesi
+        </footer>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <div class="success-checkmark">
+                <div class="check-icon"></div>
+            </div>
+            <h3>Başvurunuz Alındı!</h3>
+            <p>Aramıza hoş geldiniz. Sizinle en kısa sürede iletişime geçeceğiz.</p>
+            <button class="close-modal-btn" onclick="closeModal()">Kapat</button>
+        </div>
+    </div>
+
+    <script src="departments.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
