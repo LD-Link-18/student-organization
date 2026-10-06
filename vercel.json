@@ -2,6 +2,16 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "trailingSlash": true,
   "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "basvuru.kouakillisistemler.org"
+        }
+      ],
+      "destination": "/basvuru/$1"
+    },
     { "source": "/projeler/:slug", "destination": "/projeler/index.html" },
     { "source": "/projeler/:slug/", "destination": "/projeler/index.html" },
     { "source": "/en/projects/:slug", "destination": "/en/projects/index.html" },
