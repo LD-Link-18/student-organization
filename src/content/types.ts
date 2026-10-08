@@ -27,9 +27,9 @@ export interface Project {
   timeline: { date: string; text: string }[];
   /**
    * Optional: hidden when empty or missing. A member who is also on the club team (`team.people`) gets
-   * that member's avatar and link automatically; `role` is optional and only shown when set.
+   * that member's avatar and link automatically; `role` is optional and only shown when set; `href` links the card for members not on the club team.
    */
-  team?: { name: string; role?: string }[];
+  team?: { name: string; role?: string; href?: string }[];
   /** Source code. "" = not public yet (links to the coming-soon page); omit to hide the button. */
   repo?: string;
   /** Live demo. Omit or leave empty to hide the button. */

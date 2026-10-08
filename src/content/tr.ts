@@ -216,7 +216,7 @@ export const tr: Content = {
         team: [
           { name: "Batın Dikilitaş" },
           { name: "Samet Mert Dik" },
-          { name: "Zübeyde Bozkurt" },
+          { name: "Zübeyde Bozkurt", href: "https://www.linkedin.com/in/z%C3%BCbeyde-bozkurt-86167b333/" },
           { name: "Cafer Berat Gülsoy" },
         ],
       },

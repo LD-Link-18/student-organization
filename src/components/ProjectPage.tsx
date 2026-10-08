@@ -207,7 +207,7 @@ function ProjectDetail({ project: p, next }: { project: Project; next: Project }
                       name={m.name}
                       role={m.role}
                       avatar={known?.avatar ?? ((i + 2) % 6) as AvatarVariant}
-                      href={known?.href}
+                      href={m.href ?? known?.href}
                     />
                   </Reveal>
                 );
