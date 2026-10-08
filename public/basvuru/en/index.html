@@ -1,74 +1,74 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Kocaeli Üniversitesi Akıllı Sistemler Kulübü (ASK) Başvuru Formu">
-    <title>Başvuru | Akıllı Sistemler Kulübü</title>
+    <meta name="description" content="Application form for the Smart Systems Club (ASK) at Kocaeli University">
+    <title>Apply | Smart Systems Club</title>
     <link rel="icon" type="image/svg+xml" href="https://kouakillisistemler.org/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
 
     <header class="topbar">
-        <a class="brand" href="https://kouakillisistemler.org/" aria-label="Akıllı Sistemler Kulübü, ana sayfa">
+        <a class="brand" href="https://kouakillisistemler.org/en/" aria-label="Smart Systems Club, home">
             <span class="brand-mark" aria-hidden="true"></span>
-            <span class="brand-name">Akıllı<br>Sistemler Kulübü</span>
+            <span class="brand-name">Smart Systems<br>Club</span>
         </a>
         <div class="topbar-actions">
-            <nav class="lang-switch" aria-label="Dil">
-                <a href="./" aria-current="page" lang="tr" hreflang="tr" title="Türkçe">TR</a>
-                <a href="en/" lang="en" hreflang="en" title="English">EN</a>
+            <nav class="lang-switch" aria-label="Language">
+                <a href="../" lang="tr" hreflang="tr" title="Türkçe">TR</a>
+                <a href="./" aria-current="page" lang="en" hreflang="en" title="English">EN</a>
             </nav>
-            <a class="back-link" href="https://kouakillisistemler.org/">Ana sayfaya dön</a>
+            <a class="back-link" href="https://kouakillisistemler.org/en/">Back to home</a>
         </div>
     </header>
 
     <div class="container">
         <div class="form-wrapper">
             <div class="form-header">
-                <span class="eyebrow">Kulübe katıl</span>
-                <h1 class="glow-text">Başvuru Formu</h1>
-                <h2>Akıllı Sistemler Kulübü</h2>
-                <p class="lead">Ön koşul yok, sadece merak. Formu doldur, seninle iletişime geçelim.</p>
+                <span class="eyebrow">Join the club</span>
+                <h1 class="glow-text">Application Form</h1>
+                <h2>Smart Systems Club</h2>
+                <p class="lead">No prerequisites, just curiosity. Fill in the form and we'll get in touch.</p>
             </div>
 
             <form id="applicationForm" novalidate>
                 <!-- Email -->
                 <div class="form-group">
-                    <label for="email">E-posta Adresi</label>
-                    <input type="email" id="email" name="email" placeholder="ornek@ogr.kocaeli.edu.tr" required>
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="example@ogr.kocaeli.edu.tr" required>
                     <span class="error-msg" id="emailError"></span>
                 </div>
 
                 <!-- Name and Surname -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="firstName">İsim</label>
-                        <input type="text" id="firstName" name="firstName" placeholder="Adınız" required minlength="2">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="First name" required minlength="2">
                         <span class="error-msg" id="firstNameError"></span>
                     </div>
                     <div class="form-group">
-                        <label for="lastName">Soyisim</label>
-                        <input type="text" id="lastName" name="lastName" placeholder="Soyadınız" required minlength="2">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Last name" required minlength="2">
                         <span class="error-msg" id="lastNameError"></span>
                     </div>
                 </div>
 
                 <!-- Student Number -->
                 <div class="form-group">
-                    <label for="studentNo">Öğrenci Numarası</label>
+                    <label for="studentNo">Student Number</label>
                     <input type="text" id="studentNo" name="studentNo" required inputmode="numeric" maxlength="9">
                     <span class="error-msg" id="studentNoError"></span>
                 </div>
 
                 <!-- Phone -->
                 <div class="form-group phone-group">
-                    <label for="phone">Telefon Numarası</label>
+                    <label for="phone">Phone Number</label>
                     <div class="phone-input-wrapper">
                         <span class="phone-prefix">+90</span>
                         <input type="text" id="phone" name="phone" placeholder="5XX XXX XX XX" required inputmode="numeric">
@@ -78,9 +78,9 @@
 
                 <!-- Department -->
                 <div class="form-group">
-                    <label for="departmentInput">Bölüm</label>
+                    <label for="departmentInput">Department</label>
                     <div class="custom-select" id="departmentSelect">
-                        <input type="text" id="departmentInput" name="department" placeholder="Bölümünüzü arayın veya seçin" autocomplete="off" required>
+                        <input type="text" id="departmentInput" name="department" placeholder="Search or choose your department" autocomplete="off" required>
                         <div class="dropdown-list" id="departmentList"></div>
                     </div>
                     <span class="error-msg" id="departmentError"></span>
@@ -88,30 +88,30 @@
 
                 <!-- Class -->
                 <div class="form-group">
-                    <label for="classYearInput">Sınıf</label>
+                    <label for="classYearInput">Year</label>
                     <div class="custom-select" id="classYearSelect">
-                        <input type="text" id="classYearInput" name="classYear" placeholder="Sınıfınızı seçin" autocomplete="off" readonly required style="cursor: pointer;">
+                        <input type="text" id="classYearInput" name="classYear" placeholder="Select your year" autocomplete="off" readonly required style="cursor: pointer;">
                         <div class="select-arrow" style="pointer-events: none;"></div>
                         <div class="dropdown-list" id="classYearList">
-                            <div class="dropdown-item">Hazırlık</div>
-                            <div class="dropdown-item">1. Sınıf</div>
-                            <div class="dropdown-item">2. Sınıf</div>
-                            <div class="dropdown-item">3. Sınıf</div>
-                            <div class="dropdown-item">4. Sınıf</div>
+                            <div class="dropdown-item" data-value="Hazırlık">Preparatory</div>
+                            <div class="dropdown-item" data-value="1. Sınıf">1st year</div>
+                            <div class="dropdown-item" data-value="2. Sınıf">2nd year</div>
+                            <div class="dropdown-item" data-value="3. Sınıf">3rd year</div>
+                            <div class="dropdown-item" data-value="4. Sınıf">4th year</div>
                         </div>
                     </div>
                     <span class="error-msg" id="classYearError"></span>
                 </div>
 
                 <button type="submit" id="submitBtn" class="submit-btn">
-                    <span class="btn-text">Başvuruyu Gönder</span>
+                    <span class="btn-text">Submit Application</span>
                     <div class="spinner"></div>
                 </button>
             </form>
         </div>
 
         <footer>
-            © 2026 Akıllı Sistemler Kulübü - Kocaeli Üniversitesi
+            © 2026 Smart Systems Club - Kocaeli University
         </footer>
     </div>
 
@@ -121,13 +121,13 @@
             <div class="success-checkmark">
                 <div class="check-icon"></div>
             </div>
-            <h3>Başvurunuz Alındı!</h3>
-            <p>Aramıza hoş geldiniz. Sizinle en kısa sürede iletişime geçeceğiz.</p>
-            <button class="close-modal-btn" onclick="closeModal()">Kapat</button>
+            <h3>Application Received!</h3>
+            <p>Welcome aboard. We will get in touch with you soon.</p>
+            <button class="close-modal-btn" onclick="closeModal()">Close</button>
         </div>
     </div>
 
-    <script src="departments.js"></script>
-    <script src="script.js"></script>
+    <script src="../departments.js"></script>
+    <script src="../script.js"></script>
 </body>
 </html>

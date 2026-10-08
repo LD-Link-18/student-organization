@@ -1,4 +1,32 @@
-
+// Page language comes from <html lang>. Texts shown to the visitor are translated here;
+// everything sent to the sheet (department, grade) stays Turkish.
+const LANG = document.documentElement.lang === 'en' ? 'en' : 'tr';
+const MSG = {
+    tr: {
+        noResults: 'Sonuç bulunamadı',
+        connError: 'Bağlantı hatası oluştu, lütfen daha sonra tekrar deneyin.',
+        emailRequired: 'E-posta adresi zorunludur.',
+        emailInvalid: 'Geçerli bir e-posta adresi giriniz.',
+        firstName: 'İsim en az 2 karakter olmalıdır.',
+        lastName: 'Soyisim en az 2 karakter olmalıdır.',
+        studentNo: 'Öğrenci numarası tam 9 haneli olmalıdır.',
+        phone: 'Telefon numarası tam 10 haneli olmalıdır.',
+        department: 'Lütfen listeden geçerli bir bölüm seçiniz.',
+        classYear: 'Lütfen sınıfınızı seçiniz.'
+    },
+    en: {
+        noResults: 'No results found',
+        connError: 'A connection error occurred, please try again later.',
+        emailRequired: 'Email address is required.',
+        emailInvalid: 'Please enter a valid email address.',
+        firstName: 'First name must be at least 2 characters.',
+        lastName: 'Last name must be at least 2 characters.',
+        studentNo: 'Student number must be exactly 9 digits.',
+        phone: 'Phone number must be exactly 10 digits.',
+        department: 'Please choose a valid department from the list.',
+        classYear: 'Please select your year.'
+    }
+}[LANG];
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('applicationForm');
@@ -20,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     classYearItems.forEach(item => {
         item.addEventListener('click', () => {
             classYearInput.value = item.textContent;
-            selectedClassYear = item.textContent;
+            selectedClassYear = item.dataset.value || item.textContent;
             classYearList.classList.remove('show');
             validateField(classYearInput);
         });
@@ -56,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const filtered = departments.filter(d => d.toLowerCase().includes(filter.toLowerCase()));
         
         if (filtered.length === 0) {
-            departmentList.innerHTML = '<div class="dropdown-item" style="color:#aaa; cursor:default">Sonuç bulunamadı</div>';
+            departmentList.innerHTML = '<div class="dropdown-item" style="color:#aaa; cursor:default">' + MSG.noResults + '</div>';
         } else {
             filtered.forEach(dept => {
                 const div = document.createElement('div');
@@ -156,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(error => {
                     console.error('Error!', error.message);
                     btn.classList.remove('loading');
-                    alert('Bağlantı hatası oluştu, lütfen daha sonra tekrar deneyin.');
+                    alert(MSG.connError);
                 });
         }
     });
@@ -173,34 +201,34 @@ function validateField(field) {
     if (field.id === 'email') {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!field.value.trim()) {
-            isValid = false; errorMsg = 'E-posta adresi zorunludur.';
+            isValid = false; errorMsg = MSG.emailRequired;
         } else if (!regex.test(field.value)) {
-            isValid = false; errorMsg = 'Geçerli bir e-posta adresi giriniz.';
+            isValid = false; errorMsg = MSG.emailInvalid;
         }
     } else if (field.id === 'firstName') {
         if (field.value.trim().length < 2) {
-            isValid = false; errorMsg = 'İsim en az 2 karakter olmalıdır.';
+            isValid = false; errorMsg = MSG.firstName;
         }
     } else if (field.id === 'lastName') {
         if (field.value.trim().length < 2) {
-            isValid = false; errorMsg = 'Soyisim en az 2 karakter olmalıdır.';
+            isValid = false; errorMsg = MSG.lastName;
         }
     } else if (field.id === 'studentNo') {
         if (field.value.length !== 9) {
-            isValid = false; errorMsg = 'Öğrenci numarası tam 9 haneli olmalıdır.';
+            isValid = false; errorMsg = MSG.studentNo;
         }
     } else if (field.id === 'phone') {
         const digits = field.value.replace(/\s/g, '');
         if (digits.length !== 10) {
-            isValid = false; errorMsg = 'Telefon numarası tam 10 haneli olmalıdır.';
+            isValid = false; errorMsg = MSG.phone;
         }
     } else if (field.id === 'departmentInput') {
         if (!departments.includes(field.value)) {
-            isValid = false; errorMsg = 'Lütfen listeden geçerli bir bölüm seçiniz.';
+            isValid = false; errorMsg = MSG.department;
         }
     } else if (field.id === 'classYearInput') {
         if (!field.value) {
-            isValid = false; errorMsg = 'Lütfen sınıfınızı seçiniz.';
+            isValid = false; errorMsg = MSG.classYear;
         }
     }
 

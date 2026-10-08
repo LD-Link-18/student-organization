@@ -2,7 +2,9 @@
     /* Brand Colors */
     --color-violet: #621fe9;
     --color-lime: #b7e90a;
-    --color-paper: #f6fceb;
+    --color-paper: #fefefe;
+    --color-violet-deep: #4a12bf;
+    --color-violet-night: #22075c;
     --color-fog: #e7e7e7;
     --color-ink: #000000;
     --error: #ef4444;
@@ -30,116 +32,165 @@
 body {
     font-family: var(--font-sans);
     background-color: var(--color-violet);
-    --grid-color: rgba(255, 255, 255, 0.15);
-    --grid-size: 50px;
     background-image:
-      repeating-linear-gradient(45deg, var(--grid-color) 0, var(--grid-color) 1.5px, transparent 1.5px, transparent var(--grid-size)),
-      repeating-linear-gradient(-45deg, var(--grid-color) 0, var(--grid-color) 1.5px, transparent 1.5px, transparent var(--grid-size));
+      linear-gradient(rgb(254 254 254 / 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(254 254 254 / 0.09) 1px, transparent 1px);
+    background-size: 72px 72px;
+    background-position: -1px -1px;
+    background-attachment: fixed;
     color: var(--color-ink);
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: relative;
     -webkit-font-smoothing: antialiased;
 }
 
-/* Background Grid (from main site) */
-.bg-shapes {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-    --grid-color: rgba(255, 255, 255, 0.15);
-    --grid-size: 60px;
-    background-image:
-      linear-gradient(var(--grid-color) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-    background-size: var(--grid-size) var(--grid-size);
-    background-position: -1px -1px;
+::selection {
+    background: var(--color-lime);
+    color: var(--color-ink);
 }
 
-.shape {
-    display: none; /* Hide old floaty shapes */
+:focus-visible {
+    outline: 3px solid var(--color-lime);
+    outline-offset: 3px;
+}
+
+/* Fields show their own violet focus style, so no extra ring */
+input:focus-visible {
+    outline: none;
+}
+
+/* Top bar: same pill as the main site's navbar */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 62rem;
+    margin: 1rem auto 0;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    width: calc(100% - 2rem);
+    border-radius: 999px;
+    background: rgb(74 18 191 / 0.8);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    backdrop-filter: blur(16px) saturate(160%);
+    border: 1px solid rgb(254 254 254 / 0.2);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--color-paper);
+    text-decoration: none;
+    border-radius: 999px;
+}
+
+.brand-mark {
+    width: 2.5rem;
+    height: 2.45rem;
+    flex-shrink: 0;
+    background: var(--color-lime);
+    -webkit-mask: url(logo.svg) center / contain no-repeat;
+    mask: url(logo.svg) center / contain no-repeat;
+    transition: transform 500ms var(--ease-snap);
+}
+
+.brand:hover .brand-mark {
+    transform: rotate(51.43deg);
+}
+
+.brand-name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+}
+
+.back-link {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    background: var(--color-paper);
+    border: 2px solid var(--color-ink);
+    border-radius: 999px;
+    padding: 0.6rem 1.1rem;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: var(--shadow-brut-sm);
+    transition: transform 180ms var(--ease-snap), box-shadow 180ms var(--ease-snap);
+}
+
+.back-link:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 0 var(--color-ink);
+}
+
+.back-link:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
 }
 
 .container {
     width: 100%;
     max-width: 540px;
-    padding: 2rem 1rem;
+    margin: 0 auto;
+    padding: 2.5rem 1rem 2rem;
+    position: relative;
     z-index: 1;
 }
 
 /* Brutalist Card */
 .form-wrapper {
-    background: radial-gradient(circle, #f6fceb 0%, #cceb6a 100%);
+    background: var(--color-paper);
     border: 2px solid var(--color-ink);
-    border-radius: 1.75rem; /* Match card-brut */
-    padding: 3rem 2.5rem;
+    border-radius: 1.75rem;
+    padding: 2.5rem 2.5rem 3rem;
     box-shadow: var(--shadow-brut-lg);
-    transition: transform 220ms var(--ease-snap), box-shadow 220ms var(--ease-snap);
-}
-
-.form-wrapper:hover {
-    transform: translate(-4px, -4px);
-    box-shadow: 14px 14px 0 0 var(--color-ink);
 }
 
 /* Headings */
 .form-header {
-    text-align: center;
-    margin-bottom: 3rem;
-    background-color: var(--color-lime);
-    border: 2px solid var(--color-ink);
-    border-radius: 1rem;
-    padding: 1.5rem 1rem;
-    box-shadow: var(--shadow-brut);
-    transform: rotate(-1.5deg);
-    margin-top: -1.5rem;
-    position: relative;
-    z-index: 2;
-    transition: transform 200ms var(--ease-snap), box-shadow 200ms var(--ease-snap);
+    margin-bottom: 2.5rem;
 }
 
-.form-header:hover {
-    transform: rotate(0deg) translate(-2px, -2px);
-    box-shadow: 8px 8px 0 0 var(--color-ink);
+.eyebrow {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    background: var(--color-lime);
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    margin-bottom: 1.25rem;
 }
 
 .glow-text {
     font-family: var(--font-display);
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--color-violet);
-    letter-spacing: -0.04em;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    text-shadow: 2px 2px 0 var(--color-paper);
+    font-size: clamp(2.5rem, 11vw, 3.6rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    color: var(--color-ink);
+    margin-bottom: 0.75rem;
 }
 
-.slogan {
-    font-family: var(--font-display);
-    color: var(--color-ink);
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    margin-bottom: 1rem;
-    background: var(--color-paper);
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border: 1.5px solid var(--color-ink);
-    border-radius: 999px;
-    transform: rotate(1deg);
+.lead {
+    margin-top: 0.75rem;
+    color: rgb(0 0 0 / 0.7);
+    font-weight: 500;
+    line-height: 1.55;
 }
 
 h2 {
     font-family: var(--font-display);
     font-size: 1.5rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.03em;
-    color: var(--color-ink);
+    color: var(--color-violet);
 }
 
 /* Form Fields */
@@ -358,10 +409,11 @@ input.error-state:focus, .custom-select input.error-state:focus {
 footer {
     text-align: center;
     margin-top: 2.5rem;
+    font-family: var(--font-display);
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--color-paper);
-    opacity: 0.9;
+    opacity: 0.85;
 }
 
 /* Success Modal */
@@ -371,8 +423,8 @@ footer {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(254, 254, 254, 0.8);
-    backdrop-filter: blur(4px);
+    background: rgb(34 7 92 / 0.75);
+    backdrop-filter: blur(6px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -464,10 +516,58 @@ footer {
 }
 
 @media (max-width: 480px) {
+    .back-link {
+        padding: 0.55rem 0.9rem;
+        font-size: 0.875rem;
+    }
     .container {
-        padding: 1rem;
+        padding: 1.5rem 1rem 1rem;
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 1.5rem;
     }
     .form-wrapper {
-        padding: 2rem 1.5rem;
+        padding: 2rem 1.5rem 2.25rem;
+    }
+}
+
+/* Language switch (TR / EN), same pill as the main site */
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.lang-switch {
+    display: flex;
+    padding: 0.2rem;
+    border-radius: 999px;
+    background: rgb(254 254 254 / 0.12);
+}
+
+.lang-switch a {
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: rgb(254 254 254 / 0.85);
+    text-decoration: none;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+}
+
+.lang-switch a[aria-current="page"] {
+    background: var(--color-lime);
+    color: var(--color-ink);
+}
+
+.lang-switch a:not([aria-current="page"]):hover {
+    color: var(--color-paper);
+    background: rgb(254 254 254 / 0.15);
+}
+
+@media (max-width: 480px) {
+    .brand-name {
+        display: none;
     }
 }
