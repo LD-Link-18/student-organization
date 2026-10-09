@@ -163,9 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const scriptURL = 'https://script.google.com/macros/s/AKfycbz2Sg5hJaB2WBAyrSF6IFp9q3KgT08ggoBfPjAlxZfwmkitWJYbO-mjKjCsctMMSdHHyQ/exec';
             
             const formData = new URLSearchParams();
+            const fName = document.getElementById('firstName').value.trim();
+            const lName = document.getElementById('lastName').value.trim();
             formData.append('email', document.getElementById('email').value.trim());
-            formData.append('firstName', document.getElementById('firstName').value.trim());
-            formData.append('lastName', document.getElementById('lastName').value.trim());
+            formData.append('firstName', fName);
+            formData.append('lastName', lName);
             formData.append('studentNo', document.getElementById('studentNo').value.trim());
             formData.append('phone', document.getElementById('phone').value.trim());
             formData.append('department', selectedDepartment);
