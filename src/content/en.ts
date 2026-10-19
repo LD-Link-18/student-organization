@@ -334,7 +334,7 @@ export const en: Content = {
     rsvpClosed: " (currently closed)",
     items: [
       {
-        day: "13–15",
+        day: "20–22",
         month: "Oct",
         title: "Booth Week",
         category: "Booth",

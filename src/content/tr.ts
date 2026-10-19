@@ -335,7 +335,7 @@ export const tr: Content = {
     rsvpClosed: " (şu an kapalı)",
     items: [
       {
-        day: "13–15",
+        day: "20–22",
         month: "Eki",
         title: "Stant Haftası",
         category: "Stant",
