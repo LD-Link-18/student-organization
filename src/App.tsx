@@ -11,6 +11,7 @@ import { Team } from "./components/Team";
 import { Spark } from "./components/ui/Glyph";
 import { Marquee } from "./components/ui/Marquee";
 import { useContent } from "./content/i18n";
+import { showSponsors } from "./content/site";
 
 export default function App() {
   const t = useContent();
@@ -50,7 +51,7 @@ export default function App() {
         <Projects />
         <Events />
         <Team />
-        <Sponsors />
+        {showSponsors && <Sponsors />}
         <JoinSection />
       </main>
       <Footer />

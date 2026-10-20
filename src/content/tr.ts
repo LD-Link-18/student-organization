@@ -1,4 +1,5 @@
 import type { Content } from "./types";
+import { showSponsors } from "./site";
 
 const club = {
   name: "Akıllı Sistemler Kulübü",
@@ -31,7 +32,7 @@ export const tr: Content = {
     { label: "Projeler", href: "#projects" },
     { label: "Etkinlikler", href: "#events" },
     { label: "Ekip", href: "#team" },
-    { label: "Sponsorlar", href: "#sponsors" },
+    ...(showSponsors ? [{ label: "Sponsorlar", href: "#sponsors" }] : []),
   ],
 
   hero: {
@@ -335,7 +336,7 @@ export const tr: Content = {
     rsvpClosed: " (şu an kapalı)",
     items: [
       {
-        day: "13–15",
+        day: "20–22",
         month: "Eki",
         title: "Stant Haftası",
         category: "Stant",
@@ -350,7 +351,7 @@ export const tr: Content = {
     title: ["Döngüdeki", "insanlar."],
     intro: "Bu yılın yönetim kurulu laboratuvarı ayakta tutuyor. Geri kalan herkes onu ilginç kılıyor.",
     focus: (focus) => `İlgi alanı: ${focus}`,
-    members: "+ 170 üye bizimle üretiyor",
+    members: "+ 50 üye bizimle üretiyor",
     takeSeat: "Yerini al",
     people: [
       { name: "Samet Mert Dik", focus: "doğal dil işleme", avatar: 0, href: "https://sametmertdik.com" },

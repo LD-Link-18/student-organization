@@ -3,6 +3,9 @@
  * All visible copy (in both languages) lives in tr.ts and en.ts.
  */
 
+/** Flip to true to bring the sponsors section ("Laba güç ver") and its nav links back. */
+export const showSponsors = false;
+
 export const club = {
   short: "ISC",
   email: "kou.akillisistemler@gmail.com",

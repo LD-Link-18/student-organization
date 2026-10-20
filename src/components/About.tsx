@@ -3,6 +3,9 @@ import { Arrow } from "./ui/Arrow";
 import { Reveal } from "./ui/Reveal";
 import { Stats } from "./Stats";
 
+/** Flip to true to bring the stats block (arrow + number cards) back. */
+const SHOW_STATS = false;
+
 export function About() {
   const { about } = useContent();
   return (
@@ -28,10 +31,12 @@ export function About() {
           </Reveal>
         </div>
 
-        <div className="relative mt-16 md:mt-24">
-          <Arrow variant="swoop" className="absolute -top-20 right-[14%] hidden w-40 rotate-[-8deg] text-violet md:block" />
-          <Stats />
-        </div>
+        {SHOW_STATS && (
+          <div className="relative mt-16 md:mt-24">
+            <Arrow variant="swoop" className="absolute -top-20 right-[14%] hidden w-40 rotate-[-8deg] text-violet md:block" />
+            <Stats />
+          </div>
+        )}
       </div>
     </section>
   );

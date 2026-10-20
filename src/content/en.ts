@@ -1,4 +1,5 @@
 import type { Content } from "./types";
+import { showSponsors } from "./site";
 
 const club = {
   name: "Smart Systems Club",
@@ -31,7 +32,7 @@ export const en: Content = {
     { label: "Projects", href: "#projects" },
     { label: "Events", href: "#events" },
     { label: "Team", href: "#team" },
-    { label: "Sponsors", href: "#sponsors" },
+    ...(showSponsors ? [{ label: "Sponsors", href: "#sponsors" }] : []),
   ],
 
   hero: {
@@ -334,7 +335,7 @@ export const en: Content = {
     rsvpClosed: " (currently closed)",
     items: [
       {
-        day: "13–15",
+        day: "20–22",
         month: "Oct",
         title: "Booth Week",
         category: "Booth",
@@ -349,7 +350,7 @@ export const en: Content = {
     title: ["The humans", "in the loop."],
     intro: "This year's board keeps the lab running. Everyone else keeps it interesting.",
     focus: (focus) => `Into ${focus}`,
-    members: "+ 170 members building with us",
+    members: "+ 50 members building with us",
     takeSeat: "Take your seat",
     people: [
       { name: "Samet Mert Dik", focus: "natural language processing", avatar: 0, href: "https://sametmertdik.com" },
