@@ -66,6 +66,13 @@ export interface Content {
 
   nav: { label: string; href: string }[];
 
+  /** Floating Instagram button (bottom right). */
+  instaPromo: {
+    label: string;
+    /** Landmark name of the floating box. */
+    region: string;
+  };
+
   hero: {
     intakeOpen: string;
     tagline: string;

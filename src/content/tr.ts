@@ -35,6 +35,11 @@ export const tr: Content = {
     ...(showSponsors ? [{ label: "Sponsorlar", href: "#sponsors" }] : []),
   ],
 
+  instaPromo: {
+    label: "Instagram'da takip et",
+    region: "Instagram",
+  },
+
   hero: {
     intakeOpen: `${club.semester} başvuruları açık`,
     tagline: `${club.university}'nde öğrencilerin yürüttüğü bir laboratuvar`,
@@ -406,7 +411,7 @@ export const tr: Content = {
     words: ["Kur.", "Boz.", "Öğren."],
     body: "Bir üretim gecesine gel. Bilgisayarını getir ya da getirme; boşta bir yer mutlaka vardır. Sevdiysen kal.",
     primary: "Kulübe katıl",
-    secondary: "Discord'da selam ver",
+    secondary: "WhatsApp topluluğuna katıl",
     memberName: "Adın",
     memberSince: `${club.semester}'dan beri üye`,
     sticker: "Tüm öğrencilere ücretsiz / her zaman / ",
@@ -423,6 +428,7 @@ export const tr: Content = {
     headline: ["Çok", "yakında."],
     lead: {
       default: "Bu bağlantı henüz hazır değil.",
+      whatsapp: "WhatsApp topluluğumuz kuruluyor.",
       discord: "Discord sunucumuz kuruluyor.",
       linkedin: "LinkedIn sayfamız hazırlanıyor.",
       github: "GitHub organizasyonumuz kuruluyor.",

@@ -47,9 +47,9 @@ Other notes:
 - Project previews are drawn in `src/components/ProjectArt.tsx`; swap for screenshots the same way.
 - Sponsors: add entries to `sponsors` in `site.ts`, logos go in `public/sponsors/`.
 - Channels that don't exist yet: leave their `href` empty in `club.socials` (`site.ts`). Every link to them
-  (footer, event RSVPs, "Say hi on Discord") then goes to the "coming soon" page in the visitor's language,
-  with `?l=discord` / `linkedin` / `github` so the page names the channel. Fill in the real URL and the links
-  point there automatically.
+  (footer, join section) then goes to the "coming soon" page in the visitor's language,
+  with `?l=whatsapp` / `linkedin` / `github` so the page names the channel. Fill in the real URL and the links
+  point there automatically. Event RSVPs use `discordHref` in `site.ts` (empty for now, so "coming soon").
 - Once the site has a domain, add `<link rel="alternate" hreflang="…">` tags with **absolute** URLs to both
   HTML files so search engines pair the two languages.
 

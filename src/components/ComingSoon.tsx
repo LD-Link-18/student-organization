@@ -7,7 +7,7 @@ import { ButtonLink } from "./ui/Button";
 import { Loop } from "./ui/Glyph";
 import { Sticker } from "./ui/Sticker";
 
-const SOURCES: LinkSource[] = ["discord", "linkedin", "github", "instagram"];
+const SOURCES: LinkSource[] = ["whatsapp", "discord", "linkedin", "github", "instagram"];
 
 /** done / in progress / next: solid chips stay legible over the lime glow behind the card. */
 const STATE_STYLE = ["bg-lime text-ink", "bg-paper text-ink", "border border-paper/50 text-paper"];

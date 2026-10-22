@@ -19,14 +19,14 @@ export const club = {
    */
   socials: [
     { label: "Instagram", source: "instagram", href: "https://www.instagram.com/kou.akillisistemlerkulubu/" },
-    { label: "Discord", source: "discord", href: "" },
+    { label: "WhatsApp", source: "whatsapp", href: "https://chat.whatsapp.com/Bbk7WDlYipaDkPL6XjJfB3" },
     { label: "LinkedIn", source: "linkedin", href: "" },
     { label: "GitHub", source: "github", href: "" },
   ] as { label: string; source: LinkSource; href: string }[],
 };
 
 /** Channels a placeholder link can come from; the coming-soon page tailors its message to each. */
-export type LinkSource = "instagram" | "discord" | "linkedin" | "github";
+export type LinkSource = "instagram" | "whatsapp" | "discord" | "linkedin" | "github";
 
 /** Project pages: the list lives here and each project at `<path><slug>/` (see vercel.json rewrites). */
 export const projectsPath: Record<"tr" | "en", string> = { tr: "/projeler/", en: "/en/projects/" };
@@ -42,7 +42,9 @@ export const languages: { code: "tr" | "en"; label: string; name: string; href: 
 ];
 
 const social = (source: LinkSource) => club.socials.find((s) => s.source === source)!;
-export const discordHref = social("discord").href;
+/** No Discord server yet, so event RSVPs go to the "coming soon" page. Put its invite link here once it exists. */
+export const discordHref = "";
+export const whatsappHref = social("whatsapp").href;
 export const instagramHref = social("instagram").href;
 
 export type AreaKey = "ai" | "ml" | "robotics" | "vision" | "embedded" | "automation";

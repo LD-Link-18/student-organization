@@ -3,6 +3,7 @@ import { Areas } from "./components/Areas";
 import { Events } from "./components/Events";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
+import { InstagramFloat } from "./components/InstagramFloat";
 import { JoinSection } from "./components/JoinSection";
 import { Navbar } from "./components/Navbar";
 import { Projects } from "./components/Projects";
@@ -55,6 +56,7 @@ export default function App() {
         <JoinSection />
       </main>
       <Footer />
+      <InstagramFloat />
     </>
   );
 }

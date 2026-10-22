@@ -35,6 +35,11 @@ export const en: Content = {
     ...(showSponsors ? [{ label: "Sponsors", href: "#sponsors" }] : []),
   ],
 
+  instaPromo: {
+    label: "Follow us on Instagram",
+    region: "Instagram",
+  },
+
   hero: {
     intakeOpen: `${club.semester} intake is open`,
     tagline: `Student-led lab at ${club.university}`,
@@ -405,7 +410,7 @@ export const en: Content = {
     words: ["Build.", "Break.", "Learn."],
     body: "Come to one build night. Bring a laptop, or don't — there's always a spot free. If you like it, stay.",
     primary: "Join the club",
-    secondary: "Say hi on Discord",
+    secondary: "Join our WhatsApp community",
     memberName: "Your name",
     memberSince: `Member since ${club.semester}`,
     sticker: "Free for all students / always / ",
@@ -422,6 +427,7 @@ export const en: Content = {
     headline: ["Coming", "soon."],
     lead: {
       default: "This link isn't live yet.",
+      whatsapp: "Our WhatsApp community is on its way.",
       discord: "Our Discord server is on its way.",
       linkedin: "Our LinkedIn page is in the works.",
       github: "Our GitHub organization is being set up.",
