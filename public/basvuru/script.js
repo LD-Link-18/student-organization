@@ -10,7 +10,7 @@ const MSG = {
         firstName: 'İsim en az 2 karakter olmalıdır.',
         lastName: 'Soyisim en az 2 karakter olmalıdır.',
         studentNo: 'Öğrenci numarası tam 9 haneli olmalıdır.',
-        phone: 'Telefon numarası tam 10 haneli olmalıdır.',
+        phone: 'Telefon numarası 5 ile başlayan 10 haneli bir numara olmalıdır (5XX XXX XX XX).',
         department: 'Lütfen listeden geçerli bir bölüm seçiniz.',
         classYear: 'Lütfen sınıfınızı seçiniz.'
     },
@@ -22,7 +22,7 @@ const MSG = {
         firstName: 'First name must be at least 2 characters.',
         lastName: 'Last name must be at least 2 characters.',
         studentNo: 'Student number must be exactly 9 digits.',
-        phone: 'Phone number must be exactly 10 digits.',
+        phone: 'Phone number must be 10 digits starting with 5 (5XX XXX XX XX).',
         department: 'Please choose a valid department from the list.',
         classYear: 'Please select your year.'
     }
@@ -64,17 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Phone Number Formatting (5XX XXX XX XX)
     phoneInput.addEventListener('input', (e) => {
-        let val = e.target.value.replace(/\D/g, ''); // Remove non-numeric
-        if (val.length > 10) val = val.slice(0, 10);
-        
-        // Format visually
-        let formatted = '';
-        if (val.length > 0) formatted += val.substring(0, 3);
-        if (val.length > 3) formatted += ' ' + val.substring(3, 6);
-        if (val.length > 6) formatted += ' ' + val.substring(6, 8);
-        if (val.length > 8) formatted += ' ' + val.substring(8, 10);
-        
-        e.target.value = formatted;
+        e.target.value = formatPhone(e.target.value);
         validateField(e.target);
     });
 
@@ -151,12 +141,15 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('classYearInput')
         ];
 
-        let isValid = true;
-        inputs.forEach(input => {
-            if (!validateField(input)) isValid = false;
-        });
+        // Autofill doesn't always fire 'input', so clean the numbers up once more before checking them
+        studentNoInput.value = studentNoInput.value.replace(/\D/g, '');
+        phoneInput.value = formatPhone(phoneInput.value);
 
-        if (isValid) {
+        const invalid = inputs.filter(input => !validateField(input));
+        if (invalid.length > 0) {
+            invalid[0].focus();
+            invalid[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
             const btn = document.getElementById('submitBtn');
             btn.classList.add('loading');
             
@@ -168,8 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('email', document.getElementById('email').value.trim());
             formData.append('firstName', fName);
             formData.append('lastName', lName);
-            formData.append('studentNo', document.getElementById('studentNo').value.trim());
-            formData.append('phone', document.getElementById('phone').value.trim());
+            formData.append('studentNo', studentNoInput.value);
+            formData.append('phone', phoneInput.value);
             formData.append('department', selectedDepartment);
             formData.append('grade', selectedClassYear);
 
@@ -191,6 +184,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Digits only, without a pasted +90 / 0 prefix, shown as 5XX XXX XX XX
+function formatPhone(value) {
+    let val = value.replace(/\D/g, ''); // Remove non-numeric
+    if (val.length > 10 && val.startsWith('90')) val = val.slice(2);
+    val = val.replace(/^0+/, '');
+    if (val.length > 10) val = val.slice(0, 10);
+
+    let formatted = '';
+    if (val.length > 0) formatted += val.substring(0, 3);
+    if (val.length > 3) formatted += ' ' + val.substring(3, 6);
+    if (val.length > 6) formatted += ' ' + val.substring(6, 8);
+    if (val.length > 8) formatted += ' ' + val.substring(8, 10);
+    return formatted;
+}
 
 function validateField(field) {
     let baseId = field.id;
@@ -216,12 +224,12 @@ function validateField(field) {
             isValid = false; errorMsg = MSG.lastName;
         }
     } else if (field.id === 'studentNo') {
-        if (field.value.length !== 9) {
+        if (!/^\d{9}$/.test(field.value)) {
             isValid = false; errorMsg = MSG.studentNo;
         }
     } else if (field.id === 'phone') {
-        const digits = field.value.replace(/\s/g, '');
-        if (digits.length !== 10) {
+        // Turkish mobile number without the +90 / 0 prefix: 5XXXXXXXXX
+        if (!/^5\d{9}$/.test(field.value.replace(/\s/g, ''))) {
             isValid = false; errorMsg = MSG.phone;
         }
     } else if (field.id === 'departmentInput') {
