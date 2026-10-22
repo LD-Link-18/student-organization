@@ -35,9 +35,10 @@ export const en: Content = {
     ...(showSponsors ? [{ label: "Sponsors", href: "#sponsors" }] : []),
   ],
 
-  instaPromo: {
-    label: "Follow us on Instagram",
-    region: "Instagram",
+  socialFloat: {
+    region: "Social media",
+    whatsapp: { label: "Join our WhatsApp community", title: "News and events" },
+    instagram: { label: "Follow us on Instagram" },
   },
 
   hero: {

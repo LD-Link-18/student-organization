@@ -66,11 +66,13 @@ export interface Content {
 
   nav: { label: string; href: string }[];
 
-  /** Floating Instagram button (bottom right). */
-  instaPromo: {
-    label: string;
+  /** Floating WhatsApp + Instagram buttons (bottom right). Phones show only the icons. */
+  socialFloat: {
     /** Landmark name of the floating box. */
     region: string;
+    whatsapp: { label: string; title: string };
+    /** The title line is the account handle, taken from the profile URL. */
+    instagram: { label: string };
   };
 
   hero: {

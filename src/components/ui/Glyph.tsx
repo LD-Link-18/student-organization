@@ -32,3 +32,21 @@ export function InstagramGlyph({ className = "" }: { className?: string }) {
     </svg>
   );
 }
+
+/** Speech bubble with a handset, WhatsApp's shape in the site's stroke style. */
+export function WhatsAppGlyph({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3Z"
+        stroke="currentColor"
+        strokeWidth="2.25"
+        strokeLinejoin="round"
+      />
+      <path
+        fill="currentColor"
+        d="M8.6 7.6c.3-.3.8-.3 1 .1l.9 1.7c.2.4.1.8-.2 1.1l-.5.5a6 6 0 0 0 3.2 3.2l.5-.5c.3-.3.7-.4 1.1-.2l1.7.9c.4.2.4.7.1 1l-.8.8c-.6.6-1.5.7-2.3.4a9.4 9.4 0 0 1-5-5c-.3-.8-.2-1.7.4-2.3l.8-.8Z"
+      />
+    </svg>
+  );
+}

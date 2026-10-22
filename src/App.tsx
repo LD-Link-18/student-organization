@@ -3,10 +3,10 @@ import { Areas } from "./components/Areas";
 import { Events } from "./components/Events";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
-import { InstagramFloat } from "./components/InstagramFloat";
 import { JoinSection } from "./components/JoinSection";
 import { Navbar } from "./components/Navbar";
 import { Projects } from "./components/Projects";
+import { SocialFloat } from "./components/SocialFloat";
 import { Sponsors } from "./components/Sponsors";
 import { Team } from "./components/Team";
 import { Spark } from "./components/ui/Glyph";
@@ -56,7 +56,7 @@ export default function App() {
         <JoinSection />
       </main>
       <Footer />
-      <InstagramFloat />
+      <SocialFloat />
     </>
   );
 }

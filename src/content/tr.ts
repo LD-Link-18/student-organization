@@ -35,9 +35,10 @@ export const tr: Content = {
     ...(showSponsors ? [{ label: "Sponsorlar", href: "#sponsors" }] : []),
   ],
 
-  instaPromo: {
-    label: "Instagram'da takip et",
-    region: "Instagram",
+  socialFloat: {
+    region: "Sosyal medya",
+    whatsapp: { label: "WhatsApp topluluğuna katıl", title: "Duyurular ve etkinlikler" },
+    instagram: { label: "Instagram'da takip et" },
   },
 
   hero: {
