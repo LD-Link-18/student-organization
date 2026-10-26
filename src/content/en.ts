@@ -1,5 +1,4 @@
 import type { Content } from "./types";
-import { showSponsors } from "./site";
 
 const club = {
   name: "Smart Systems Club",
@@ -32,7 +31,8 @@ export const en: Content = {
     { label: "Projects", href: "#projects" },
     { label: "Events", href: "#events" },
     { label: "Team", href: "#team" },
-    ...(showSponsors ? [{ label: "Sponsors", href: "#sponsors" }] : []),
+    // Hidden while `showSponsors` (admin panel / site.ts) is off.
+    { label: "Sponsors", href: "#sponsors" },
   ],
 
   socialFloat: {
@@ -328,7 +328,7 @@ export const en: Content = {
       pitch: "Pitch a project",
     },
     next: "Next project",
-    docTitle: (name) => `${name} | ${club.name}`,
+    docTitle: (name, club) => `${name} | ${club.name}`,
     listDocTitle: `Projects | ${club.name}`,
   },
 
@@ -421,7 +421,7 @@ export const en: Content = {
     blurb: `A student-led community for AI, robotics and everything that learns. Part of ${club.university}.`,
     explore: "Explore",
     follow: "Follow along",
-    rights: (year) => `© ${year} ${club.name}, ${club.university}`,
+    rights: (year, club) => `© ${year} ${club.name}, ${club.university}`,
   },
 
   soon: {

@@ -1,4 +1,4 @@
-import type { AreaKey, AvatarVariant, LinkSource, ProjectStatus, ProjectVisual, SponsorTier } from "./site";
+import type { AreaKey, AvatarVariant, LinkSource, NavHref, ProjectStatus, ProjectVisual, SponsorTier } from "./site";
 
 export type Locale = "tr" | "en";
 
@@ -36,7 +36,11 @@ export interface Project {
   demo?: string;
 }
 
-/** Every piece of visible copy. tr.ts and en.ts must both satisfy this shape. */
+/**
+ * Every piece of visible copy. tr.ts and en.ts must both satisfy this shape.
+ * Everything except the functions (and `locale`) can be edited in the admin panel; schema.ts must
+ * describe the same fields, or the build fails.
+ */
 export interface Content {
   locale: Locale;
   /** Accessible name of the TR | EN language switcher. */
@@ -64,7 +68,7 @@ export interface Content {
     homeLabel: string;
   };
 
-  nav: { label: string; href: string }[];
+  nav: { label: string; href: NavHref }[];
 
   /** Floating WhatsApp + Instagram buttons (bottom right). Phones show only the icons. */
   socialFloat: {
@@ -132,7 +136,8 @@ export interface Content {
     team: string;
     join: { title: string; body: string; cta: string; pitch: string };
     next: string;
-    docTitle: (name: string) => string;
+    /** `club` is the (possibly admin-edited) club info, so a renamed club shows up here too. */
+    docTitle: (name: string, club: Content["club"]) => string;
     listDocTitle: string;
   };
 
@@ -190,7 +195,7 @@ export interface Content {
     sticker: string;
   };
 
-  footer: { blurb: string; explore: string; follow: string; rights: (year: number) => string };
+  footer: { blurb: string; explore: string; follow: string; rights: (year: number, club: Content["club"]) => string };
 
   /** "Coming soon" page that placeholder links point to. */
   soon: {

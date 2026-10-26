@@ -8,6 +8,7 @@ import { ComingSoon } from "./components/ComingSoon";
 import { NotFound } from "./components/NotFound";
 import { ProjectPage } from "./components/ProjectPage";
 import { ContentProvider, detectLocale } from "./content/i18n";
+import { fetchSaved, readCache, resolve, type Saved } from "./content/load";
 
 const page = document.documentElement.dataset.page;
 
@@ -18,10 +19,24 @@ if (page === "404") {
 
 const pages = { soon: <ComingSoon />, "404": <NotFound />, project: <ProjectPage /> } as const;
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ContentProvider locale={detectLocale()}>
-      {pages[page as keyof typeof pages] ?? <App />}
-    </ContentProvider>
-  </StrictMode>,
-);
+const root = createRoot(document.getElementById("root")!);
+const locale = detectLocale();
+
+function render(saved: Saved | null) {
+  const { content, site } = resolve(locale, saved);
+  root.render(
+    <StrictMode>
+      <ContentProvider content={content} site={site}>
+        {pages[page as keyof typeof pages] ?? <App />}
+      </ContentProvider>
+    </StrictMode>,
+  );
+}
+
+// Admin-panel edits: a returning visitor sees the last fetched version at once, then the fresh one if it
+// changed. A first visit waits for the fetch (at most 2 s, then the bundled defaults).
+const cached = readCache();
+if (cached) render(cached);
+fetchSaved().then((fresh) => {
+  if (fresh ? JSON.stringify(fresh) !== JSON.stringify(cached) : !cached) render(fresh);
+});

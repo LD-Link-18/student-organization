@@ -1,10 +1,10 @@
-import { isExternal, useContent, useResolveLink } from "../content/i18n";
-import { club } from "../content/site";
+import { isExternal, useContent, useResolveLink, useSite } from "../content/i18n";
 import { Logo } from "./Logo";
 
 /** `base` prefixes the section anchors on pages other than the homepage. */
 export function Footer({ base = "" }: { base?: string }) {
   const t = useContent();
+  const { club } = useSite();
   const resolve = useResolveLink();
   const year = new Date().getFullYear();
   return (
@@ -61,7 +61,7 @@ export function Footer({ base = "" }: { base?: string }) {
         </div>
 
         <div className="mt-16 flex flex-col justify-between gap-4 border-t border-paper/15 pt-6 text-sm text-paper/60 sm:flex-row">
-          <p>{t.footer.rights(year)}</p>
+          <p>{t.footer.rights(year, t.club)}</p>
           <a href="#top" className="hover:text-lime">
             {t.common.backToTop}
           </a>

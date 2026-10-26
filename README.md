@@ -22,20 +22,26 @@ The site ships in two languages as two HTML entries:
 | `/yakinda/`        | `yakinda/index.html`        | Turkish "coming soon" page   |
 | `/en/coming-soon/` | `en/coming-soon/index.html` | English "coming soon" page   |
 | any unknown URL    | `404.html`                  | 404 page (EN under `/en/…`)  |
+| `/admin/`          | `admin/index.html`          | [Admin panel](#admin-panel)  |
 
-All load `src/main.tsx`, which picks the copy from `<html lang>` and the page from `<html data-page>`.
+All but the admin panel load `src/main.tsx`, which picks the copy from `<html lang>` and the page from `<html data-page>`.
 The 404 page is a single file that static hosts (Netlify, Cloudflare Pages, GitHub Pages, Vercel) serve for
 every unknown URL, so it reads its language from the path instead. The TR/EN button in the navbar links
 between the two. Page titles and meta descriptions live in the HTML files.
 
 ## Editing content
 
+Most text and links can be changed in the [admin panel](#admin-panel) at `/admin/`, live, without touching
+the code. The files below are the **defaults**: what the site shows for anything that hasn't been changed in the
+panel (and everything, if the panel isn't set up). Edits saved in the panel win over them.
+
 - [`src/content/tr.ts`](src/content/tr.ts) and [`src/content/en.ts`](src/content/en.ts) hold all visible copy:
   club name, hero, stats, areas, projects, events, team, sponsor tiers, footer. Both must match the
   `Content` type in `src/content/types.ts`, so the build fails if one language is missing a field.
   Lists (team, events, projects) are per language: add a new member or event to **both** files.
-- [`src/content/site.ts`](src/content/site.ts) holds language-independent data: email, sign-up link
-  (`club.joinUrl`), social links, the sponsor list and sponsorship settings.
+- [`src/content/site.ts`](src/content/site.ts) holds language-independent data (`siteDefaults`): email, sign-up
+  link (`club.joinUrl`), social links, the sponsor list and sponsorship settings, and `showSponsors`.
+  Components read it with `useSite()`.
 
 Other notes:
 
@@ -46,12 +52,67 @@ Other notes:
 - Team avatars are geometric placeholders (`src/components/Avatar.tsx`); swap for `<img>` when photos exist.
 - Project previews are drawn in `src/components/ProjectArt.tsx`; swap for screenshots the same way.
 - Sponsors: add entries to `sponsors` in `site.ts`, logos go in `public/sponsors/`.
-- Channels that don't exist yet: leave their `href` empty in `club.socials` (`site.ts`). Every link to them
+- Channels that don't exist yet: leave their `href` empty in `club.socials` (`site.ts` or the panel). Every link to them
   (footer, join section) then goes to the "coming soon" page in the visitor's language,
   with `?l=whatsapp` / `linkedin` / `github` so the page names the channel. Fill in the real URL and the links
-  point there automatically. Event RSVPs use `discordHref` in `site.ts` (empty for now, so "coming soon").
+  point there automatically. Event RSVPs use `discordHref` (empty for now, so "coming soon").
 - Once the site has a domain, add `<link rel="alternate" hreflang="…">` tags with **absolute** URLs to both
   HTML files so search engines pair the two languages.
+
+## Admin panel
+
+`/admin/` is a login-protected editor for the site's text, links, projects, events, team and sponsors, in both
+languages side by side. Saving publishes immediately: no commit, no rebuild. Visitors get the new version on their
+next page load.
+
+How it works:
+
+- Saved edits live in [Supabase](https://supabase.com) (table `content`: rows `tr`, `en` and `site`). Every page
+  fetches them on load and lays them over the defaults in `src/content/` (`src/content/load.ts`, `merge.ts`).
+  Repeat visitors see the last version their browser fetched immediately, then the fresh one.
+- [`src/content/schema.ts`](src/content/schema.ts) describes every editable field and its rules (required text,
+  link format, allowed values such as a project's `status`). The panel won't save anything that breaks a rule, and
+  the site ignores any saved section that does, keeping the default instead. If Supabase is down or not set up,
+  the site shows the defaults.
+- Every save is kept in `content_history`, with who saved it. *History* in the panel loads an older version
+  back into the editor.
+- Function fields (plural rules such as `teamSize`), page `<title>`/meta descriptions in the HTML files, project
+  cover drawings and the application form in `public/basvuru/` stay in code.
+
+When you add a field to `Content` (`types.ts`), add it to `schema.ts` too (the build fails otherwise) and to a
+form in `src/admin/sections.tsx` if it should be editable.
+
+### Setting it up (once)
+
+1. Create a project at [supabase.com](https://supabase.com) (the free plan is enough).
+2. In its **SQL Editor**, run [`supabase/migrations/0001_admin.sql`](supabase/migrations/0001_admin.sql).
+3. **Authentication → Sign In / Providers**: turn off **Allow new users to sign up**, so only invited people
+   get accounts. **Authentication → URL Configuration**: set **Site URL** to
+   `https://kouakillisistemler.org/admin/` and add `http://localhost:5173/admin/` under **Redirect URLs**.
+4. **Project Settings → API Keys**: copy the project URL and the **publishable** key (a legacy `anon` key works
+   too). Both are safe to expose: row-level security only lets admins write. Put them in `.env.local` for the dev
+   server:
+
+   ```bash
+   VITE_SUPABASE_URL=https://<project>.supabase.co
+   VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+   ```
+
+   and in Vercel (**Settings → Environment Variables**, all environments), then redeploy.
+
+### Adding an admin
+
+1. **Authentication → Users → Invite user** with their email. They follow the link and choose a password.
+2. In the **SQL Editor**:
+
+   ```sql
+   insert into public.admins (user_id) select id from auth.users where email = 'them@example.com';
+   ```
+
+To remove someone, delete their row from `admins` (or the user itself).
+
+Note: Supabase pauses free projects after a week without any requests. Regular visits to the site keep it awake;
+if it ever pauses, the site falls back to the defaults until you restore the project in the Supabase dashboard.
 
 ## Project pages
 
@@ -59,8 +120,8 @@ Every project gets its own page from one template (`src/components/ProjectPage.t
 `/projeler/<slug>/` and `/en/projects/<slug>/`. `/projeler/` lists them all. The homepage cards link to
 these pages automatically.
 
-**To add a project**, append an entry to `projects.items` in **both** `src/content/tr.ts` and
-`src/content/en.ts`, with the same `slug` in both. No HTML file or route is needed: `vercel.json`
+**To add a project**, use *Projects* in the admin panel, or append an entry to `projects.items` in **both**
+`src/content/tr.ts` and `src/content/en.ts`, with the same `slug` in both. No HTML file or route is needed: `vercel.json`
 rewrites every `/projeler/<slug>/` to the shared page, and the dev server reads the same rules.
 
 | Field | Shown as |

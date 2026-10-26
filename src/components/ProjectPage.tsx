@@ -1,6 +1,6 @@
 import { useEffect, type CSSProperties } from "react";
-import { useContent, useResolveLink } from "../content/i18n";
-import { club, projectHref, projectsPath, type AvatarVariant } from "../content/site";
+import { useContent, useResolveLink, useSite } from "../content/i18n";
+import { projectHref, projectsPath, type AvatarVariant } from "../content/site";
 import type { Project } from "../content/types";
 import { MemberCard } from "./MemberCard";
 import { NotFound } from "./NotFound";
@@ -32,6 +32,7 @@ function Fact({ label, value }: { label: string; value: string }) {
 
 function ProjectDetail({ project: p, next }: { project: Project; next: Project }) {
   const t = useContent();
+  const { club } = useSite();
   const pp = t.projectPage;
   const home = useHomeHref();
   const resolve = useResolveLink();
@@ -278,8 +279,8 @@ export function ProjectPage() {
 
   useEffect(() => {
     if (missing) return; // NotFound sets its own title
-    document.title = project ? t.projectPage.docTitle(project.name) : t.projectPage.listDocTitle;
-  }, [missing, project, t.projectPage]);
+    document.title = project ? t.projectPage.docTitle(project.name, t.club) : t.projectPage.listDocTitle;
+  }, [missing, project, t.projectPage, t.club]);
 
   if (missing) return <NotFound />;
 

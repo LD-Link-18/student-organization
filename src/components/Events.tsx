@@ -1,5 +1,4 @@
-import { useContent, useResolveLink } from "../content/i18n";
-import { discordHref } from "../content/site";
+import { useContent, useResolveLink, useSite } from "../content/i18n";
 import { Reveal } from "./ui/Reveal";
 
 /** Grid placement shared by the active and the disabled RSVP button. */
@@ -8,7 +7,7 @@ const RSVP_PLACEMENT =
 
 export function Events() {
   const { events } = useContent();
-  const rsvpHref = useResolveLink()(discordHref, "discord");
+  const rsvpHref = useResolveLink()(useSite().discordHref, "discord");
 
   return (
     <section id="events" aria-labelledby="events-title" className="section-y relative bg-paper">

@@ -61,6 +61,41 @@ function vercelLikeRouting(): Plugin {
   };
 }
 
+const productionOrigin = "https://kouakillisistemler.org";
+/** Matches the production origin with an optional trailing slash, so it can be swapped for "/". */
+const productionOriginPattern = /https:\/\/kouakillisistemler\.org\/?/g;
+
+/**
+ * Makes links to the production site (the membership form URL in site.ts, the home links on the
+ * application form in public/basvuru/, links saved in the admin panel via load.ts) point at the dev
+ * server instead during `npm run dev`.
+ * Builds keep the absolute URLs: the form is also served at basvuru.kouakillisistemler.org,
+ * where "/" would mean the form itself.
+ */
+function localLinksInDev(): Plugin {
+  return {
+    name: "local-links-in-dev",
+    apply: "serve",
+    config: () => ({ define: { "import.meta.env.DEV_PRODUCTION_ORIGIN": JSON.stringify(productionOrigin) } }),
+    transform(code, id) {
+      if (id.includes("/node_modules/") || !code.includes(productionOrigin)) return;
+      return code.replace(productionOriginPattern, "/");
+    },
+    configureServer(server) {
+      const { publicDir } = server.config;
+      // Files in public/ skip the transform pipeline, so rewrite their HTML here.
+      server.middlewares.use((req, res, next) => {
+        if (req.method !== "GET") return next();
+        const pathname = decodeURIComponent(new URL(req.url ?? "/", "http://localhost").pathname);
+        const file = path.join(publicDir, pathname.endsWith("/") ? path.join(pathname, "index.html") : pathname);
+        if (!file.startsWith(publicDir) || !file.endsWith(".html") || !fs.existsSync(file)) return next();
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(fs.readFileSync(file, "utf-8").replace(productionOriginPattern, "/"));
+      });
+    },
+  };
+}
+
 /**
  * Absolute site address for social previews (og:image must be an absolute URL).
  * Vercel provides VERCEL_PROJECT_PRODUCTION_URL at build time (the production domain, even on preview
@@ -85,7 +120,7 @@ function socialMeta(): Plugin {
   return {
     name: "social-meta",
     transformIndexHtml(html, ctx) {
-      if (ctx.path.startsWith("/tools/")) return html; // the OG image renderer itself
+      if (ctx.path.startsWith("/tools/") || ctx.path.startsWith("/admin/")) return html; // OG renderer, admin panel
       const lang = /<html lang="en"/.test(html) ? "en" : "tr";
       const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? "";
       const description = /<meta name="description" content="([^"]*)"/.exec(html)?.[1];
@@ -117,10 +152,10 @@ function socialMeta(): Plugin {
 // Turkish at / (default) and English at /en/, project pages (/projeler/, /en/projects/), a
 // "coming soon" page per language for links that aren't set up yet, and a shared 404 page.
 // All load src/main.tsx, which picks the language from <html lang> and the page from
-// <html data-page>.
+// <html data-page>. The admin panel at /admin/ loads src/admin/main.tsx instead.
 export default defineConfig({
   appType: "mpa",
-  plugins: [react(), tailwindcss(), vercelLikeRouting(), socialMeta()],
+  plugins: [react(), tailwindcss(), vercelLikeRouting(), localLinksInDev(), socialMeta()],
   build: {
     rollupOptions: {
       input: {
@@ -132,6 +167,8 @@ export default defineConfig({
         projectsEn: path.resolve(import.meta.dirname, "en/projects/index.html"),
         // Served by Vercel (and most static hosts) for unknown URLs.
         notFound: path.resolve(import.meta.dirname, "404.html"),
+        // Content editor (noindex); its own bundle, so supabase-js never loads on the public pages.
+        admin: path.resolve(import.meta.dirname, "admin/index.html"),
       },
     },
   },
