@@ -1,9 +1,11 @@
 import type { Session } from "@supabase/supabase-js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { clearPreview, previewKey, type Preview, type Saved } from "../content/load";
+import { Applications } from "./Applications";
 import { scopes, toDraft, validate, type Draft, type Scope } from "./draft";
 import { EditorContext } from "./fields";
 import { History } from "./History";
+import { Pitches } from "./Pitches";
 import { previewUrl, sections } from "./sections";
 import { supabase } from "./supabase";
 
@@ -184,8 +186,20 @@ export function Editor({ session }: { session: Session }) {
             {sections.map((s) => navButton(s.id, s.title, errorCounts.get(s.id)))}
             <hr className="my-2 hidden border-ink/15 md:block" />
             {navButton("history", "History")}
+            {navButton("applications", "Applications")}
+            {navButton("pitches", "Project pitches")}
           </nav>
-          <main className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-6">{section ? <section.Form key={section.id} /> : <History onLoad={loadVersion} />}</main>
+          <main className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-6">
+            {section ? (
+              <section.Form key={section.id} />
+            ) : active === "applications" ? (
+              <Applications />
+            ) : active === "pitches" ? (
+              <Pitches />
+            ) : (
+              <History onLoad={loadVersion} />
+            )}
+          </main>
         </div>
 
         <footer className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-ink bg-paper">

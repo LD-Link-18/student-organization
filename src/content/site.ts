@@ -65,7 +65,7 @@ export const siteDefaults: SiteData = {
     short: "ISC",
     email: "kou.akillisistemler@gmail.com",
     joinUrl: "https://kouakillisistemler.org/basvuru",
-    projectUrl: "https://forms.gle/FF1eCvrVfPww6fzPA",
+    projectUrl: "https://kouakillisistemler.org/proje-oner/",
     socials: [
       { label: "Instagram", source: "instagram", href: "https://www.instagram.com/kou.akillisistemlerkulubu/" },
       { label: "WhatsApp", source: "whatsapp", href: "https://chat.whatsapp.com/Bbk7WDlYipaDkPL6XjJfB3" },

@@ -88,9 +88,9 @@ form in `src/admin/sections.tsx` if it should be editable.
 ### Setting it up (once)
 
 1. Create a project at [supabase.com](https://supabase.com) (the free plan is enough).
-2. In its **SQL Editor**, run [`supabase/migrations/0001_admin.sql`](supabase/migrations/0001_admin.sql), then
-   [`0002_hardening.sql`](supabase/migrations/0002_hardening.sql). (Set up before 0002 existed? Run just that one,
-   once.)
+2. In its **SQL Editor**, run the files in [`supabase/migrations/`](supabase/migrations/) in order:
+   `0001_admin.sql`, `0002_hardening.sql`, `0003_applications.sql`, `0004_project_pitches.sql`. (Already set
+   up? Run only the ones you haven't, each once.)
 3. **Authentication → Sign In / Providers**: turn off **Allow new users to sign up**, so only invited people
    get accounts, and under **Email** set **Minimum password length** to at least 10 (the panel's own check is
    only a hint; Supabase's default is 6). **Authentication → URL Configuration**: set **Site URL** to
@@ -106,7 +106,9 @@ form in `src/admin/sections.tsx` if it should be editable.
 
    and in Vercel (**Settings → Environment Variables**, all environments), then redeploy. The project URL is
    also allowed by name in the `Content-Security-Policy` header in [`vercel.json`](vercel.json) (`connect-src`):
-   change it there too if you move to another Supabase project, or the site can't load the saved content.
+   change it there too if you move to another Supabase project, or the site can't load the saved content. The
+   two public forms (application and project pitch) aren't built by Vite, so they share their own copy of both
+   values in [`public/basvuru/supabase.js`](public/basvuru/supabase.js).
 
 ### Adding an admin
 
@@ -118,6 +120,31 @@ form in `src/admin/sections.tsx` if it should be editable.
    ```
 
 To remove someone, delete their row from `admins` (or the user itself).
+
+### Applications
+
+The membership form at `/basvuru/` (also `basvuru.kouakillisistemler.org`) saves each application to the
+`applications` table. **Applications** in the admin panel lists them, with search, a CSV download (opens in
+Excel) and delete. Applications are personal data under KVKK: the form shows a privacy notice the sender has to
+accept. When someone asks for their data to be removed, delete their application there.
+
+- Visitors can only add a row, never read one. The database repeats the form's checks (9-digit student number,
+  5XX phone, one of the five years, consent ticked), so posting around the form gets nothing extra in.
+- A trigger turns away floods: at most 30 applications per IP in 10 minutes and 300 in total per hour (numbers
+  in `0003_applications.sql`; raise them if a busy booth day ever hits them). The form then asks the sender to
+  try again in a few minutes.
+- The privacy notice's text is in `public/basvuru/index.html` and `en/index.html`; have the club board check it.
+
+### Project pitches
+
+The "Pitch a project" buttons (`club.projectUrl`) lead to `/proje-oner/` (English: `/proje-oner/en/`), a form
+in the same style as the application form: project title and description, the sender's name and email (so the
+board can reply), an optional student number, and the same kind of KVKK notice. Pitches are saved to the
+`project_pitches` table; **Project pitches** in the admin panel lists them, with search, a reply-by-email link
+and delete. The same protections apply as for applications (insert-only for visitors, checks in the database,
+a hidden spam field), with tighter limits: 10 per IP in 10 minutes, 100 in total per hour.
+
+The page lives in `public/proje-oner/` and borrows `style.css` and `supabase.js` from `public/basvuru/`.
 
 Note: Supabase pauses free projects after a week without any requests. Regular visits to the site keep it awake;
 if it ever pauses, the site falls back to the defaults until you restore the project in the Supabase dashboard.
