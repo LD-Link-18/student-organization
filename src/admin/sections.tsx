@@ -1,17 +1,26 @@
 import { useId, useState, type ReactNode } from "react";
-import { projectHref, sponsorTiers, type SiteData } from "../content/site";
+import { projectHref, projectsPath, sponsorTiers, type SiteData } from "../content/site";
 import type { EditableContent } from "../content/schema";
-import { BiNumber, BiStrings, BiText, Group, inputClass, List, Select, Text, Toggle, useDraft, useField } from "./fields";
+import { BiNumber, BiStrings, BiText, Group, inputClass, List, Select, Subhead, Text, Toggle, useDraft, useField } from "./fields";
+import type { Draft } from "./draft";
 import { ASSET_BUCKET, supabase } from "./supabase";
 
-/** One sidebar entry: which top-level fields it edits (for the error counts) and its form. */
+/** One sidebar entry: which top-level fields it edits (for the error counts), its form, and where "Preview" opens. */
 export interface Section {
   id: string;
   title: string;
   content: (keyof EditableContent)[];
   site: (keyof SiteData)[];
   Form: () => ReactNode;
+  /** Turkish page (and section anchor) that shows this part of the site. */
+  preview: (draft: Draft) => string;
 }
+
+/** A Turkish page with the draft instead of the saved content (see `inPreview` in content/load.ts). */
+export const previewUrl = (path: string) => {
+  const [page, hash] = path.split("#");
+  return `${page}?preview${hash ? `#${hash}` : ""}`;
+};
 
 const statusOptions = [
   { value: "done", label: "Completed" },
@@ -201,7 +210,7 @@ function ProjectsForm() {
         <BiText path={["projects", "status", "progress"]} label="Status: in progress" />
         <BiText path={["projects", "status", "prototype"]} label="Status: prototype" />
       </Group>
-      <Group title="Projects" hint="Each project has a card on the homepage and its own page.">
+      <Group title="Projects" hint="Each project has a card on the homepage and its own page. Click a project to edit both.">
         <List
           path={["projects", "items"]}
           label="Projects"
@@ -228,18 +237,44 @@ function ProjectsForm() {
             const p = (scope: "tr" | "en") => draft[scope].projects.items[i];
             return (
               <>
-                <Text
-                  scope="both"
-                  path={[...items(i), "slug"]}
-                  label="Address (slug)"
-                  hint={`The page lives at ${projectHref("tr", p("tr")?.slug ?? "")} and ${projectHref("en", p("tr")?.slug ?? "")}. Changing it breaks links shared earlier.`}
-                />
+                <Subhead hint="Shown on the homepage and the project list. Name, category, status, cover and stack also head the project's own page.">
+                  Homepage card
+                </Subhead>
                 <BiText path={[...items(i), "name"]} label="Name" />
                 <BiText path={[...items(i), "category"]} label="Category" />
                 <Select scope="both" path={[...items(i), "status"]} label="Status" options={statusOptions} />
                 <Select scope="both" path={[...items(i), "visual"]} label="Cover drawing" options={visualOptions} />
                 <BiText path={[...items(i), "description"]} label="Card text" hint="One or two sentences for the homepage card." multiline />
                 <BiStrings path={[...items(i), "stack"]} label="Built with" />
+
+                <Subhead
+                  hint={
+                    <>
+                      The project's own page:{" "}
+                      {(["tr", "en"] as const).map((l, k) => (
+                        <span key={l}>
+                          {k > 0 && " · "}
+                          <a
+                            href={previewUrl(projectHref(l, p("tr")?.slug ?? ""))}
+                            target="site-preview"
+                            className="font-semibold text-violet underline"
+                          >
+                            {projectHref(l, p("tr")?.slug ?? "")}
+                          </a>
+                        </span>
+                      ))}{" "}
+                      (preview with your unsaved changes).
+                    </>
+                  }
+                >
+                  Project page
+                </Subhead>
+                <Text
+                  scope="both"
+                  path={[...items(i), "slug"]}
+                  label="Address (slug)"
+                  hint="The last part of the page address. Changing it breaks links shared earlier."
+                />
                 <BiText path={[...items(i), "started"]} label="Started" placeholder="Eylül 2025 / September 2025" />
                 <BiText path={[...items(i), "overview"]} label="Page intro" multiline />
                 <List
@@ -315,7 +350,7 @@ function ProjectsForm() {
 
 function ProjectPageForm() {
   return (
-    <Group title="Project page labels" hint="Shared by every project page.">
+    <Group title="Project page labels" hint="Headings and buttons shared by every project page. Each project's own content is under Projects.">
       <BiText path={["projectPage", "home"]} label="Breadcrumb: home" />
       <BiText path={["projectPage", "breadcrumb"]} label="Breadcrumb: projects" />
       <BiText path={["projectPage", "listDocTitle"]} label="Browser tab title of the project list" />
@@ -592,17 +627,33 @@ function LabelsForm() {
   );
 }
 
+const home = (anchor = "") => () => `/${anchor}`;
+
 export const sections: Section[] = [
-  { id: "club", title: "Club & links", content: ["club"], site: ["club", "discordHref"], Form: ClubForm },
-  { id: "hero", title: "Hero", content: ["hero", "tapeExtras"], site: [], Form: HeroForm },
-  { id: "about", title: "About & stats", content: ["about", "stats"], site: [], Form: AboutForm },
-  { id: "areas", title: "Areas", content: ["areas"], site: [], Form: AreasForm },
-  { id: "projects", title: "Projects", content: ["projects"], site: [], Form: ProjectsForm },
-  { id: "project-page", title: "Project page", content: ["projectPage"], site: [], Form: ProjectPageForm },
-  { id: "events", title: "Events", content: ["events"], site: [], Form: EventsForm },
-  { id: "team", title: "Team", content: ["team"], site: [], Form: TeamForm },
-  { id: "sponsors", title: "Sponsors", content: ["sponsors"], site: ["showSponsors", "sponsorship", "sponsors"], Form: SponsorsForm },
-  { id: "join", title: "Join & footer", content: ["join", "socialFloat", "footer"], site: [], Form: JoinForm },
-  { id: "pages", title: "Coming soon & 404", content: ["soon", "notFound"], site: [], Form: PagesForm },
-  { id: "labels", title: "Menu & labels", content: ["nav", "common", "switcher"], site: [], Form: LabelsForm },
+  { id: "club", title: "Club & links", content: ["club"], site: ["club", "discordHref"], Form: ClubForm, preview: home("#join") },
+  { id: "hero", title: "Hero", content: ["hero", "tapeExtras"], site: [], Form: HeroForm, preview: home() },
+  { id: "about", title: "About & stats", content: ["about", "stats"], site: [], Form: AboutForm, preview: home("#about") },
+  { id: "areas", title: "Areas", content: ["areas"], site: [], Form: AreasForm, preview: home("#areas") },
+  { id: "projects", title: "Projects", content: ["projects"], site: [], Form: ProjectsForm, preview: () => projectsPath.tr },
+  {
+    id: "project-page",
+    title: "Project page labels",
+    content: ["projectPage"],
+    site: [],
+    Form: ProjectPageForm,
+    preview: (d) => projectHref("tr", d.tr.projects.items[0]?.slug ?? ""),
+  },
+  { id: "events", title: "Events", content: ["events"], site: [], Form: EventsForm, preview: home("#events") },
+  { id: "team", title: "Team", content: ["team"], site: [], Form: TeamForm, preview: home("#team") },
+  {
+    id: "sponsors",
+    title: "Sponsors",
+    content: ["sponsors"],
+    site: ["showSponsors", "sponsorship", "sponsors"],
+    Form: SponsorsForm,
+    preview: home("#sponsors"),
+  },
+  { id: "join", title: "Join & footer", content: ["join", "socialFloat", "footer"], site: [], Form: JoinForm, preview: home("#join") },
+  { id: "pages", title: "Coming soon & 404", content: ["soon", "notFound"], site: [], Form: PagesForm, preview: () => "/yakinda/" },
+  { id: "labels", title: "Menu & labels", content: ["nav", "common", "switcher"], site: [], Form: LabelsForm, preview: home() },
 ];

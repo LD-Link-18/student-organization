@@ -3,6 +3,7 @@ import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/inter";
+import { clearPreview } from "../content/load";
 import "../index.css";
 import { Loading, NoAccess, NotConfigured, SetPassword, SignIn } from "./Auth";
 import { Editor } from "./Editor";
@@ -20,6 +21,8 @@ function Admin() {
     const { data } = supabase!.auth.onAuthStateChange((event, s) => {
       setSession(s);
       if (event === "PASSWORD_RECOVERY") setNeedsPassword(true);
+      // Leaves no unsaved draft behind for whoever uses this browser next (see `inPreview`).
+      if (event === "SIGNED_OUT") clearPreview();
     });
     return () => data.subscription.unsubscribe();
   }, []);

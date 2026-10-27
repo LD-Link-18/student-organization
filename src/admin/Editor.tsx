@@ -1,10 +1,10 @@
 import type { Session } from "@supabase/supabase-js";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Saved } from "../content/load";
+import { clearPreview, previewKey, type Preview, type Saved } from "../content/load";
 import { scopes, toDraft, validate, type Draft, type Scope } from "./draft";
 import { EditorContext } from "./fields";
 import { History } from "./History";
-import { sections } from "./sections";
+import { previewUrl, sections } from "./sections";
 import { supabase } from "./supabase";
 
 /** When each row was last saved (and by whom) as of loading, to catch someone else saving meanwhile. */
@@ -57,6 +57,21 @@ export function Editor({ session }: { session: Session }) {
     () => (draft && baseline ? scopes.filter((s) => JSON.stringify(draft[s]) !== JSON.stringify(baseline.draft[s])) : []),
     [draft, baseline],
   );
+
+  // Keeps the draft where preview tabs (same browser) read it; they redraw on every change. Only while
+  // something is unsaved: once saved (or undone), the draft goes and they show the live site.
+  useEffect(() => {
+    if (!draft) return;
+    const timer = setTimeout(() => {
+      if (!changed.length) return clearPreview();
+      try {
+        localStorage.setItem(previewKey, JSON.stringify({ draft, problems: errors.size } satisfies Preview));
+      } catch {
+        // Storage full or blocked: the preview keeps showing the previous draft.
+      }
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [draft, errors, changed.length]);
 
   useEffect(() => {
     if (!changed.length) return;
@@ -201,6 +216,14 @@ export function Editor({ session }: { session: Session }) {
                 {errors.size} {errors.size === 1 ? "problem" : "problems"}
               </button>
             )}
+            <a
+              href={previewUrl((section ?? sections[0]).preview(draft))}
+              target="site-preview"
+              className="btn btn-paper min-h-10 px-4 text-sm"
+              title="Opens the site with your unsaved changes in another tab; it updates as you edit."
+            >
+              Preview
+            </a>
             <button
               type="button"
               disabled={!changed.length || saving}

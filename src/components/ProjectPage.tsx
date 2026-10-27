@@ -263,7 +263,14 @@ function ProjectDetail({ project: p, next }: { project: Project; next: Project }
 function slugFromPath(listPath: string) {
   const { pathname } = window.location;
   if (!pathname.startsWith(listPath)) return undefined;
-  return decodeURIComponent(pathname.slice(listPath.length)).replace(/\/+$/, "") || undefined;
+  const raw = pathname.slice(listPath.length);
+  let slug = raw;
+  try {
+    slug = decodeURIComponent(raw);
+  } catch {
+    // Malformed escape: keep it as is, so it matches no project and shows the 404 view.
+  }
+  return slug.replace(/\/+$/, "") || undefined;
 }
 
 /**

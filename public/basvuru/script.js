@@ -40,6 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const classYearList = document.getElementById('classYearList');
     let selectedClassYear = '';
 
+    document.querySelector('.close-modal-btn').addEventListener('click', closeModal);
+
     classYearInput.addEventListener('click', () => {
         classYearList.classList.toggle('show');
     });
@@ -258,6 +260,6 @@ function validateField(field) {
     return isValid;
 }
 
-window.closeModal = function() {
+function closeModal() {
     document.getElementById('successModal').classList.remove('show');
 }

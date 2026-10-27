@@ -74,6 +74,9 @@ How it works:
   link format, allowed values such as a project's `status`). The panel won't save anything that breaks a rule, and
   the site ignores any saved section that does, keeping the default instead. If Supabase is down or not set up,
   the site shows the defaults.
+- **Preview** (next to Save) opens the site in another tab with your unsaved changes; it updates as you type, and
+  stays in preview while you click around (including TR/EN) until *Exit preview*. The draft only travels between
+  tabs of your own browser (`localStorage`), so nobody else sees it.
 - Every save is kept in `content_history`, with who saved it. *History* in the panel loads an older version
   back into the editor.
 - Function fields (plural rules such as `teamSize`), page `<title>`/meta descriptions in the HTML files, project
@@ -85,9 +88,12 @@ form in `src/admin/sections.tsx` if it should be editable.
 ### Setting it up (once)
 
 1. Create a project at [supabase.com](https://supabase.com) (the free plan is enough).
-2. In its **SQL Editor**, run [`supabase/migrations/0001_admin.sql`](supabase/migrations/0001_admin.sql).
+2. In its **SQL Editor**, run [`supabase/migrations/0001_admin.sql`](supabase/migrations/0001_admin.sql), then
+   [`0002_hardening.sql`](supabase/migrations/0002_hardening.sql). (Set up before 0002 existed? Run just that one,
+   once.)
 3. **Authentication → Sign In / Providers**: turn off **Allow new users to sign up**, so only invited people
-   get accounts. **Authentication → URL Configuration**: set **Site URL** to
+   get accounts, and under **Email** set **Minimum password length** to at least 10 (the panel's own check is
+   only a hint; Supabase's default is 6). **Authentication → URL Configuration**: set **Site URL** to
    `https://kouakillisistemler.org/admin/` and add `http://localhost:5173/admin/` under **Redirect URLs**.
 4. **Project Settings → API Keys**: copy the project URL and the **publishable** key (a legacy `anon` key works
    too). Both are safe to expose: row-level security only lets admins write. Put them in `.env.local` for the dev
@@ -98,7 +104,9 @@ form in `src/admin/sections.tsx` if it should be editable.
    VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
    ```
 
-   and in Vercel (**Settings → Environment Variables**, all environments), then redeploy.
+   and in Vercel (**Settings → Environment Variables**, all environments), then redeploy. The project URL is
+   also allowed by name in the `Content-Security-Policy` header in [`vercel.json`](vercel.json) (`connect-src`):
+   change it there too if you move to another Supabase project, or the site can't load the saved content.
 
 ### Adding an admin
 

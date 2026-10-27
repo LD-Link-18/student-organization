@@ -352,17 +352,27 @@ export function List({
           const isOpen = !collapsed || open.has(i) || hasErrorsIn(i);
           return (
             <li key={i} className={`rounded-2xl border-2 bg-paper ${hasErrorsIn(i) ? "border-red-600" : "border-ink/15"}`}>
-              <div className="flex items-center gap-2 border-b-2 border-ink/10 px-3 py-2">
+              <div className={`flex items-center gap-2 px-3 py-2 ${isOpen ? "border-b-2 border-ink/10" : ""}`}>
                 <button
                   type="button"
                   disabled={!collapsed}
                   onClick={() => setOpen((s) => new Set(s.has(i) ? [...s].filter((x) => x !== i) : [...s, i]))}
-                  aria-expanded={isOpen}
-                  className="flex min-w-0 flex-1 items-center gap-2 text-left disabled:cursor-default"
+                  aria-expanded={collapsed ? isOpen : undefined}
+                  className="group/item -my-1 -ml-1.5 flex min-w-0 flex-1 items-center gap-2 rounded-xl py-1 pl-1.5 text-left enabled:hover:bg-fog disabled:cursor-default"
                 >
-                  {collapsed && <span aria-hidden="true" className={`text-xs transition-transform ${isOpen ? "rotate-90" : ""}`}>▶</span>}
+                  {collapsed && (
+                    <span
+                      aria-hidden="true"
+                      className={`grid size-7 shrink-0 place-items-center rounded-lg bg-ink text-xs text-paper transition-transform ${isOpen ? "rotate-90" : ""}`}
+                    >
+                      ▶
+                    </span>
+                  )}
                   <span className="meta shrink-0 text-ink/50">#{i + 1}</span>
-                  <span className="truncate font-display font-semibold tracking-tight">{itemTitle(i) || "Untitled"}</span>
+                  <span className="truncate font-display text-[17px] font-semibold tracking-tight">{itemTitle(i) || "Untitled"}</span>
+                  {collapsed && (
+                    <span className="ml-auto shrink-0 pr-1 text-sm font-semibold text-violet group-hover/item:underline">{isOpen ? "Close" : "Edit"}</span>
+                  )}
                 </button>
                 <button type="button" className={iconButton} disabled={i === 0} onClick={() => move(i, -1)} aria-label="Move up">
                   ↑
@@ -419,6 +429,16 @@ export function Group({ title, hint, children }: { title: string; hint?: ReactNo
       {hint && <p className="mt-1 text-sm text-ink/65">{hint}</p>}
       <div className="mt-5 grid grid-cols-[minmax(0,1fr)] gap-5">{children}</div>
     </section>
+  );
+}
+
+/** Divides a long item form into parts (e.g. a project's card and its page). */
+export function Subhead({ hint, children }: { hint?: ReactNode; children: ReactNode }) {
+  return (
+    <div className="-mx-3 mt-2 border-t-2 border-ink/10 px-3 pt-4 first:mt-0 first:border-t-0 first:pt-0 md:-mx-4 md:px-4">
+      <h3 className="font-display text-lg font-bold tracking-tight text-violet">{children}</h3>
+      {hint && <p className="text-sm text-ink/65">{hint}</p>}
+    </div>
   );
 }
 

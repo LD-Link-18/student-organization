@@ -31,6 +31,9 @@ create function public.is_admin() returns boolean
   language sql stable security definer set search_path = ''
   as $$ select exists (select 1 from public.admins where user_id = auth.uid()) $$;
 
+-- The policies below call it; explicit, in case the project doesn't expose new objects automatically.
+grant execute on function public.is_admin() to anon, authenticated;
+
 -- Stamps each save with time and author.
 create function public.content_stamp() returns trigger
   language plpgsql set search_path = ''
