@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useState, type ReactNode } from
 import { dateParts, localizeEvents, splitEvents } from "../content/events";
 import { emptyForm, eventRowSchema, type EventExtras, type EventPhoto, type EventRow } from "../content/schema";
 import { eventHref } from "../content/site";
+import { can, type Access } from "./access";
 import { ErrorText, Label, LangTag, TextInput, inputClass } from "./fields";
 import { FormBuilder, formProblems } from "./FormBuilder";
 import { SignupList } from "./SignupList";
@@ -341,7 +342,10 @@ function PhotoManager({ row, onChange }: { row: Row; onChange: () => Promise<voi
   );
 }
 
-export function EventList() {
+/** Editing needs the "Event list" area; seeing sign-ups the "Event sign-ups" one (personal data). */
+export function EventList({ access }: { access: Access }) {
+  const canEdit = can(access, "event-list");
+  const canSeeSignups = can(access, "signups");
   const [rows, setRows] = useState<Row[] | null>(null);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
@@ -353,6 +357,7 @@ export function EventList() {
   const [counts, setCounts] = useState<Map<number, { confirmed: number; waitlist: number }>>(new Map());
 
   const loadCounts = useCallback(async () => {
+    if (!canSeeSignups) return;
     const { data } = await supabase!.from("event_signups").select("event_id, status");
     const next = new Map<number, { confirmed: number; waitlist: number }>();
     for (const s of (data ?? []) as { event_id: number; status: "confirmed" | "waitlist" }[]) {
@@ -361,7 +366,7 @@ export function EventList() {
       next.set(s.event_id, c);
     }
     setCounts(next);
-  }, []);
+  }, [canSeeSignups]);
 
   const load = useCallback(async () => {
     const { data, error } = await supabase!.from("events").select("*");
@@ -438,20 +443,26 @@ export function EventList() {
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm font-semibold">
-                      <button type="button" onClick={() => setShowing(showing === row.id ? null : row.id)} aria-expanded={showing === row.id} className="hover:underline">
-                        Sign-ups ({counts.get(row.id)?.confirmed ?? 0}
-                        {row.capacity ? `/${row.capacity}` : ""}
-                        {counts.get(row.id)?.waitlist ? ` +${counts.get(row.id)!.waitlist} waiting` : ""})
-                      </button>
+                      {canSeeSignups && (
+                        <button type="button" onClick={() => setShowing(showing === row.id ? null : row.id)} aria-expanded={showing === row.id} className="hover:underline">
+                          Sign-ups ({counts.get(row.id)?.confirmed ?? 0}
+                          {row.capacity ? `/${row.capacity}` : ""}
+                          {counts.get(row.id)?.waitlist ? ` +${counts.get(row.id)!.waitlist} waiting` : ""})
+                        </button>
+                      )}
                       <a href={eventHref("tr", { id: row.id, title: row.title_tr })} target="_blank" rel="noreferrer" className="hover:underline">
                         View page
                       </a>
-                      <button type="button" onClick={() => setEditing(e.id)} disabled={editing !== null} className="text-violet hover:underline disabled:opacity-40">
-                        Edit
-                      </button>
-                      <button type="button" onClick={() => remove(row)} disabled={editing !== null} className="text-red-700 hover:underline disabled:opacity-40">
-                        Delete
-                      </button>
+                      {canEdit && (
+                        <>
+                          <button type="button" onClick={() => setEditing(e.id)} disabled={editing !== null} className="text-violet hover:underline disabled:opacity-40">
+                            Edit
+                          </button>
+                          <button type="button" onClick={() => remove(row)} disabled={editing !== null} className="text-red-700 hover:underline disabled:opacity-40">
+                            Delete
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                   {showing === row.id && <SignupList event={row} onChange={loadCounts} />}
@@ -479,9 +490,11 @@ export function EventList() {
             texts around them are in the Events section.
           </p>
         </div>
-        <button type="button" onClick={() => setEditing("new")} disabled={editing !== null} className="btn btn-lime min-h-10 px-4 text-sm">
-          Add event
-        </button>
+        {canEdit && (
+          <button type="button" onClick={() => setEditing("new")} disabled={editing !== null} className="btn btn-lime min-h-10 px-4 text-sm">
+            Add event
+          </button>
+        )}
       </div>
 
       {error && <p className="mt-4 text-sm font-medium text-red-700">{error}</p>}

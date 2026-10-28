@@ -93,8 +93,8 @@ form in `src/admin/sections.tsx` if it should be editable.
 1. Create a project at [supabase.com](https://supabase.com) (the free plan is enough).
 2. In its **SQL Editor**, run the files in [`supabase/migrations/`](supabase/migrations/) in order:
    `0001_admin.sql`, `0002_hardening.sql`, `0003_applications.sql`, `0004_project_pitches.sql`,
-   `0005_events.sql`, `0006_event_pages.sql`, `0007_event_signups.sql`. (Already set up? Run only the ones
-   you haven't, each once.)
+   `0005_events.sql`, `0006_event_pages.sql`, `0007_event_signups.sql`, `0008_admin_roles.sql`. (Already set
+   up? Run only the ones you haven't, each once.)
 3. **Authentication → Sign In / Providers**: turn off **Allow new users to sign up**, so only invited people
    get accounts, and under **Email** set **Minimum password length** to at least 10 (the panel's own check is
    only a hint; Supabase's default is 6). **Authentication → URL Configuration**: set **Site URL** to
@@ -114,16 +114,27 @@ form in `src/admin/sections.tsx` if it should be editable.
    two public forms (application and project pitch) aren't built by Vite, so they share their own copy of both
    values in [`public/basvuru/supabase.js`](public/basvuru/supabase.js).
 
-### Adding an admin
+### Admins and what they may change
+
+Each admin is either a **full admin** (everything, including managing admins) or has only the areas ticked for
+them: any of the panel's content sections (Team, Hero, Projects, …), the Event list, event sign-ups, applications
+and project pitches. Someone with only "Team" sees just the Team section and can change nothing else: the
+database checks every save (`content_guard` in `0008_admin_roles.sql` compares a saved row part by part, and the
+tables and uploads check the area), so it holds outside the panel too. The areas for content sections are listed
+in the `admin_areas` table, mirroring `sections` in `src/admin/sections.tsx`: when a section's parts change,
+update both.
+
+Adding someone:
 
 1. **Authentication → Users → Invite user** with their email. They follow the link and choose a password.
-2. In the **SQL Editor**:
+2. A full admin opens **Admins** in the panel, adds the same email and ticks what they may do.
 
-   ```sql
-   insert into public.admins (user_id) select id from auth.users where email = 'them@example.com';
-   ```
+**Admins** also changes or removes people (it won't remove or demote the last full admin). The very first full
+admin, on a new project, is added in the **SQL Editor**:
 
-To remove someone, delete their row from `admins` (or the user itself).
+```sql
+insert into public.admins (user_id, full_access) select id, true from auth.users where email = 'you@example.com';
+```
 
 ### Applications
 

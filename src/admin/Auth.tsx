@@ -123,7 +123,7 @@ export function NoAccess({ email }: { email?: string }) {
   return (
     <Card title="No access">
       <p className="leading-relaxed text-ink/75">
-        {email} can sign in but isn't an admin. Ask an existing admin to add you (see the README, "Adding an admin").
+        {email} can sign in but isn't an admin. Ask a full admin to add you on the panel's Admins page.
       </p>
       <button type="button" onClick={() => supabase!.auth.signOut()} className="btn btn-paper mt-6">
         Sign out

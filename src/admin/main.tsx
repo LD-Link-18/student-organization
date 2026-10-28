@@ -5,6 +5,7 @@ import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/inter";
 import { clearPreview } from "../content/load";
 import "../index.css";
+import type { Access } from "./access";
 import { Loading, NoAccess, NotConfigured, SetPassword, SignIn } from "./Auth";
 import { Editor } from "./Editor";
 import { arrivedVia, supabase } from "./supabase";
@@ -13,7 +14,8 @@ import { arrivedVia, supabase } from "./supabase";
 function Admin() {
   const [session, setSession] = useState<Session | null>();
   const [needsPassword, setNeedsPassword] = useState(arrivedVia === "invite" || arrivedVia === "recovery");
-  const [isAdmin, setIsAdmin] = useState<boolean>();
+  /** What this admin may do; null: signed in but not an admin; undefined: still checking. */
+  const [access, setAccess] = useState<Access | null>();
   const userId = session?.user.id;
 
   useEffect(() => {
@@ -28,22 +30,23 @@ function Admin() {
   }, []);
 
   useEffect(() => {
-    setIsAdmin(undefined);
+    setAccess(undefined);
     if (!userId) return;
+    // select("*"): before 0008_admin_roles.sql there are no roles yet, and every admin may do everything.
     supabase!
       .from("admins")
-      .select("user_id")
+      .select("*")
       .eq("user_id", userId)
       .maybeSingle()
-      .then(({ data, error }) => setIsAdmin(!error && !!data));
+      .then(({ data, error }) => setAccess(!error && data ? { full: data.full_access ?? true, areas: data.areas ?? [] } : null));
   }, [userId]);
 
   if (session === undefined) return <Loading />;
   if (!session) return <SignIn />;
   if (needsPassword) return <SetPassword onDone={() => setNeedsPassword(false)} />;
-  if (isAdmin === undefined) return <Loading />;
-  if (!isAdmin) return <NoAccess email={session.user.email} />;
-  return <Editor session={session} />;
+  if (access === undefined) return <Loading />;
+  if (!access) return <NoAccess email={session.user.email} />;
+  return <Editor session={session} access={access} />;
 }
 
 createRoot(document.getElementById("root")!).render(<StrictMode>{supabase ? <Admin /> : <NotConfigured />}</StrictMode>);

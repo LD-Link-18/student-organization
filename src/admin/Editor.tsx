@@ -1,6 +1,8 @@
 import type { Session } from "@supabase/supabase-js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { clearPreview, previewKey, type Preview, type Saved } from "../content/load";
+import { can, editableKeys, rowToSave, type Access } from "./access";
+import { Admins } from "./Admins";
 import { Applications } from "./Applications";
 import { scopes, toDraft, validate, type Draft, type Scope } from "./draft";
 import { EventList } from "./EventList";
@@ -32,10 +34,23 @@ function sectionOf(scope: Scope, top: string) {
   return sections.find((s) => (scope === "site" ? (s.site as string[]) : (s.content as string[])).includes(top))?.id ?? sections[0].id;
 }
 
-export function Editor({ session }: { session: Session }) {
+/** Panel pages besides the content sections, each shown only to those who may use it. */
+const pageTitles = { history: "History", "event-list": "Event list", applications: "Applications", pitches: "Project pitches", admins: "Admins" };
+type Page = keyof typeof pageTitles;
+
+export function Editor({ session, access }: { session: Session; access: Access }) {
+  /** The content sections this admin may edit, and the other pages they may open. */
+  const mine = useMemo(() => sections.filter((s) => can(access, s.id)), [access]);
+  const pages = useMemo(
+    () =>
+      (Object.keys(pageTitles) as Page[]).filter((p) =>
+        p === "history" ? mine.length > 0 : p === "event-list" ? can(access, "event-list") || can(access, "signups") : p === "admins" ? access.full : can(access, p),
+      ),
+    [access, mine],
+  );
   const [baseline, setBaseline] = useState<{ draft: Draft; stamps: Stamps } | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
-  const [active, setActive] = useState(sections[0].id);
+  const [active, setActive] = useState<string>(() => mine[0]?.id ?? pages[0] ?? "history");
   const [status, setStatus] = useState<{ text: string; error?: boolean }>({ text: "" });
   const [saving, setSaving] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
@@ -55,11 +70,24 @@ export function Editor({ session }: { session: Session }) {
     load();
   }, [load]);
 
-  const errors = useMemo(() => (draft ? validate(draft) : new Map<string, string>()), [draft]);
-  const changed = useMemo(
-    () => (draft && baseline ? scopes.filter((s) => JSON.stringify(draft[s]) !== JSON.stringify(baseline.draft[s])) : []),
-    [draft, baseline],
-  );
+  /** Only the parts this admin edits count: problems and changes elsewhere aren't theirs to fix or save. */
+  const errors = useMemo(() => {
+    if (!draft) return new Map<string, string>();
+    const all = validate(draft);
+    if (access.full) return all;
+    return new Map(
+      [...all].filter(([key]) => {
+        const [scope, path] = key.split(":") as [Scope, string];
+        return editableKeys(access, scope).includes(path.split(".")[0]);
+      }),
+    );
+  }, [draft, access]);
+  const changed = useMemo(() => {
+    if (!draft || !baseline) return [];
+    const mineOf = (scope: Scope, data: unknown) =>
+      access.full ? data : editableKeys(access, scope).map((k) => (data as Record<string, unknown>)[k]);
+    return scopes.filter((s) => JSON.stringify(mineOf(s, draft[s])) !== JSON.stringify(mineOf(s, baseline.draft[s])));
+  }, [draft, baseline, access]);
 
   // Keeps the draft where preview tabs (same browser) read it; they redraw on every change. Only while
   // something is unsaved: once saved (or undone), the draft goes and they show the live site.
@@ -106,17 +134,20 @@ export function Editor({ session }: { session: Session }) {
     setSaving(true);
     setStatus({ text: "Saving…" });
     try {
-      // Someone else may have saved since this page loaded: don't overwrite their work silently.
-      const { stamps } = await fetchRows();
+      // Someone else may have saved since this page loaded: don't overwrite their work silently. (An admin who
+      // isn't full only saves their own sections over the latest version, so they keep everyone else's.)
+      const { saved: latest, stamps } = await fetchRows();
       const newer = changed.filter((s) => stamps[s]?.at !== baseline.stamps[s]?.at);
-      if (newer.length) {
+      if (access.full && newer.length) {
         const who = newer.map((s) => `${partNames[s]} by ${stamps[s]?.by ?? "someone"}`).join(", ");
         if (!confirm(`Changes were saved after you opened the editor (${who}). Saving now replaces them with your version. Continue?`)) {
           setStatus({ text: "Not saved. Reload the page to see the other changes (your edits here will be lost)." });
           return;
         }
       }
-      const { error } = await supabase!.from("content").upsert(changed.map((key) => ({ key, data: draft[key] })));
+      const { error } = await supabase!
+        .from("content")
+        .upsert(changed.map((key) => ({ key, data: rowToSave(access, key, latest[key], draft[key] as unknown as Record<string, unknown>) })));
       if (error) throw error;
       await load();
       setStatus({ text: "Saved. Visitors see the changes on their next page load." });
@@ -134,7 +165,7 @@ export function Editor({ session }: { session: Session }) {
     setStatus({ text: `Loaded the version from ${label}. Check it, then save to publish it.` });
   }
 
-  const section = sections.find((s) => s.id === active);
+  const section = mine.find((s) => s.id === active);
   const navButton = (id: string, title: string, count = 0) => (
     <button
       key={id}
@@ -184,12 +215,9 @@ export function Editor({ session }: { session: Session }) {
 
         <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] gap-6 px-4 py-6 md:grid-cols-[13rem_minmax(0,1fr)]">
           <nav aria-label="Sections" className="-mx-4 flex min-w-0 gap-1 overflow-x-auto px-4 md:sticky md:top-20 md:mx-0 md:flex-col md:self-start md:overflow-visible md:px-0">
-            {sections.map((s) => navButton(s.id, s.title, errorCounts.get(s.id)))}
-            <hr className="my-2 hidden border-ink/15 md:block" />
-            {navButton("history", "History")}
-            {navButton("event-list", "Event list")}
-            {navButton("applications", "Applications")}
-            {navButton("pitches", "Project pitches")}
+            {mine.map((s) => navButton(s.id, s.title, errorCounts.get(s.id)))}
+            {mine.length > 0 && pages.length > 0 && <hr className="my-2 hidden border-ink/15 md:block" />}
+            {pages.map((p) => navButton(p, pageTitles[p]))}
           </nav>
           <main className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-6">
             {section ? (
@@ -199,66 +227,71 @@ export function Editor({ session }: { session: Session }) {
             ) : active === "pitches" ? (
               <Pitches />
             ) : active === "event-list" ? (
-              <EventList />
+              <EventList access={access} />
+            ) : active === "admins" ? (
+              <Admins self={session.user.id} />
             ) : (
               <History onLoad={loadVersion} />
             )}
           </main>
         </div>
 
-        <footer className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-ink bg-paper">
-          {showErrors && errors.size > 0 && (
-            <ul className="mx-auto grid max-h-48 max-w-7xl gap-1 overflow-y-auto px-4 pt-3 text-sm">
-              {[...errors].map(([key, message]) => {
-                const [scope, path] = key.split(":") as [Scope, string];
-                return (
-                  <li key={key}>
-                    <button type="button" onClick={() => setActive(sectionOf(scope, path.split(".")[0]))} className="text-left hover:underline">
-                      <span className="font-semibold">
-                        {partNames[scope]} · {path.replaceAll(".", " › ")}
-                      </span>
-                      : <span className="text-red-700">{message}</span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
-            <p className={`min-w-0 flex-1 text-sm ${status.error ? "font-medium text-red-700" : "text-ink/70"}`} role="status">
-              {status.text ||
-                (changed.length ? `Unsaved changes: ${changed.map((s) => partNames[s]).join(", ")}` : "All changes saved.")}
-            </p>
-            {errors.size > 0 && (
-              <button type="button" onClick={() => setShowErrors((v) => !v)} className="text-sm font-semibold text-red-700 hover:underline">
-                {errors.size} {errors.size === 1 ? "problem" : "problems"}
-              </button>
+        {/* Save, preview, discard: for the content sections, so only for admins who have some */}
+        {mine.length > 0 && (
+          <footer className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-ink bg-paper">
+            {showErrors && errors.size > 0 && (
+              <ul className="mx-auto grid max-h-48 max-w-7xl gap-1 overflow-y-auto px-4 pt-3 text-sm">
+                {[...errors].map(([key, message]) => {
+                  const [scope, path] = key.split(":") as [Scope, string];
+                  return (
+                    <li key={key}>
+                      <button type="button" onClick={() => setActive(sectionOf(scope, path.split(".")[0]))} className="text-left hover:underline">
+                        <span className="font-semibold">
+                          {partNames[scope]} · {path.replaceAll(".", " › ")}
+                        </span>
+                        : <span className="text-red-700">{message}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             )}
-            <a
-              href={previewUrl((section ?? sections[0]).preview(draft))}
-              target="site-preview"
-              className="btn btn-paper min-h-10 px-4 text-sm"
-              title="Opens the site with your unsaved changes in another tab; it updates as you edit."
-            >
-              Preview
-            </a>
-            <button
-              type="button"
-              disabled={!changed.length || saving}
-              onClick={() => {
-                if (!confirm("Discard all unsaved changes?")) return;
-                setDraft(baseline.draft);
-                setStatus({ text: "" });
-              }}
-              className="btn btn-paper min-h-10 px-4 text-sm"
-            >
-              Discard
-            </button>
-            <button type="button" disabled={!changed.length || saving} onClick={save} className="btn btn-lime min-h-10 px-5 text-sm">
-              {saving ? "Saving…" : "Save"}
-            </button>
-          </div>
-        </footer>
+            <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
+              <p className={`min-w-0 flex-1 text-sm ${status.error ? "font-medium text-red-700" : "text-ink/70"}`} role="status">
+                {status.text ||
+                  (changed.length ? `Unsaved changes: ${changed.map((s) => partNames[s]).join(", ")}` : "All changes saved.")}
+              </p>
+              {errors.size > 0 && (
+                <button type="button" onClick={() => setShowErrors((v) => !v)} className="text-sm font-semibold text-red-700 hover:underline">
+                  {errors.size} {errors.size === 1 ? "problem" : "problems"}
+                </button>
+              )}
+              <a
+                href={previewUrl((section ?? mine[0] ?? sections[0]).preview(draft))}
+                target="site-preview"
+                className="btn btn-paper min-h-10 px-4 text-sm"
+                title="Opens the site with your unsaved changes in another tab; it updates as you edit."
+              >
+                Preview
+              </a>
+              <button
+                type="button"
+                disabled={!changed.length || saving}
+                onClick={() => {
+                  if (!confirm("Discard all unsaved changes?")) return;
+                  setDraft(baseline.draft);
+                  setStatus({ text: "" });
+                }}
+                className="btn btn-paper min-h-10 px-4 text-sm"
+              >
+                Discard
+              </button>
+              <button type="button" disabled={!changed.length || saving} onClick={save} className="btn btn-lime min-h-10 px-5 text-sm">
+                {saving ? "Saving…" : "Save"}
+              </button>
+            </div>
+          </footer>
+        )}
       </div>
     </EditorContext.Provider>
   );
