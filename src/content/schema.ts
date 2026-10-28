@@ -124,17 +124,37 @@ export const contentSchema = z.object({
     nextUp: text,
     rsvp: text,
     rsvpClosed: text,
-    items: z.array(
-      z.object({
-        day: text,
-        month: text,
-        title: text,
-        category: text,
-        description: text,
-        place: text,
-        rsvpOpen: z.optional(z.boolean()),
-      }),
-    ),
+    ongoing: text,
+    empty: text,
+    seeAll: text,
+    page: z.object({ title: text, intro: text, upcoming: text, past: text }),
+    detail: z.object({ pastBadge: text, photos: text, close: text, previous: text, next: text }),
+    signup: z.object({
+      title: text,
+      intro: text,
+      full: text,
+      name: text,
+      email: text,
+      studentNo: text,
+      phone: text,
+      optional: text,
+      required: text,
+      invalidEmail: text,
+      invalidStudentNo: text,
+      invalidPhone: text,
+      tooLong: text,
+      noticeTitle: text,
+      notice: text,
+      consent: text,
+      submit: text,
+      sending: text,
+      done: text,
+      waitlisted: text,
+      closed: text,
+      duplicate: text,
+      busy: text,
+      failed: text,
+    }),
   }),
   team: z.object({
     title: pair,
@@ -200,6 +220,82 @@ export const siteSchema = z.object({
     .array(z.object({ name: text, tier: z.enum(sponsorTiers), href: requiredLink, logo: z.optional(link) }))
     .check(z.superRefine(unique((s) => s.name, "sponsor name"))),
 });
+
+/** A calendar day, as Postgres sends a `date`: 2026-10-20. */
+const day = z.string().check(z.regex(/^\d{4}-\d{2}-\d{2}$/, "Pick a date"));
+
+const upTo = (max: number) => z.string().check(z.refine((s) => s.trim() !== "", "Required"), z.maxLength(max, `At most ${max} characters`));
+
+/**
+ * A row of the `events` table (supabase/migrations/0005_events.sql), in both languages. Rows come from the
+ * database, which has the same rules; the site still checks them and leaves out any row that fails, and the
+ * panel checks an event with them before saving it.
+ */
+export const eventRowSchema = z
+  .object({
+    id: z.number(),
+    starts_on: day,
+    ends_on: z.nullable(day),
+    title_tr: upTo(120),
+    title_en: upTo(120),
+    category_tr: upTo(40),
+    category_en: upTo(40),
+    place_tr: upTo(80),
+    place_en: upTo(80),
+    description_tr: upTo(1000),
+    description_en: upTo(1000),
+    rsvp_open: z.boolean(),
+  })
+  .check(z.refine((e) => !e.ends_on || e.ends_on >= e.starts_on, { message: "Can't end before it starts", path: ["ends_on"] }));
+export type EventRow = z.infer<typeof eventRowSchema>;
+
+/** A photo file in the site-assets bucket, as 0006_event_pages.sql allows it. */
+const photoPath = z.string().check(z.regex(/^events\/\d+\/[A-Za-z0-9_-]+\.(webp|jpg)$/));
+export const eventPhotoSchema = z.object({ src: photoPath, thumb: photoPath, w: z.number(), h: z.number() });
+export type EventPhoto = z.infer<typeof eventPhotoSchema>;
+
+/** Short, fixed ids for questions and options, so renaming one keeps the answers given before. */
+const formId = z.string().check(z.regex(/^[a-z0-9]{1,16}$/));
+export const questionTypes = ["text", "textarea", "one", "many", "yesno"] as const;
+
+/**
+ * An event's sign-up form (supabase/migrations/0007_event_signups.sql, `event_form_valid` there has the same
+ * rules): name, email and consent are always asked; student number and phone when switched on; then the
+ * questions. "one" and "many" questions have 2 to 30 options.
+ */
+export const eventFormSchema = z.object({
+  ask_student_no: z.boolean(),
+  ask_phone: z.boolean(),
+  questions: z
+    .array(
+      z.object({
+        id: formId,
+        type: z.enum(questionTypes),
+        label_tr: upTo(300),
+        label_en: upTo(300),
+        required: z.boolean(),
+        options: z.optional(z.array(z.object({ id: formId, tr: upTo(120), en: upTo(120) }))),
+      }),
+    )
+    .check(z.maxLength(30, "At most 30 questions")),
+});
+export type EventForm = z.infer<typeof eventFormSchema>;
+export type FormQuestion = EventForm["questions"][number];
+export const emptyForm: EventForm = { ask_student_no: false, ask_phone: false, questions: [] };
+
+/**
+ * What only an event's own page needs (supabase/migrations/0006_event_pages.sql, 0007_event_signups.sql): the
+ * long write-up in both languages (empty: the short description instead), the photos, and the sign-up form with
+ * its number of places (null: no limit). Loaded by that page alone, so the lists stay light.
+ */
+export const eventExtrasSchema = z.object({
+  details_tr: z.string().check(z.maxLength(10000, "At most 10000 characters")),
+  details_en: z.string().check(z.maxLength(10000, "At most 10000 characters")),
+  photos: z.array(eventPhotoSchema).check(z.maxLength(100, "At most 100 photos")),
+  form: eventFormSchema,
+  capacity: z.nullable(z.number()),
+});
+export type EventExtras = z.infer<typeof eventExtrasSchema>;
 
 /** `T` without its function-valued fields (the copy that needs code, like plural rules). */
 type Data<T> = T extends (...args: never[]) => unknown

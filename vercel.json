@@ -29,6 +29,10 @@
     { "source": "/projeler/:slug", "destination": "/projeler/index.html" },
     { "source": "/projeler/:slug/", "destination": "/projeler/index.html" },
     { "source": "/en/projects/:slug", "destination": "/en/projects/index.html" },
-    { "source": "/en/projects/:slug/", "destination": "/en/projects/index.html" }
+    { "source": "/en/projects/:slug/", "destination": "/en/projects/index.html" },
+    { "source": "/etkinlikler/:slug", "destination": "/etkinlikler/index.html" },
+    { "source": "/etkinlikler/:slug/", "destination": "/etkinlikler/index.html" },
+    { "source": "/en/events/:slug", "destination": "/en/events/index.html" },
+    { "source": "/en/events/:slug/", "destination": "/en/events/index.html" }
   ]
 }

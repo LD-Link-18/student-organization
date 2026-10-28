@@ -19,6 +19,8 @@ The site ships in two languages as two HTML entries:
 | `/en/`             | `en/index.html`             | English site                 |
 | `/projeler/…`      | `projeler/index.html`       | Turkish project list + pages |
 | `/en/projects/…`   | `en/projects/index.html`    | English project list + pages |
+| `/etkinlikler/…`   | `etkinlikler/index.html`    | Turkish events + event pages |
+| `/en/events/…`     | `en/events/index.html`      | English events + event pages |
 | `/yakinda/`        | `yakinda/index.html`        | Turkish "coming soon" page   |
 | `/en/coming-soon/` | `en/coming-soon/index.html` | English "coming soon" page   |
 | any unknown URL    | `404.html`                  | 404 page (EN under `/en/…`)  |
@@ -45,8 +47,9 @@ panel (and everything, if the panel isn't set up). Edits saved in the panel win 
 
 Other notes:
 
-- Events (`events.items` in both language files): `day` takes one day (`"14"`) or a range (`"13–15"`, en dash).
-  The "Join" button is shown disabled until you add `rsvpOpen: true` to the event; then it links to Discord.
+- Events aren't in the language files: they're in the database, edited in the admin panel (see
+  [Events](#events)). The "Join" button is shown disabled until an event's "RSVP open" is on; then it links to
+  Discord.
 - Team cards: add `href: "…"` to a member in **both** `tr.ts` and `en.ts` and the whole card links there (new
   tab). Leave it out and the card is a plain, non-clickable card. Adding `role: "…"` shows a role pill.
 - Team avatars are geometric placeholders (`src/components/Avatar.tsx`); swap for `<img>` when photos exist.
@@ -89,8 +92,9 @@ form in `src/admin/sections.tsx` if it should be editable.
 
 1. Create a project at [supabase.com](https://supabase.com) (the free plan is enough).
 2. In its **SQL Editor**, run the files in [`supabase/migrations/`](supabase/migrations/) in order:
-   `0001_admin.sql`, `0002_hardening.sql`, `0003_applications.sql`, `0004_project_pitches.sql`. (Already set
-   up? Run only the ones you haven't, each once.)
+   `0001_admin.sql`, `0002_hardening.sql`, `0003_applications.sql`, `0004_project_pitches.sql`,
+   `0005_events.sql`, `0006_event_pages.sql`, `0007_event_signups.sql`. (Already set up? Run only the ones
+   you haven't, each once.)
 3. **Authentication → Sign In / Providers**: turn off **Allow new users to sign up**, so only invited people
    get accounts, and under **Email** set **Minimum password length** to at least 10 (the panel's own check is
    only a hint; Supabase's default is 6). **Authentication → URL Configuration**: set **Site URL** to
@@ -145,6 +149,43 @@ and delete. The same protections apply as for applications (insert-only for visi
 a hidden spam field), with tighter limits: 10 per IP in 10 minutes, 100 in total per hour.
 
 The page lives in `public/proje-oner/` and borrows `style.css` and `supabase.js` from `public/basvuru/`.
+
+### Events
+
+Events live in the `events` table, each with a real date (or first and last day) and its texts in both
+languages. The site sorts them itself: the homepage lists the next four (the first marked "next up", or
+"happening now" once it has started) with a button to `/etkinlikler/` (`/en/events/`), which lists every
+event: upcoming soonest first, then past ones most recent first, with their year and without the RSVP button.
+An event counts as past from the day after it ends, in Turkish time.
+
+Each event also has its own page, `/etkinlikler/<number>-<title>/` (`/en/events/…`), opened from the lists: the
+date, place and RSVP button, the full write-up (or the short description when there is none), and photos from the
+event in a grid that opens each one large. Only the number finds the event, so links keep working after a rename
+(the address then corrects itself). The write-up and photos load only on that page, keeping the lists light.
+
+**Event list** in the admin panel adds, changes and deletes events; each change is saved at once, without the
+Save button or History. Editing an event also manages its photos: they're scaled down in the browser (at
+most 2000 px, under the bucket's 2 MB limit, plus a 600 px copy for the grid), stored in `site-assets` under
+`events/<number>/`, and saved as soon as they're added, moved or removed; deleting an event deletes its photos.
+
+### Event sign-ups
+
+Each event can take sign-ups on its own page. In the Event list, an event's **Sign-up form** sets:
+
+- whether to also ask for the student number and/or phone (name, email and the KVKK consent are always asked);
+- **Places**: empty for no limit; once they're taken, new sign-ups go on the waitlist (the form says so);
+- its own questions: short text, long text, pick one, pick several, yes/no, each optional or required.
+
+The form shows while "RSVP open" is on and the event hasn't ended; every "Join" button for the event leads to
+it. The texts around the form (headings, messages, the KVKK notice) are in the **Events** section.
+
+Visitors can't touch the `event_signups` table: they sign up through the database function
+`sign_up_for_event()` (`0007_event_signups.sql`), which checks that sign-ups are open, that the answers fit the
+form, that the email hasn't signed up already, and the rate limits (30 per IP in 10 minutes, 500 in total per
+hour), then gives a place or a waitlist spot. **Sign-ups** on each event in the Event list shows who signed up,
+moves people between the list and the waitlist ("Give a place" when someone drops out), deletes sign-ups and
+downloads them as CSV. The privacy notice promises deletion after the event: use "Delete all" then. The texts around them (headings, badges, the events page intro) stay in the **Events**
+section. Visitors can read events but not who saved them; only admins can change them.
 
 Note: Supabase pauses free projects after a week without any requests. Regular visits to the site keep it awake;
 if it ever pauses, the site falls back to the defaults until you restore the project in the Supabase dashboard.

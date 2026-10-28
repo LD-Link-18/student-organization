@@ -12,10 +12,10 @@ const locale = new URLSearchParams(window.location.search).get("lang") === "en" 
 document.documentElement.lang = locale; // Turkish capitals (İ) need lang="tr"
 
 fetchSaved().then((saved) => {
-  const { content, site } = resolve(locale, saved);
+  const { content, site, events } = resolve(locale, saved);
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
-      <ContentProvider content={content} site={site}>
+      <ContentProvider content={content} site={site} events={events}>
         <OgImage />
       </ContentProvider>
     </StrictMode>,

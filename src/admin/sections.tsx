@@ -107,7 +107,7 @@ function ClubForm() {
         <List scope="site" path={["club", "socials"]} label="Social channels" hint="Leave a channel empty and its links go to the coming-soon page." itemTitle={useSocialTitle()} fixed>
           {(i) => <Text scope="site" path={["club", "socials", i, "href"]} label="Address" hint={linkHint} />}
         </List>
-        <Text scope="site" path={["discordHref"]} label="Discord invite (event RSVPs)" hint="Empty: RSVP buttons go to the coming-soon page." />
+        <Text scope="site" path={["discordHref"]} label="Discord invite" hint="Not used at the moment: events take sign-ups on their own pages (Event list)." />
       </Group>
     </>
   );
@@ -372,35 +372,64 @@ function ProjectPageForm() {
 }
 
 function EventsForm() {
-  const draft = useDraft();
   return (
-    <Group title="Events">
-      <BiText path={["events", "title"]} label="Heading" />
-      <BiText path={["events", "calendar"]} label="Calendar label" />
-      <BiText path={["events", "nextUp"]} label='"Next up" badge' />
-      <BiText path={["events", "rsvp"]} label="RSVP button" />
-      <BiText path={["events", "rsvpClosed"]} label="Closed RSVP note (screen readers)" hint="Starts with a space." />
-      <List
-        path={["events", "items"]}
-        label="Events"
-        hint="Listed in this order; the first one is marked as next up."
-        itemTitle={(i) => draft.tr.events.items[i]?.title}
-        newItem={() => ({ day: "", month: "", title: "", category: "", description: "", place: "" })}
-        addLabel="Add event"
+    <>
+      <Group
+        title="Events"
+        hint="The texts around the events. The events themselves (dates, titles, places) are on the Event list page, where each change is saved at once."
       >
-        {(i) => (
-          <>
-            <BiText path={["events", "items", i, "title"]} label="Title" />
-            <BiText path={["events", "items", i, "day"]} label="Day" hint='One day ("14") or a range ("13–15", with an en dash).' />
-            <BiText path={["events", "items", i, "month"]} label="Month" placeholder="Eki / Oct" />
-            <BiText path={["events", "items", i, "category"]} label="Category" />
-            <BiText path={["events", "items", i, "place"]} label="Place" />
-            <BiText path={["events", "items", i, "description"]} label="Description" multiline />
-            <Toggle scope="both" path={["events", "items", i, "rsvpOpen"]} label="RSVP open" hint="Off: the button is shown disabled." />
-          </>
-        )}
-      </List>
-    </Group>
+        <BiText path={["events", "title"]} label="Heading" hint="Homepage, above the next few events." />
+        <BiText path={["events", "calendar"]} label="Calendar label" />
+        <BiText path={["events", "nextUp"]} label='"Next up" badge' hint="On the first upcoming event." />
+        <BiText path={["events", "ongoing"]} label='"Happening now" badge' hint="Instead of next up, once the first event has started." />
+        <BiText path={["events", "empty"]} label="No upcoming events" hint="Shown when nothing is coming up." multiline />
+        <BiText path={["events", "seeAll"]} label="All events button" />
+        <BiText path={["events", "rsvp"]} label="RSVP button" />
+        <BiText path={["events", "rsvpClosed"]} label="Closed RSVP note (screen readers)" hint="Starts with a space." />
+      </Group>
+      <Group title="Events page" hint="/etkinlikler/ and /en/events/: every event, upcoming soonest first, then past ones.">
+        <BiText path={["events", "page", "title"]} label="Title" />
+        <BiText path={["events", "page", "intro"]} label="Intro" multiline />
+        <BiText path={["events", "page", "upcoming"]} label="Upcoming heading" />
+        <BiText path={["events", "page", "past"]} label="Past heading" />
+      </Group>
+      <Group title="Event pages" hint="Each event's own page (/etkinlikler/<number>-<title>/), opened from the lists.">
+        <BiText path={["events", "detail", "pastBadge"]} label='"Past event" badge' />
+        <BiText path={["events", "detail", "photos"]} label="Photos heading" />
+        <BiText path={["events", "detail", "close"]} label="Photo viewer: close" />
+        <BiText path={["events", "detail", "previous"]} label="Photo viewer: previous (screen readers)" />
+        <BiText path={["events", "detail", "next"]} label="Photo viewer: next (screen readers)" />
+      </Group>
+      <Group
+        title="Sign-up forms"
+        hint="The texts every event's sign-up form shares. Each event's own questions, places and on/off switch are in the Event list."
+      >
+        <BiText path={["events", "signup", "title"]} label="Heading" />
+        <BiText path={["events", "signup", "intro"]} label="Intro" />
+        <BiText path={["events", "signup", "full"]} label="When every place is taken" multiline />
+        <BiText path={["events", "signup", "name"]} label="Name field" />
+        <BiText path={["events", "signup", "email"]} label="Email field" />
+        <BiText path={["events", "signup", "studentNo"]} label="Student number field" />
+        <BiText path={["events", "signup", "phone"]} label="Phone field" />
+        <BiText path={["events", "signup", "optional"]} label='"Optional" note' hint="After questions that aren't required." />
+        <BiText path={["events", "signup", "noticeTitle"]} label="Privacy notice title" />
+        <BiText path={["events", "signup", "notice"]} label="Privacy notice (KVKK)" hint="A blank line starts a new paragraph. Have the board check it." multiline />
+        <BiText path={["events", "signup", "consent"]} label="Consent checkbox" multiline />
+        <BiText path={["events", "signup", "submit"]} label="Send button" />
+        <BiText path={["events", "signup", "sending"]} label="While sending" />
+        <BiText path={["events", "signup", "done"]} label="Signed up" />
+        <BiText path={["events", "signup", "waitlisted"]} label="Put on the waitlist" multiline />
+        <BiText path={["events", "signup", "required"]} label="Error: required" />
+        <BiText path={["events", "signup", "invalidEmail"]} label="Error: email" />
+        <BiText path={["events", "signup", "invalidStudentNo"]} label="Error: student number" />
+        <BiText path={["events", "signup", "invalidPhone"]} label="Error: phone" />
+        <BiText path={["events", "signup", "tooLong"]} label="Error: answer too long" />
+        <BiText path={["events", "signup", "closed"]} label="Error: sign-ups closed" />
+        <BiText path={["events", "signup", "duplicate"]} label="Error: already signed up" />
+        <BiText path={["events", "signup", "busy"]} label="Error: too many at once" />
+        <BiText path={["events", "signup", "failed"]} label="Error: couldn't send" />
+      </Group>
+    </>
   );
 }
 

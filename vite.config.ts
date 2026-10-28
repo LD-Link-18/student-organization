@@ -149,7 +149,8 @@ function socialMeta(): Plugin {
   };
 }
 
-// Turkish at / (default) and English at /en/, project pages (/projeler/, /en/projects/), a
+// Turkish at / (default) and English at /en/, project pages (/projeler/, /en/projects/), all events
+// (/etkinlikler/, /en/events/), a
 // "coming soon" page per language for links that aren't set up yet, and a shared 404 page.
 // All load src/main.tsx, which picks the language from <html lang> and the page from
 // <html data-page>. The admin panel at /admin/ loads src/admin/main.tsx instead.
@@ -165,6 +166,8 @@ export default defineConfig({
         soonEn: path.resolve(import.meta.dirname, "en/coming-soon/index.html"),
         projectsTr: path.resolve(import.meta.dirname, "projeler/index.html"),
         projectsEn: path.resolve(import.meta.dirname, "en/projects/index.html"),
+        eventsTr: path.resolve(import.meta.dirname, "etkinlikler/index.html"),
+        eventsEn: path.resolve(import.meta.dirname, "en/events/index.html"),
         // Served by Vercel (and most static hosts) for unknown URLs.
         notFound: path.resolve(import.meta.dirname, "404.html"),
         // Content editor (noindex); its own bundle, so supabase-js never loads on the public pages.

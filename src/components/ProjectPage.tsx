@@ -1,6 +1,6 @@
 import { useEffect, type CSSProperties } from "react";
 import { useContent, useResolveLink, useSite } from "../content/i18n";
-import { projectHref, projectsPath, type AvatarVariant } from "../content/site";
+import { projectHref, projectsPath, slugFromPath, type AvatarVariant } from "../content/site";
 import type { Project } from "../content/types";
 import { MemberCard } from "./MemberCard";
 import { NotFound } from "./NotFound";
@@ -257,20 +257,6 @@ function ProjectDetail({ project: p, next }: { project: Project; next: Project }
       </section>
     </>
   );
-}
-
-/** Slug from /projeler/<slug>/ (/en/projects/<slug>/); undefined on the list page itself. */
-function slugFromPath(listPath: string) {
-  const { pathname } = window.location;
-  if (!pathname.startsWith(listPath)) return undefined;
-  const raw = pathname.slice(listPath.length);
-  let slug = raw;
-  try {
-    slug = decodeURIComponent(raw);
-  } catch {
-    // Malformed escape: keep it as is, so it matches no project and shows the 404 view.
-  }
-  return slug.replace(/\/+$/, "") || undefined;
 }
 
 /**

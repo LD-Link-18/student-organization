@@ -37,7 +37,6 @@ export function toDraft(saved: Saved | null): Draft {
     c.stats,
     c.areas.items,
     c.projects.items,
-    c.events.items,
     c.team.people,
     c.sponsors.tiers,
     c.soon.status.steps,

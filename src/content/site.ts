@@ -86,6 +86,49 @@ export const socialHref = (site: SiteData, source: LinkSource) => site.club.soci
 export const projectsPath: Record<"tr" | "en", string> = { tr: "/projeler/", en: "/en/projects/" };
 export const projectHref = (locale: "tr" | "en", slug: string) => `${projectsPath[locale]}${slug}/`;
 
+/** Every event, past and future (src/components/EventsPage.tsx). */
+export const eventsPath: Record<"tr" | "en", string> = { tr: "/etkinlikler/", en: "/en/events/" };
+
+/** Lowercase ASCII words joined by dashes, for addresses: "Görüntü İşleme Semineri" → "goruntu-isleme-semineri". */
+export const slugify = (s: string) =>
+  s
+    .toLocaleLowerCase("tr")
+    .replaceAll("ı", "i")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .slice(0, 60)
+    .replace(/^-+|-+$/g, "");
+
+/**
+ * An event's own page: /etkinlikler/12-ros-2-atolyesi/. Only the number finds the event, so the title part can
+ * change (a renamed event) without breaking links shared earlier.
+ */
+export const eventHref = (locale: "tr" | "en", e: { id: number; title: string }) => {
+  const words = slugify(e.title);
+  return `${eventsPath[locale]}${e.id}${words ? `-${words}` : ""}/`;
+};
+
+/** The event number at the start of an event page's slug ("12-ros-2-atolyesi" → 12). */
+export const eventIdFromSlug = (slug: string) => {
+  const match = /^(\d+)(-|$)/.exec(slug);
+  return match ? Number(match[1]) : undefined;
+};
+
+/** Slug from /projeler/<slug>/ (or /etkinlikler/<slug>/ …); undefined on the list page itself. */
+export function slugFromPath(listPath: string) {
+  const { pathname } = window.location;
+  if (!pathname.startsWith(listPath)) return undefined;
+  const raw = pathname.slice(listPath.length);
+  let slug = raw;
+  try {
+    slug = decodeURIComponent(raw);
+  } catch {
+    // Malformed escape: keep it as is, so it matches nothing and shows the 404 view.
+  }
+  return slug.replace(/\/+$/, "") || undefined;
+}
+
 /** The "coming soon" page per language (separate HTML entries, see vite.config.ts). */
 export const comingSoonPath: Record<"tr" | "en", string> = { tr: "/yakinda/", en: "/en/coming-soon/" };
 

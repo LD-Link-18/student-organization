@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { clearPreview, previewKey, type Preview, type Saved } from "../content/load";
 import { Applications } from "./Applications";
 import { scopes, toDraft, validate, type Draft, type Scope } from "./draft";
+import { EventList } from "./EventList";
 import { EditorContext } from "./fields";
 import { History } from "./History";
 import { Pitches } from "./Pitches";
@@ -186,6 +187,7 @@ export function Editor({ session }: { session: Session }) {
             {sections.map((s) => navButton(s.id, s.title, errorCounts.get(s.id)))}
             <hr className="my-2 hidden border-ink/15 md:block" />
             {navButton("history", "History")}
+            {navButton("event-list", "Event list")}
             {navButton("applications", "Applications")}
             {navButton("pitches", "Project pitches")}
           </nav>
@@ -196,6 +198,8 @@ export function Editor({ session }: { session: Session }) {
               <Applications />
             ) : active === "pitches" ? (
               <Pitches />
+            ) : active === "event-list" ? (
+              <EventList />
             ) : (
               <History onLoad={loadVersion} />
             )}

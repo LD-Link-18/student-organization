@@ -150,17 +150,62 @@ export interface Content {
     rsvpFor: (title: string) => string;
     /** Screen-reader-only text appended to a disabled RSVP button. */
     rsvpClosed: string;
-    items: {
-      /** One day ("14") or a range ("13–15", with an en dash). */
-      day: string;
-      month: string;
+    /** Badge on an event that has started and not yet ended (instead of "next up"). */
+    ongoing: string;
+    /** Homepage, when no event is coming up. */
+    empty: string;
+    /** Homepage button to the events page. */
+    seeAll: string;
+    /** The events page (/etkinlikler/, /en/events/). The events themselves are in the `events` table. */
+    page: {
       title: string;
-      category: string;
-      description: string;
-      place: string;
-      /** Turn the RSVP button on. Left out (or false) the button is shown disabled. */
-      rsvpOpen?: boolean;
-    }[];
+      intro: string;
+      upcoming: string;
+      past: string;
+    };
+    /** Each event's own page (/etkinlikler/<id>-<title>/). */
+    detail: {
+      /** Badge on an event that has ended. */
+      pastBadge: string;
+      photos: string;
+      /** Photo viewer buttons. */
+      close: string;
+      previous: string;
+      next: string;
+      photoAlt: (title: string, n: number) => string;
+      docTitle: (title: string, club: Content["club"]) => string;
+    };
+    /** The sign-up form on an event's page (its questions are set per event in the admin panel). */
+    signup: {
+      title: string;
+      intro: string;
+      placesLeft: (n: number) => string;
+      /** When every place is taken: new sign-ups go on the waitlist. */
+      full: string;
+      name: string;
+      email: string;
+      studentNo: string;
+      phone: string;
+      /** After the label of a question that isn't required. */
+      optional: string;
+      required: string;
+      invalidEmail: string;
+      invalidStudentNo: string;
+      invalidPhone: string;
+      tooLong: string;
+      noticeTitle: string;
+      /** The KVKK privacy notice. */
+      notice: string;
+      consent: string;
+      submit: string;
+      sending: string;
+      done: string;
+      waitlisted: string;
+      closed: string;
+      duplicate: string;
+      busy: string;
+      failed: string;
+    };
   };
 
   team: {

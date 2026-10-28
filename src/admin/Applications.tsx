@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { downloadCsv, formatPhone } from "./csv";
 import { inputClass } from "./fields";
 import { supabase } from "./supabase";
 
@@ -20,9 +21,6 @@ const columns = "id, created_at, email, first_name, last_name, student_no, phone
 /** The API returns at most this many rows per request. */
 const page = 1000;
 
-/** 5321234567 → +90 532 123 45 67 */
-const formatPhone = (p: string) => `+90 ${p.slice(0, 3)} ${p.slice(3, 6)} ${p.slice(6, 8)} ${p.slice(8)}`;
-
 async function fetchAll() {
   const rows: Application[] = [];
   for (let from = 0; ; from += page) {
@@ -37,13 +35,8 @@ async function fetchAll() {
   }
 }
 
-/**
- * Opens in Excel with Turkish characters intact (UTF-8 with BOM). Anyone can send the form, so a value that
- * starts like a formula (=, +, -, @) gets a leading ' to stay text instead of running in the spreadsheet.
- */
-function downloadCsv(rows: Application[]) {
-  const cell = (v: string) => `"${(/^[=+\-@\t\r]/.test(v) ? `'${v}` : v).replaceAll('"', '""')}"`;
-  const lines = [
+function download(rows: Application[]) {
+  downloadCsv("applications", [
     ["Date", "First name", "Last name", "Email", "Phone", "Student number", "Department", "Year", "Form"],
     ...rows.map((a) => [
       new Date(a.created_at).toLocaleString(),
@@ -56,13 +49,7 @@ function downloadCsv(rows: Application[]) {
       a.grade,
       a.lang.toUpperCase(),
     ]),
-  ].map((r) => r.map(cell).join(","));
-  const url = URL.createObjectURL(new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" }));
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `applications-${new Date().toISOString().slice(0, 10)}.csv`;
-  link.click();
-  URL.revokeObjectURL(url);
+  ]);
 }
 
 /** Membership applications, newest first: search, download as CSV, delete on request (KVKK). */
@@ -110,7 +97,7 @@ export function Applications() {
           </p>
         </div>
         {rows && rows.length > 0 && (
-          <button type="button" onClick={() => downloadCsv(shown ?? rows)} className="btn btn-paper min-h-10 px-4 text-sm">
+          <button type="button" onClick={() => download(shown ?? rows)} className="btn btn-paper min-h-10 px-4 text-sm">
             Download CSV{query.trim() ? " (filtered)" : ""}
           </button>
         )}

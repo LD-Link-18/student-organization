@@ -5,6 +5,7 @@ import "@fontsource-variable/inter";
 import "./index.css";
 import App from "./App";
 import { ComingSoon } from "./components/ComingSoon";
+import { EventsPage } from "./components/EventsPage";
 import { NotFound } from "./components/NotFound";
 import { PreviewBanner } from "./components/PreviewBanner";
 import { ProjectPage } from "./components/ProjectPage";
@@ -18,7 +19,7 @@ if (page === "404") {
   document.documentElement.lang = /^\/en(\/|$)/.test(window.location.pathname) ? "en" : "tr";
 }
 
-const pages = { soon: <ComingSoon />, "404": <NotFound />, project: <ProjectPage /> } as const;
+const pages = { soon: <ComingSoon />, "404": <NotFound />, project: <ProjectPage />, events: <EventsPage /> } as const;
 
 const root = createRoot(document.getElementById("root")!);
 const locale = detectLocale();
@@ -40,10 +41,10 @@ function ScrollToHash() {
 }
 
 function render(saved: Saved | null, previewProblems?: number) {
-  const { content, site } = resolve(locale, saved);
+  const { content, site, events } = resolve(locale, saved);
   root.render(
     <StrictMode>
-      <ContentProvider content={content} site={site}>
+      <ContentProvider content={content} site={site} events={events}>
         {pages[page as keyof typeof pages] ?? <App />}
         <ScrollToHash />
         {previewProblems !== undefined && <PreviewBanner problems={previewProblems} />}
@@ -57,7 +58,8 @@ if (inPreview()) {
   // (nothing changed yet, just saved, signed out, or not an admin at all): the live site, without the banner.
   const show = () => {
     const preview = readPreview();
-    if (preview) return render(preview.draft, preview.problems);
+    // Events aren't part of the draft (the panel saves them at once): the last fetched ones.
+    if (preview) return render({ events: readCache()?.events, ...preview.draft }, preview.problems);
     render(readCache());
     fetchSaved().then((fresh) => fresh && render(fresh));
   };

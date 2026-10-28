@@ -47,11 +47,11 @@ export const inputClass = (error?: string) =>
     error ? "border-red-600" : "border-ink/15 hover:border-ink/30"
   }`;
 
-function ErrorText({ error }: { error?: string }) {
+export function ErrorText({ error }: { error?: string }) {
   return error ? <p className="mt-1 text-sm font-medium text-red-700">{error}</p> : null;
 }
 
-function Label({ htmlFor, label, hint }: { htmlFor?: string; label: string; hint?: string }) {
+export function Label({ htmlFor, label, hint }: { htmlFor?: string; label: string; hint?: string }) {
   return (
     <div className="mb-1.5">
       <label htmlFor={htmlFor} className="font-display text-[15px] font-semibold tracking-tight">
@@ -62,11 +62,11 @@ function Label({ htmlFor, label, hint }: { htmlFor?: string; label: string; hint
   );
 }
 
-function LangTag({ label }: { label: string }) {
+export function LangTag({ label }: { label: string }) {
   return <span className="mr-2 rounded-md bg-ink px-1.5 py-0.5 font-display text-[11px] font-bold text-paper">{label}</span>;
 }
 
-function TextInput({
+export function TextInput({
   id,
   value,
   onChange,
