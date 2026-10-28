@@ -33,6 +33,10 @@
     { "source": "/etkinlikler/:slug", "destination": "/etkinlikler/index.html" },
     { "source": "/etkinlikler/:slug/", "destination": "/etkinlikler/index.html" },
     { "source": "/en/events/:slug", "destination": "/en/events/index.html" },
-    { "source": "/en/events/:slug/", "destination": "/en/events/index.html" }
+    { "source": "/en/events/:slug/", "destination": "/en/events/index.html" },
+    { "source": "/etkinlikler/:slug/kayit", "destination": "/etkinlikler/index.html" },
+    { "source": "/etkinlikler/:slug/kayit/", "destination": "/etkinlikler/index.html" },
+    { "source": "/en/events/:slug/signup", "destination": "/en/events/index.html" },
+    { "source": "/en/events/:slug/signup/", "destination": "/en/events/index.html" }
   ]
 }

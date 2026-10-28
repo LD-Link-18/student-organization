@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useContent, useEvents } from "../content/i18n";
 import { splitEvents } from "../content/events";
-import { eventHref, eventIdFromSlug, eventsPath, slugFromPath } from "../content/site";
-import { EventDetail } from "./EventDetail";
+import { eventHref, eventIdFromSlug, eventSignupHref, eventsPath, signupSegment, slugFromPath } from "../content/site";
+import { EventDetail, EventSignup } from "./EventDetail";
 import { EventRow, firstBadge } from "./Events";
 import { NotFound } from "./NotFound";
 import { SubpageLayout } from "./SubpageLayout";
@@ -64,27 +64,29 @@ function EventList() {
 }
 
 /**
- * /etkinlikler/ lists every event; /etkinlikler/<id>-<title>/ is one event's page (same HTML, rewritten by
- * vercel.json). An unknown number shows the 404 page.
+ * /etkinlikler/ lists every event; /etkinlikler/<id>-<title>/ is one event's page and …/kayit/ its sign-up page
+ * (all the same HTML, rewritten by vercel.json). An unknown number or sub-page shows the 404 page.
  */
 export function EventsPage() {
   const { locale } = useContent();
-  const slug = slugFromPath(eventsPath[locale]);
-  const id = slug === undefined ? undefined : eventIdFromSlug(slug);
+  const [slug, sub, ...rest] = (slugFromPath(eventsPath[locale]) ?? "").split("/");
+  const signup = sub === signupSegment[locale];
+  const id = slug ? eventIdFromSlug(slug) : undefined;
   const event = useEvents().find((e) => e.id === id);
+  const missing = !!slug && (!event || (sub !== undefined && !signup) || rest.length > 0);
 
   // The title part of the address follows the event's current title (and language).
   useEffect(() => {
-    if (!event) return;
-    const canonical = eventHref(locale, event);
+    if (!event || missing) return;
+    const canonical = signup ? eventSignupHref(locale, event) : eventHref(locale, event);
     if (window.location.pathname !== canonical) window.history.replaceState(null, "", canonical + window.location.search + window.location.hash);
-  }, [event, locale]);
+  }, [event, locale, signup, missing]);
 
-  if (slug !== undefined && !event) return <NotFound />;
+  if (missing) return <NotFound />;
 
   return (
-    <SubpageLayout hrefFor={(code) => (event ? `${eventsPath[code]}${event.id}/` : eventsPath[code])}>
-      {event ? <EventDetail key={event.id} event={event} /> : <EventList />}
+    <SubpageLayout hrefFor={(code) => (event ? `${eventsPath[code]}${event.id}/${signup ? `${signupSegment[code]}/` : ""}` : eventsPath[code])}>
+      {!event ? <EventList /> : signup ? <EventSignup key={event.id} event={event} /> : <EventDetail key={event.id} event={event} />}
     </SubpageLayout>
   );
 }

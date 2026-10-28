@@ -109,6 +109,10 @@ export const eventHref = (locale: "tr" | "en", e: { id: number; title: string })
   return `${eventsPath[locale]}${e.id}${words ? `-${words}` : ""}/`;
 };
 
+/** An event's sign-up page, below its own: /etkinlikler/12-ros-2-atolyesi/kayit/, /en/events/12-…/signup/. */
+export const signupSegment: Record<"tr" | "en", string> = { tr: "kayit", en: "signup" };
+export const eventSignupHref = (locale: "tr" | "en", e: { id: number; title: string }) => `${eventHref(locale, e)}${signupSegment[locale]}/`;
+
 /** The event number at the start of an event page's slug ("12-ros-2-atolyesi" → 12). */
 export const eventIdFromSlug = (slug: string) => {
   const match = /^(\d+)(-|$)/.exec(slug);

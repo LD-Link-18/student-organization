@@ -176,8 +176,9 @@ Each event can take sign-ups on its own page. In the Event list, an event's **Si
 - **Places**: empty for no limit; once they're taken, new sign-ups go on the waitlist (the form says so);
 - its own questions: short text, long text, pick one, pick several, yes/no, each optional or required.
 
-The form shows while "RSVP open" is on and the event hasn't ended; every "Join" button for the event leads to
-it. The texts around the form (headings, messages, the KVKK notice) are in the **Events** section.
+The form has its own page, `/etkinlikler/<number>-<title>/kayit/` (`/en/events/…/signup/`), so the event page stays
+short and the sign-up link can be shared on its own; every "Join" button for the event leads there. It takes
+sign-ups while "RSVP open" is on and the event hasn't ended; after that the page says sign-ups are closed. The texts around the form (headings, messages, the KVKK notice) are in the **Events** section.
 
 Visitors can't touch the `event_signups` table: they sign up through the database function
 `sign_up_for_event()` (`0007_event_signups.sql`), which checks that sign-ups are open, that the answers fit the

@@ -111,7 +111,7 @@ function Question({ q, value, error, onChange }: { q: FormQuestion; value: Answe
  * An event's sign-up form, built from the questions set for it in the admin panel. Sends through
  * sign_up_for_event(), which checks everything again and answers with a place or the waitlist.
  */
-export function SignupForm({ event: e, form }: { event: ClubEvent; form: EventForm }) {
+export function SignupForm({ event: e, form, after }: { event: ClubEvent; form: EventForm; /** Shown under the confirmation. */ after?: ReactNode }) {
   const { events } = useContent();
   const t = events.signup;
   const id = useId();
@@ -183,8 +183,11 @@ export function SignupForm({ event: e, form }: { event: ClubEvent; form: EventFo
 
   if (result === "confirmed" || result === "waitlist") {
     return (
-      <div role="status" className="rounded-3xl border-2 border-ink bg-lime p-6 shadow-[var(--shadow-brut-sm)] md:p-8">
-        <p className="font-display text-2xl font-bold tracking-tight">{result === "confirmed" ? t.done : t.waitlisted}</p>
+      <div className="grid gap-6">
+        <div role="status" className="rounded-3xl border-2 border-ink bg-lime p-6 shadow-[var(--shadow-brut-sm)] md:p-8">
+          <p className="font-display text-2xl font-bold tracking-tight">{result === "confirmed" ? t.done : t.waitlisted}</p>
+        </div>
+        {after}
       </div>
     );
   }

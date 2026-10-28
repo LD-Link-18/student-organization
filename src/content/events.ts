@@ -77,3 +77,13 @@ export function dateParts(e: ClubEvent, locale: Locale, withYear = false) {
     month: (sameMonth ? month(e.start) : `${month(e.start)}–${month(e.end)}`) + (withYear ? ` ${e.end.slice(0, 4)}` : ""),
   };
 }
+
+/** "20–22 Ekim 2026" / "20–22 October 2026", or one day: the event pages' date. */
+export function fullDate(e: ClubEvent, locale: Locale) {
+  const format = new Intl.DateTimeFormat(locale === "tr" ? "tr-TR" : "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  const date = (s: string) => new Date(`${s}T12:00:00Z`);
+  return e.start === e.end ? format.format(date(e.start)) : format.formatRange(date(e.start), date(e.end));
+}
+
+/** Whether the event takes sign-ups now: switched on, and not over yet. */
+export const signupOpen = (e: ClubEvent, now = today()) => e.rsvpOpen && e.end >= now;

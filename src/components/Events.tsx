@@ -1,6 +1,6 @@
 import { useContent, useEvents } from "../content/i18n";
 import { dateParts, isOngoing, splitEvents, type ClubEvent } from "../content/events";
-import { eventHref, eventsPath } from "../content/site";
+import { eventHref, eventSignupHref, eventsPath } from "../content/site";
 import { ButtonLink } from "./ui/Button";
 import { Reveal } from "./ui/Reveal";
 
@@ -59,7 +59,7 @@ export function EventRow({ event: e, i, badge, past = false, headingLevel = 3 }:
 
         {!past &&
           (e.rsvpOpen ? (
-            <a href={`${eventHref(locale, e)}#signup`} className={`btn btn-paper relative z-10 ${RSVP_PLACEMENT}`}>
+            <a href={eventSignupHref(locale, e)} className={`btn btn-paper relative z-10 ${RSVP_PLACEMENT}`}>
               {events.rsvp}
               <span className="sr-only">{events.rsvpFor(e.title)}</span>
             </a>
