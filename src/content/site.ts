@@ -63,7 +63,7 @@ export interface SiteData {
 export const siteDefaults: SiteData = {
   club: {
     short: "ISC",
-    email: "kou.akillisistemler@gmail.com",
+    email: "info@kouakillisistemler.org",
     joinUrl: "https://kouakillisistemler.org/basvuru",
     projectUrl: "https://kouakillisistemler.org/proje-oner/",
     socials: [

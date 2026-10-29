@@ -375,7 +375,7 @@ export const tr: Content = {
       tooLong: "Bu cevap çok uzun.",
       noticeTitle: "Kişisel Verilerin Korunması Aydınlatma Metni",
       notice:
-        "Kocaeli Üniversitesi Akıllı Sistemler Kulübü olarak bu formda paylaştığın bilgileri, 6698 sayılı Kişisel Verilerin Korunması Kanunu'na (KVKK) uygun olarak yalnızca bu etkinliği düzenlemek ve bu konuda seninle iletişime geçmek için işliyoruz.\n\nBilgilerin, kulübün internet sitesinin kullandığı bulut hizmet sağlayıcısında (Supabase) saklanır; bu sağlayıcının sunucuları yurt dışında bulunabilir. Bilgilerine yalnızca kulüp yönetimi erişir, üçüncü kişilerle paylaşılmaz ve etkinlikten sonra silinir.\n\nKVKK'nın 11. maddesindeki hakların (bilgilerine erişme, düzeltilmesini veya silinmesini isteme vb.) için kou.akillisistemler@gmail.com adresine yazabilirsin.",
+        "Kocaeli Üniversitesi Akıllı Sistemler Kulübü olarak bu formda paylaştığın bilgileri, 6698 sayılı Kişisel Verilerin Korunması Kanunu'na (KVKK) uygun olarak yalnızca bu etkinliği düzenlemek ve bu konuda seninle iletişime geçmek için işliyoruz.\n\nBilgilerin, kulübün internet sitesinin kullandığı bulut hizmet sağlayıcısında (Supabase) saklanır; bu sağlayıcının sunucuları yurt dışında bulunabilir. Bilgilerine yalnızca kulüp yönetimi erişir, üçüncü kişilerle paylaşılmaz ve etkinlikten sonra silinir.\n\nKVKK'nın 11. maddesindeki hakların (bilgilerine erişme, düzeltilmesini veya silinmesini isteme vb.) için info@kouakillisistemler.org adresine yazabilirsin.",
       consent: "Aydınlatma metnini okudum; kişisel verilerimin bu amaçla işlenmesine ve yurt dışında saklanmasına açık rıza veriyorum.",
       submit: "Kaydı gönder",
       sending: "Gönderiliyor…",

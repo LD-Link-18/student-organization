@@ -374,7 +374,7 @@ export const en: Content = {
       tooLong: "This answer is too long.",
       noticeTitle: "Privacy notice (KVKK)",
       notice:
-        "The Smart Systems Club at Kocaeli University processes the details you give in this form only to organise this event and to contact you about it, in line with Turkey's Personal Data Protection Law No. 6698 (KVKK).\n\nYour details are stored with the cloud provider the club's website uses (Supabase), whose servers may be outside Turkey. Only the club's board can see them; they are not shared with anyone else and are deleted after the event.\n\nTo use your rights under Article 11 of the KVKK (to see your data, have it corrected or deleted, and so on), write to kou.akillisistemler@gmail.com.",
+        "The Smart Systems Club at Kocaeli University processes the details you give in this form only to organise this event and to contact you about it, in line with Turkey's Personal Data Protection Law No. 6698 (KVKK).\n\nYour details are stored with the cloud provider the club's website uses (Supabase), whose servers may be outside Turkey. Only the club's board can see them; they are not shared with anyone else and are deleted after the event.\n\nTo use your rights under Article 11 of the KVKK (to see your data, have it corrected or deleted, and so on), write to info@kouakillisistemler.org.",
       consent: "I have read the privacy notice and explicitly consent to my personal data being processed for this purpose and stored outside Turkey.",
       submit: "Sign up",
       sending: "Sending…",
