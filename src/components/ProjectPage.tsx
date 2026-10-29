@@ -1,6 +1,6 @@
 import { useEffect, type CSSProperties } from "react";
-import { useContent, useResolveLink } from "../content/i18n";
-import { club, projectHref, projectsPath, type AvatarVariant } from "../content/site";
+import { useContent, useResolveLink, useSite } from "../content/i18n";
+import { projectHref, projectsPath, slugFromPath, type AvatarVariant } from "../content/site";
 import type { Project } from "../content/types";
 import { MemberCard } from "./MemberCard";
 import { NotFound } from "./NotFound";
@@ -32,6 +32,7 @@ function Fact({ label, value }: { label: string; value: string }) {
 
 function ProjectDetail({ project: p, next }: { project: Project; next: Project }) {
   const t = useContent();
+  const { club } = useSite();
   const pp = t.projectPage;
   const home = useHomeHref();
   const resolve = useResolveLink();
@@ -258,13 +259,6 @@ function ProjectDetail({ project: p, next }: { project: Project; next: Project }
   );
 }
 
-/** Slug from /projeler/<slug>/ (/en/projects/<slug>/); undefined on the list page itself. */
-function slugFromPath(listPath: string) {
-  const { pathname } = window.location;
-  if (!pathname.startsWith(listPath)) return undefined;
-  return decodeURIComponent(pathname.slice(listPath.length)).replace(/\/+$/, "") || undefined;
-}
-
 /**
  * /projeler/ lists every project; /projeler/<slug>/ is that project's page (same HTML, rewritten by
  * vercel.json). Projects come from `projects.items` in tr.ts / en.ts; an unknown slug shows the 404 page.
@@ -278,8 +272,8 @@ export function ProjectPage() {
 
   useEffect(() => {
     if (missing) return; // NotFound sets its own title
-    document.title = project ? t.projectPage.docTitle(project.name) : t.projectPage.listDocTitle;
-  }, [missing, project, t.projectPage]);
+    document.title = project ? t.projectPage.docTitle(project.name, t.club) : t.projectPage.listDocTitle;
+  }, [missing, project, t.projectPage, t.club]);
 
   if (missing) return <NotFound />;
 

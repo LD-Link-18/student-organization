@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
-import { useContent } from "../content/i18n";
-import { club, comingSoonPath, instagramHref, type LinkSource } from "../content/site";
+import { useContent, useSite } from "../content/i18n";
+import { comingSoonPath, socialHref, type LinkSource } from "../content/site";
 import { StandalonePage, useHomeHref } from "./StandalonePage";
 import { Arrow } from "./ui/Arrow";
 import { ButtonLink } from "./ui/Button";
@@ -54,6 +54,9 @@ function StatusCard({ source }: { source?: LinkSource }) {
  */
 export function ComingSoon() {
   const { soon } = useContent();
+  const site = useSite();
+  const { club } = site;
+  const instagramHref = socialHref(site, "instagram");
   const home = useHomeHref();
   const raw = new URLSearchParams(window.location.search).get("l");
   const source = SOURCES.find((s) => s === raw);

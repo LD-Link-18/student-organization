@@ -11,11 +11,11 @@ import { Sponsors } from "./components/Sponsors";
 import { Team } from "./components/Team";
 import { Spark } from "./components/ui/Glyph";
 import { Marquee } from "./components/ui/Marquee";
-import { useContent } from "./content/i18n";
-import { showSponsors } from "./content/site";
+import { useContent, useSite } from "./content/i18n";
 
 export default function App() {
   const t = useContent();
+  const { showSponsors } = useSite();
   const tapeItems = [...t.areas.items.map((a) => a.title), ...t.tapeExtras].map((label) => ({
     key: label,
     node: (

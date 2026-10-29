@@ -1,5 +1,4 @@
 import type { Content } from "./types";
-import { showSponsors } from "./site";
 
 const club = {
   name: "Akıllı Sistemler Kulübü",
@@ -32,7 +31,8 @@ export const tr: Content = {
     { label: "Projeler", href: "#projects" },
     { label: "Etkinlikler", href: "#events" },
     { label: "Ekip", href: "#team" },
-    ...(showSponsors ? [{ label: "Sponsorlar", href: "#sponsors" }] : []),
+    // Hidden while `showSponsors` (admin panel / site.ts) is off.
+    { label: "Sponsorlar", href: "#sponsors" },
   ],
 
   socialFloat: {
@@ -329,7 +329,7 @@ export const tr: Content = {
       pitch: "Proje öner",
     },
     next: "Sıradaki proje",
-    docTitle: (name) => `${name} | ${club.name}`,
+    docTitle: (name, club) => `${name} | ${club.name}`,
     listDocTitle: `Projeler | ${club.name}`,
   },
 
@@ -340,17 +340,52 @@ export const tr: Content = {
     rsvp: "Katıl",
     rsvpFor: (title) => `: ${title}`,
     rsvpClosed: " (şu an kapalı)",
-    items: [
-      {
-        day: "20–22",
-        month: "Eki",
-        title: "Stant Haftası",
-        category: "Stant",
-        description:
-          "Üç gün boyunca stantımızdayız. Projelerimizi yakından görmek, kulübü tanımak ve aklındaki her şeyi sormak için yanımıza uğramayı unutma!",
-        place: "Umuttepe",
-      },
-    ],
+    ongoing: "Şu an",
+    empty: "Yeni etkinlikler çok yakında burada. O zamana kadar geçmiş etkinliklerimize göz atabilirsin.",
+    seeAll: "Tüm etkinlikler",
+    page: {
+      title: "Etkinlikler",
+      intro: "Atölyeler, seminerler, yarışmalar ve stant günleri: kulüpte olan biten her şey, yaklaşanlardan geçmişe.",
+      upcoming: "Yaklaşanlar",
+      past: "Geçmiş etkinlikler",
+    },
+    detail: {
+      pastBadge: "Geçmiş etkinlik",
+      photos: "Fotoğraflar",
+      close: "Kapat",
+      previous: "Önceki fotoğraf",
+      next: "Sonraki fotoğraf",
+      photoAlt: (title, n) => `${title}, fotoğraf ${n}`,
+      docTitle: (title, club) => `${title} | ${club.name}`,
+    },
+    signup: {
+      title: "Kayıt ol",
+      intro: "Yerini ayırmak için formu doldur.",
+      placesLeft: (n) => `${n} yer kaldı`,
+      full: "Yerler doldu: kayıt olursan bekleme listesine alınırsın, yer açılırsa sana haber veririz.",
+      name: "Ad Soyad",
+      email: "E-posta adresi",
+      studentNo: "Öğrenci numarası",
+      phone: "Telefon numarası",
+      optional: "isteğe bağlı",
+      required: "Bu alan zorunlu.",
+      invalidEmail: "Geçerli bir e-posta adresi gir.",
+      invalidStudentNo: "Öğrenci numarası 9 haneli olmalı.",
+      invalidPhone: "5 ile başlayan 10 haneli bir numara gir (5XX XXX XX XX).",
+      tooLong: "Bu cevap çok uzun.",
+      noticeTitle: "Kişisel Verilerin Korunması Aydınlatma Metni",
+      notice:
+        "Kocaeli Üniversitesi Akıllı Sistemler Kulübü olarak bu formda paylaştığın bilgileri, 6698 sayılı Kişisel Verilerin Korunması Kanunu'na (KVKK) uygun olarak yalnızca bu etkinliği düzenlemek ve bu konuda seninle iletişime geçmek için işliyoruz.\n\nBilgilerin, kulübün internet sitesinin kullandığı bulut hizmet sağlayıcısında (Supabase) saklanır; bu sağlayıcının sunucuları yurt dışında bulunabilir. Bilgilerine yalnızca kulüp yönetimi erişir, üçüncü kişilerle paylaşılmaz ve etkinlikten sonra silinir.\n\nKVKK'nın 11. maddesindeki hakların (bilgilerine erişme, düzeltilmesini veya silinmesini isteme vb.) için info@kouakillisistemler.org adresine yazabilirsin.",
+      consent: "Aydınlatma metnini okudum; kişisel verilerimin bu amaçla işlenmesine ve yurt dışında saklanmasına açık rıza veriyorum.",
+      submit: "Kaydı gönder",
+      sending: "Gönderiliyor…",
+      done: "Kaydın alındı, görüşmek üzere!",
+      waitlisted: "Etkinlik dolu olduğu için bekleme listesine alındın. Yer açılırsa sana haber vereceğiz.",
+      closed: "Bu etkinliğe kayıtlar kapandı.",
+      duplicate: "Bu e-posta adresiyle bu etkinliğe zaten kayıt olunmuş.",
+      busy: "Şu anda çok fazla kayıt geliyor, lütfen birkaç dakika sonra tekrar dene.",
+      failed: "Kayıt gönderilemedi, lütfen biraz sonra tekrar dene.",
+    },
   },
 
   team: {
@@ -422,7 +457,7 @@ export const tr: Content = {
     blurb: `Yapay zekâ, robotik ve öğrenen her şey için öğrencilerin yürüttüğü bir topluluk. ${club.university} bünyesinde.`,
     explore: "Keşfet",
     follow: "Takip et",
-    rights: (year) => `© ${year} ${club.name}, ${club.university}`,
+    rights: (year, club) => `© ${year} ${club.name}, ${club.university}`,
   },
 
   soon: {

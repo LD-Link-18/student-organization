@@ -1,4 +1,4 @@
-import type { AreaKey, AvatarVariant, LinkSource, ProjectStatus, ProjectVisual, SponsorTier } from "./site";
+import type { AreaKey, AvatarVariant, LinkSource, NavHref, ProjectStatus, ProjectVisual, SponsorTier } from "./site";
 
 export type Locale = "tr" | "en";
 
@@ -36,7 +36,11 @@ export interface Project {
   demo?: string;
 }
 
-/** Every piece of visible copy. tr.ts and en.ts must both satisfy this shape. */
+/**
+ * Every piece of visible copy. tr.ts and en.ts must both satisfy this shape.
+ * Everything except the functions (and `locale`) can be edited in the admin panel; schema.ts must
+ * describe the same fields, or the build fails.
+ */
 export interface Content {
   locale: Locale;
   /** Accessible name of the TR | EN language switcher. */
@@ -64,7 +68,7 @@ export interface Content {
     homeLabel: string;
   };
 
-  nav: { label: string; href: string }[];
+  nav: { label: string; href: NavHref }[];
 
   /** Floating WhatsApp + Instagram buttons (bottom right). Phones show only the icons. */
   socialFloat: {
@@ -132,7 +136,8 @@ export interface Content {
     team: string;
     join: { title: string; body: string; cta: string; pitch: string };
     next: string;
-    docTitle: (name: string) => string;
+    /** `club` is the (possibly admin-edited) club info, so a renamed club shows up here too. */
+    docTitle: (name: string, club: Content["club"]) => string;
     listDocTitle: string;
   };
 
@@ -145,17 +150,62 @@ export interface Content {
     rsvpFor: (title: string) => string;
     /** Screen-reader-only text appended to a disabled RSVP button. */
     rsvpClosed: string;
-    items: {
-      /** One day ("14") or a range ("13–15", with an en dash). */
-      day: string;
-      month: string;
+    /** Badge on an event that has started and not yet ended (instead of "next up"). */
+    ongoing: string;
+    /** Homepage, when no event is coming up. */
+    empty: string;
+    /** Homepage button to the events page. */
+    seeAll: string;
+    /** The events page (/etkinlikler/, /en/events/). The events themselves are in the `events` table. */
+    page: {
       title: string;
-      category: string;
-      description: string;
-      place: string;
-      /** Turn the RSVP button on. Left out (or false) the button is shown disabled. */
-      rsvpOpen?: boolean;
-    }[];
+      intro: string;
+      upcoming: string;
+      past: string;
+    };
+    /** Each event's own page (/etkinlikler/<id>-<title>/). */
+    detail: {
+      /** Badge on an event that has ended. */
+      pastBadge: string;
+      photos: string;
+      /** Photo viewer buttons. */
+      close: string;
+      previous: string;
+      next: string;
+      photoAlt: (title: string, n: number) => string;
+      docTitle: (title: string, club: Content["club"]) => string;
+    };
+    /** The sign-up form on an event's page (its questions are set per event in the admin panel). */
+    signup: {
+      title: string;
+      intro: string;
+      placesLeft: (n: number) => string;
+      /** When every place is taken: new sign-ups go on the waitlist. */
+      full: string;
+      name: string;
+      email: string;
+      studentNo: string;
+      phone: string;
+      /** After the label of a question that isn't required. */
+      optional: string;
+      required: string;
+      invalidEmail: string;
+      invalidStudentNo: string;
+      invalidPhone: string;
+      tooLong: string;
+      noticeTitle: string;
+      /** The KVKK privacy notice. */
+      notice: string;
+      consent: string;
+      submit: string;
+      sending: string;
+      done: string;
+      waitlisted: string;
+      closed: string;
+      duplicate: string;
+      busy: string;
+      failed: string;
+    };
   };
 
   team: {
@@ -190,7 +240,7 @@ export interface Content {
     sticker: string;
   };
 
-  footer: { blurb: string; explore: string; follow: string; rights: (year: number) => string };
+  footer: { blurb: string; explore: string; follow: string; rights: (year: number, club: Content["club"]) => string };
 
   /** "Coming soon" page that placeholder links point to. */
   soon: {

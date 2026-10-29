@@ -1,12 +1,12 @@
-import { useContent } from "../content/i18n";
-import { sponsors, sponsorship, type SponsorTier } from "../content/site";
+import { useContent, useSite } from "../content/i18n";
+import type { SiteData, SponsorTier } from "../content/site";
 import type { Content } from "../content/types";
 import { ButtonLink } from "./ui/Button";
 import { Marquee } from "./ui/Marquee";
 import { Reveal } from "./ui/Reveal";
 
 type Tier = Content["sponsors"]["tiers"][number];
-type Sponsor = (typeof sponsors)[number];
+type Sponsor = SiteData["sponsors"][number];
 
 /** Higher tiers get bigger cards and a slower lane; lanes alternate direction. */
 const lane: Record<SponsorTier, { card: string; duration: number; reverse: boolean }> = {
@@ -55,6 +55,7 @@ function OpenSlot({ size }: { size: string }) {
 
 function SponsorLane({ tier }: { tier: Tier }) {
   const t = useContent();
+  const { sponsors, sponsorship } = useSite();
   const { card, duration, reverse } = lane[tier.key];
   const list = sponsors.filter((s) => s.tier === tier.key);
   const open = Math.max(0, sponsorship.minPerTier - list.length);
@@ -88,6 +89,7 @@ function SponsorLane({ tier }: { tier: Tier }) {
 
 export function Sponsors() {
   const { sponsors: s } = useContent();
+  const { sponsorship } = useSite();
   return (
     <section id="sponsors" aria-labelledby="sponsors-title" className="section-y relative overflow-hidden bg-paper">
       <div className="container-x">

@@ -221,7 +221,7 @@ label {
     letter-spacing: 0.5px;
 }
 
-input, select {
+input, select, textarea {
     width: 100%;
     padding: 0.875rem 1rem;
     background: var(--color-paper);
@@ -235,11 +235,11 @@ input, select {
     box-shadow: 2px 2px 0 0 var(--color-ink);
 }
 
-input::placeholder {
+input::placeholder, textarea::placeholder {
     color: rgba(0, 0, 0, 0.4);
 }
 
-input:focus, select:focus, .custom-select.focused input {
+input:focus, select:focus, textarea:focus, .custom-select.focused input {
     border-color: var(--color-violet);
     box-shadow: 4px 4px 0 0 var(--color-violet);
     transform: translate(-2px, -2px);
@@ -347,13 +347,119 @@ input:focus, select:focus, .custom-select.focused input {
     opacity: 1;
 }
 
-input.error-state, .custom-select input.error-state {
+input.error-state, textarea.error-state, .custom-select input.error-state {
     border-color: var(--error);
     box-shadow: 2px 2px 0 0 var(--error);
 }
 
-input.error-state:focus, .custom-select input.error-state:focus {
+input.error-state:focus, textarea.error-state:focus, .custom-select input.error-state:focus {
     box-shadow: 4px 4px 0 0 var(--error);
+}
+
+/* Long answers (project pitch form) */
+textarea {
+    display: block;
+    min-height: 10rem;
+    resize: vertical;
+    line-height: 1.55;
+}
+
+label .optional {
+    margin-left: 0.25rem;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.field-hint {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+.field-hint .error-msg {
+    margin-top: 0;
+}
+
+.char-count {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Privacy notice and consent */
+.notice {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--color-ink);
+    border-radius: 8px;
+    background: var(--color-fog);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+}
+
+.notice summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 700;
+}
+
+.notice p {
+    margin-top: 0.75rem;
+}
+
+.notice a {
+    color: var(--color-violet);
+    font-weight: 600;
+}
+
+label.consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin: 0;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+label.consent input {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.1rem;
+    padding: 0;
+    box-shadow: none;
+    accent-color: var(--color-violet);
+    cursor: pointer;
+}
+
+label.consent input:focus {
+    transform: none;
+    box-shadow: none;
+    outline: 2px solid var(--color-violet);
+    outline-offset: 2px;
+}
+
+label.consent input.error-state {
+    outline: 2px solid var(--error);
+    outline-offset: 2px;
+}
+
+/* Honeypot: off screen for people, still in the form for bots */
+.hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
 }
 
 /* Submit Button */

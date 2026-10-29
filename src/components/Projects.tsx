@@ -1,5 +1,4 @@
-import { useContent } from "../content/i18n";
-import { club } from "../content/site";
+import { useContent, useSite } from "../content/i18n";
 import { ProjectCard } from "./ProjectCard";
 import { Arrow } from "./ui/Arrow";
 import { ButtonLink } from "./ui/Button";
@@ -8,6 +7,7 @@ import { Reveal } from "./ui/Reveal";
 /** Homepage section; `standalone` turns it into the /projeler/ page (h1 title, room for the fixed navbar). */
 export function Projects({ standalone = false }: { standalone?: boolean }) {
   const { projects } = useContent();
+  const { club } = useSite();
 
   return (
     <section

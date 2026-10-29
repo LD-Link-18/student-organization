@@ -1,6 +1,5 @@
 import { useRef, type CSSProperties, type ReactNode } from "react";
-import { useContent } from "../content/i18n";
-import { club } from "../content/site";
+import { useContent, useSite } from "../content/i18n";
 import { usePointerParallax } from "../hooks/usePointerParallax";
 import { Arrow } from "./ui/Arrow";
 import { ButtonLink } from "./ui/Button";
@@ -56,6 +55,7 @@ function StepNote({ n, children }: { n: string; children: ReactNode }) {
 
 export function Hero() {
   const t = useContent();
+  const { club } = useSite();
   const { hero } = t;
   const k = hero.scale;
   const ref = useRef<HTMLElement>(null);

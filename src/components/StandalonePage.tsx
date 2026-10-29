@@ -51,7 +51,7 @@ export function StandalonePage({
         </div>
       </main>
 
-      <footer className="container-x pb-6 text-sm text-paper/60">{t.footer.rights(new Date().getFullYear())}</footer>
+      <footer className="container-x pb-6 text-sm text-paper/60">{t.footer.rights(new Date().getFullYear(), t.club)}</footer>
     </div>
   );
 }

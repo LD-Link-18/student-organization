@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useContent } from "../content/i18n";
-import { club } from "../content/site";
+import { useContent, useSite } from "../content/i18n";
 import { ButtonLink } from "./ui/Button";
 import type { Locale } from "../content/types";
 import { LangSwitch } from "./LangSwitch";
@@ -12,6 +11,7 @@ import { Logo } from "./Logo";
  */
 export function Navbar({ base = "", hrefFor }: { base?: string; hrefFor?: (code: Locale) => string }) {
   const t = useContent();
+  const { club } = useSite();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 

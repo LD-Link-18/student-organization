@@ -1,6 +1,20 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://lqclknvtjusajmonjqms.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+        },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
@@ -15,6 +29,14 @@
     { "source": "/projeler/:slug", "destination": "/projeler/index.html" },
     { "source": "/projeler/:slug/", "destination": "/projeler/index.html" },
     { "source": "/en/projects/:slug", "destination": "/en/projects/index.html" },
-    { "source": "/en/projects/:slug/", "destination": "/en/projects/index.html" }
+    { "source": "/en/projects/:slug/", "destination": "/en/projects/index.html" },
+    { "source": "/etkinlikler/:slug", "destination": "/etkinlikler/index.html" },
+    { "source": "/etkinlikler/:slug/", "destination": "/etkinlikler/index.html" },
+    { "source": "/en/events/:slug", "destination": "/en/events/index.html" },
+    { "source": "/en/events/:slug/", "destination": "/en/events/index.html" },
+    { "source": "/etkinlikler/:slug/kayit", "destination": "/etkinlikler/index.html" },
+    { "source": "/etkinlikler/:slug/kayit/", "destination": "/etkinlikler/index.html" },
+    { "source": "/en/events/:slug/signup", "destination": "/en/events/index.html" },
+    { "source": "/en/events/:slug/signup/", "destination": "/en/events/index.html" }
   ]
 }

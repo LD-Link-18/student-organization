@@ -1,5 +1,4 @@
-import { useContent } from "../content/i18n";
-import { club } from "../content/site";
+import { useContent, useSite } from "../content/i18n";
 import { MemberCard } from "./MemberCard";
 import { ButtonLink } from "./ui/Button";
 import { Reveal } from "./ui/Reveal";
@@ -16,6 +15,7 @@ const tilt = [
 
 export function Team() {
   const { team } = useContent();
+  const { club } = useSite();
   return (
     <section id="team" aria-labelledby="team-title" className="section-y relative overflow-hidden bg-fog">
       <div className="grid-lines grid-lines-dark absolute inset-0" aria-hidden="true" />

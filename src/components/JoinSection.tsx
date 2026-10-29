@@ -1,5 +1,5 @@
-import { useContent, useResolveLink } from "../content/i18n";
-import { club, whatsappHref } from "../content/site";
+import { useContent, useResolveLink, useSite } from "../content/i18n";
+import { socialHref } from "../content/site";
 import { ButtonLink } from "./ui/Button";
 import { ClubMark } from "./ui/ClubMark";
 import { Reveal } from "./ui/Reveal";
@@ -30,7 +30,9 @@ function MemberCard() {
 
 export function JoinSection() {
   const { join } = useContent();
-  const whatsapp = useResolveLink()(whatsappHref, "whatsapp");
+  const site = useSite();
+  const { club } = site;
+  const whatsapp = useResolveLink()(socialHref(site, "whatsapp"), "whatsapp");
 
   return (
     <section id="join" aria-labelledby="join-title" className="relative isolate overflow-hidden bg-lime py-24 text-ink md:py-36">

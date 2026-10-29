@@ -1,10 +1,13 @@
 // Page language comes from <html lang>. Texts shown to the visitor are translated here;
-// everything sent to the sheet (department, grade) stays Turkish.
+// everything saved (department, grade) stays Turkish.
 const LANG = document.documentElement.lang === 'en' ? 'en' : 'tr';
+
 const MSG = {
     tr: {
         noResults: 'Sonuç bulunamadı',
         connError: 'Bağlantı hatası oluştu, lütfen daha sonra tekrar deneyin.',
+        tooMany: 'Şu anda çok fazla başvuru geliyor, lütfen birkaç dakika sonra tekrar deneyin.',
+        consent: 'Devam etmek için aydınlatma metnini onaylamalısınız.',
         emailRequired: 'E-posta adresi zorunludur.',
         emailInvalid: 'Geçerli bir e-posta adresi giriniz.',
         firstName: 'İsim en az 2 karakter olmalıdır.',
@@ -17,6 +20,8 @@ const MSG = {
     en: {
         noResults: 'No results found',
         connError: 'A connection error occurred, please try again later.',
+        tooMany: 'We are getting a lot of applications right now, please try again in a few minutes.',
+        consent: 'Please confirm you have read the privacy notice.',
         emailRequired: 'Email address is required.',
         emailInvalid: 'Please enter a valid email address.',
         firstName: 'First name must be at least 2 characters.',
@@ -39,6 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const classYearInput = document.getElementById('classYearInput');
     const classYearList = document.getElementById('classYearList');
     let selectedClassYear = '';
+
+    document.querySelector('.close-modal-btn').addEventListener('click', closeModal);
 
     classYearInput.addEventListener('click', () => {
         classYearList.classList.toggle('show');
@@ -121,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Real-time validation for other fields
-    const fieldsToValidate = ['email', 'firstName', 'lastName', 'classYearInput'];
+    const fieldsToValidate = ['email', 'firstName', 'lastName', 'classYearInput', 'consent'];
     fieldsToValidate.forEach(id => {
         document.getElementById(id).addEventListener('input', (e) => validateField(e.target));
         document.getElementById(id).addEventListener('change', (e) => validateField(e.target));
@@ -138,7 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('studentNo'),
             document.getElementById('phone'),
             document.getElementById('departmentInput'),
-            document.getElementById('classYearInput')
+            document.getElementById('classYearInput'),
+            document.getElementById('consent')
         ];
 
         // Autofill doesn't always fire 'input', so clean the numbers up once more before checking them
@@ -152,29 +160,51 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             const btn = document.getElementById('submitBtn');
             btn.classList.add('loading');
-            
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbz2Sg5hJaB2WBAyrSF6IFp9q3KgT08ggoBfPjAlxZfwmkitWJYbO-mjKjCsctMMSdHHyQ/exec';
-            
-            const formData = new URLSearchParams();
-            const fName = document.getElementById('firstName').value.trim();
-            const lName = document.getElementById('lastName').value.trim();
-            formData.append('email', document.getElementById('email').value.trim());
-            formData.append('firstName', fName);
-            formData.append('lastName', lName);
-            formData.append('studentNo', studentNoInput.value);
-            formData.append('phone', phoneInput.value);
-            formData.append('department', selectedDepartment);
-            formData.append('grade', selectedClassYear);
 
-            fetch(scriptURL, { method: 'POST', body: formData })
+            const done = () => {
+                btn.classList.remove('loading');
+                document.getElementById('successModal').classList.add('show');
+                form.reset();
+                selectedDepartment = '';
+                selectedClassYear = '';
+                document.getElementById('departmentInput').value = '';
+                document.getElementById('classYearInput').value = '';
+            };
+
+            // Hidden field only bots fill in: act as if it worked, send nothing.
+            if (document.getElementById('website').value) {
+                done();
+                return;
+            }
+
+            const application = {
+                email: document.getElementById('email').value.trim(),
+                first_name: document.getElementById('firstName').value.trim(),
+                last_name: document.getElementById('lastName').value.trim(),
+                student_no: studentNoInput.value,
+                phone: phoneInput.value.replace(/\s/g, ''),
+                department: selectedDepartment,
+                grade: selectedClassYear,
+                lang: LANG,
+                consent: document.getElementById('consent').checked
+            };
+
+            fetch(`${SUPABASE_URL}/rest/v1/applications`, {
+                method: 'POST',
+                headers: {
+                    apikey: SUPABASE_KEY,
+                    'Content-Type': 'application/json',
+                    Prefer: 'return=minimal'
+                },
+                body: JSON.stringify(application)
+            })
                 .then(response => {
-                    btn.classList.remove('loading');
-                    document.getElementById('successModal').classList.add('show');
-                    form.reset();
-                    selectedDepartment = '';
-                    selectedClassYear = '';
-                    document.getElementById('departmentInput').value = '';
-                    document.getElementById('classYearInput').value = '';
+                    if (response.ok) return done();
+                    return response.text().then(body => {
+                        console.error('Application not saved', response.status, body);
+                        btn.classList.remove('loading');
+                        alert(response.status === 429 ? MSG.tooMany : MSG.connError);
+                    });
                 })
                 .catch(error => {
                     console.error('Error!', error.message);
@@ -240,6 +270,10 @@ function validateField(field) {
         if (!field.value) {
             isValid = false; errorMsg = MSG.classYear;
         }
+    } else if (field.id === 'consent') {
+        if (!field.checked) {
+            isValid = false; errorMsg = MSG.consent;
+        }
     }
 
     if (!isValid) {
@@ -258,6 +292,6 @@ function validateField(field) {
     return isValid;
 }
 
-window.closeModal = function() {
+function closeModal() {
     document.getElementById('successModal').classList.remove('show');
 }

@@ -103,6 +103,27 @@
                     <span class="error-msg" id="classYearError"></span>
                 </div>
 
+                <!-- Privacy notice (KVKK) and consent -->
+                <div class="form-group consent-group">
+                    <details class="notice">
+                        <summary>Privacy notice (KVKK)</summary>
+                        <p>The Smart Systems Club at Kocaeli University processes the name, email address, phone number, student number, department and year you give in this form only to review your membership application and to contact you about club activities, in line with Turkey's Personal Data Protection Law No. 6698 (KVKK).</p>
+                        <p>Your details are stored with the cloud provider the club's website uses (Supabase), whose servers may be outside Turkey. Only the club's board can see them, and they are not shared with anyone else.</p>
+                        <p>We keep your details while you are a member, or until you ask us to delete them. To use your rights under Article 11 of the KVKK (to see your data, have it corrected or deleted, and so on), write to <a href="mailto:info@kouakillisistemler.org">info@kouakillisistemler.org</a>.</p>
+                    </details>
+                    <label class="consent" for="consent">
+                        <input type="checkbox" id="consent" name="consent" required>
+                        <span>I have read the privacy notice and explicitly consent to my personal data being processed for these purposes and stored outside Turkey.</span>
+                    </label>
+                    <span class="error-msg" id="consentError"></span>
+                </div>
+
+                <!-- Left empty by people; bots that fill every field get a fake success -->
+                <div class="hp" aria-hidden="true">
+                    <label for="website">Website</label>
+                    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                </div>
+
                 <button type="submit" id="submitBtn" class="submit-btn">
                     <span class="btn-text">Submit Application</span>
                     <div class="spinner"></div>
@@ -123,10 +144,11 @@
             </div>
             <h3>Application Received!</h3>
             <p>Welcome aboard. We will get in touch with you soon.</p>
-            <button class="close-modal-btn" onclick="closeModal()">Close</button>
+            <button class="close-modal-btn" type="button">Close</button>
         </div>
     </div>
 
+    <script src="../supabase.js"></script>
     <script src="../departments.js"></script>
     <script src="../script.js"></script>
 </body>

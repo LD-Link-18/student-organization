@@ -1,10 +1,7 @@
 import type { ReactNode } from "react";
-import { useContent } from "../content/i18n";
-import { instagramHref, whatsappHref } from "../content/site";
+import { useContent, useSite } from "../content/i18n";
+import { socialHref } from "../content/site";
 import { InstagramGlyph, WhatsAppGlyph } from "./ui/Glyph";
-
-/** "@handle" from the profile URL, e.g. https://www.instagram.com/foo/ → @foo */
-const handle = "@" + instagramHref.replace(/\/+$/, "").split("/").pop();
 
 /**
  * One pill: lime icon disc, a small label and a bolder lime title. Phones get just the disc (the label stays
@@ -31,6 +28,11 @@ function FloatPill({ href, icon, label, title, tilt }: { href: string; icon: Rea
 /** Floating WhatsApp + Instagram promos, stacked in the bottom right on every scroll position. */
 export function SocialFloat() {
   const { socialFloat } = useContent();
+  const site = useSite();
+  const whatsappHref = socialHref(site, "whatsapp");
+  const instagramHref = socialHref(site, "instagram");
+  /** "@handle" from the profile URL, e.g. https://www.instagram.com/foo/ → @foo */
+  const handle = "@" + instagramHref.replace(/\/+$/, "").split("/").pop();
   return (
     <aside aria-label={socialFloat.region} className="fixed right-4 bottom-4 z-40 flex flex-col items-end gap-2.5 sm:gap-3 sm:right-6 sm:bottom-6">
       <FloatPill
