@@ -13,7 +13,6 @@ type Look = {
   bg: string;
   accent: string;
   title: string;
-  wide?: boolean;
 };
 
 const looks: Record<AreaKey, Look> = {
@@ -39,7 +38,7 @@ const looks: Record<AreaKey, Look> = {
     accent: "var(--color-lime)",
     title: "text-3xl md:text-4xl",
   },
-  vision: {
+  automation: {
     span: "lg:col-span-4 lg:translate-y-6",
     card: "bg-ink text-paper rounded-[2rem]",
     sc: "var(--color-lime)",
@@ -53,14 +52,6 @@ const looks: Record<AreaKey, Look> = {
     bg: "var(--color-paper)",
     accent: "var(--color-violet)",
     title: "text-3xl md:text-4xl",
-  },
-  automation: {
-    span: "md:col-span-2 lg:col-span-12 lg:mt-6",
-    card: "bg-violet-deep text-paper rounded-[2rem]",
-    bg: "var(--color-violet-deep)",
-    accent: "var(--color-lime)",
-    title: "display-md",
-    wide: true,
   },
 };
 
@@ -86,12 +77,10 @@ export function Areas() {
             return (
               <Reveal as="li" key={a.key} i={i % 3} className={l.span}>
                 <article
-                  className={`lift group relative flex h-full border-2 border-ink p-6 md:p-8 ${l.card} ${
-                    l.wide ? "flex-col gap-8 lg:flex-row lg:items-center lg:gap-12" : "flex-col"
-                  }`}
+                  className={`lift group relative flex h-full flex-col border-2 border-ink p-6 md:p-8 ${l.card}`}
                   style={{ "--sc": l.sc, "--card-bg": l.bg, "--accent": l.accent } as CSSProperties}
                 >
-                  <ul className={`flex flex-wrap gap-2 ${l.wide ? "lg:order-3 lg:w-56 lg:justify-end" : ""}`} aria-label={areas.toolsLabel}>
+                  <ul className="flex flex-wrap gap-2" aria-label={areas.toolsLabel}>
                     {a.tools.map((t) => (
                       <li key={t} className="tag">
                         {t}
@@ -100,11 +89,9 @@ export function Areas() {
                   </ul>
                   <AreaGlyph
                     area={a.key}
-                    className={`transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-105 ${
-                      l.wide ? "w-40 shrink-0 lg:order-1" : "my-8 w-36 self-end md:w-44"
-                    }`}
+                    className="my-8 w-36 self-end transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-105 md:w-44"
                   />
-                  <div className={`mt-auto ${l.wide ? "lg:order-2 lg:mt-0 lg:flex-1" : ""}`}>
+                  <div className="mt-auto">
                     <h3 className={`font-bold tracking-tight ${l.title}`}>{a.title}</h3>
                     <p className="mt-3 max-w-md leading-relaxed opacity-85">{a.blurb}</p>
                   </div>

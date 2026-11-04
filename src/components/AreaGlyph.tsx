@@ -66,17 +66,6 @@ export function AreaGlyph({ area, className = "" }: { area: AreaKey; className?:
           <rect x="128" y="78" width="22" height="22" rx="3" strokeDasharray="4 5" />
         </svg>
       );
-    case "vision":
-      // aperture inside focus brackets
-      return (
-        <svg {...common}>
-          <path d="M40 22 H28 V34 M120 22 H132 V34 M40 98 H28 V86 M120 98 H132 V86" strokeWidth={4} />
-          <circle cx="80" cy="60" r="30" />
-          <circle cx="80" cy="60" r="16" fill={accent} stroke="none" />
-          <circle cx="86" cy="54" r="5" fill="currentColor" stroke="none" />
-          <path d="M50 60 H38 M122 60 H110" strokeWidth={2} />
-        </svg>
-      );
     case "embedded":
       // microcontroller with pins
       return (

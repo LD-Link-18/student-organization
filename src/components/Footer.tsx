@@ -16,12 +16,17 @@ export function Footer({ base = "" }: { base?: string }) {
             <p className="mt-6 max-w-sm leading-relaxed text-paper/70">
               {t.footer.blurb}
             </p>
-            <a
-              href={`mailto:${club.email}`}
-              className="mt-6 inline-block max-w-full font-display text-lg font-bold tracking-tight [overflow-wrap:anywhere] text-lime underline decoration-2 underline-offset-[6px] hover:decoration-paper min-[400px]:text-xl sm:text-2xl md:text-3xl"
-            >
-              {club.email}
-            </a>
+            <div className="mt-6 grid justify-items-start gap-3">
+              {[club.email, club.sponsorEmail].map((email) => (
+                <a
+                  key={email}
+                  href={`mailto:${email}`}
+                  className="max-w-full font-display text-lg font-bold tracking-tight [overflow-wrap:anywhere] text-lime underline decoration-2 underline-offset-[6px] hover:decoration-paper min-[400px]:text-xl sm:text-2xl md:text-3xl"
+                >
+                  {email}
+                </a>
+              ))}
+            </div>
           </div>
 
           <nav aria-label={t.common.footerNav} className="md:col-span-3 md:col-start-7">
