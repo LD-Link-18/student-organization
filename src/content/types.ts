@@ -224,10 +224,8 @@ export interface Content {
   sponsors: {
     title: string;
     intro: string;
-    tiers: { key: SponsorTier; name: string; perks: string[] }[];
-    count: (sponsors: number, open: number) => string;
+    tiers: { key: SponsorTier; name: string }[];
     yourLogo: string;
-    cta: { title: string; body: string; deck: string };
   };
 
   join: {

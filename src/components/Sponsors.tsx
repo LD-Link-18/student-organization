@@ -1,7 +1,6 @@
 import { useContent, useSite } from "../content/i18n";
 import type { SiteData, SponsorTier } from "../content/site";
 import type { Content } from "../content/types";
-import { ButtonLink } from "./ui/Button";
 import { Marquee } from "./ui/Marquee";
 import { Reveal } from "./ui/Reveal";
 
@@ -10,9 +9,10 @@ type Sponsor = SiteData["sponsors"][number];
 
 /** Higher tiers get bigger cards and a slower lane; lanes alternate direction. */
 const lane: Record<SponsorTier, { card: string; duration: number; reverse: boolean }> = {
-  core: { card: "h-28 w-64 md:h-36 md:w-80", duration: 60, reverse: false },
-  partner: { card: "h-24 w-52 md:h-28 md:w-64", duration: 50, reverse: true },
-  supporter: { card: "h-20 w-44 md:h-24 md:w-52", duration: 42, reverse: false },
+  diamond: { card: "h-28 w-64 md:h-36 md:w-80", duration: 60, reverse: false },
+  platinum: { card: "h-24 w-56 md:h-32 md:w-72", duration: 54, reverse: true },
+  gold: { card: "h-24 w-52 md:h-28 md:w-64", duration: 48, reverse: false },
+  silver: { card: "h-20 w-44 md:h-24 md:w-52", duration: 42, reverse: true },
 };
 
 function SponsorCard({ sponsor, size }: { sponsor: Sponsor; size: string }) {
@@ -54,7 +54,6 @@ function OpenSlot({ size }: { size: string }) {
 }
 
 function SponsorLane({ tier }: { tier: Tier }) {
-  const t = useContent();
   const { sponsors, sponsorship } = useSite();
   const { card, duration, reverse } = lane[tier.key];
   const list = sponsors.filter((s) => s.tier === tier.key);
@@ -71,7 +70,6 @@ function SponsorLane({ tier }: { tier: Tier }) {
         <h3 className="pill border-2 border-ink bg-lime px-4 py-1.5 text-base text-ink" style={{ boxShadow: "var(--shadow-brut-sm)" }}>
           {tier.name}
         </h3>
-        <p className="meta text-ink/60">{t.sponsors.count(list.length, open)}</p>
       </div>
       <Marquee
         items={items}
@@ -89,7 +87,6 @@ function SponsorLane({ tier }: { tier: Tier }) {
 
 export function Sponsors() {
   const { sponsors: s } = useContent();
-  const { sponsorship } = useSite();
   return (
     <section id="sponsors" aria-labelledby="sponsors-title" className="section-y relative overflow-hidden bg-paper">
       <div className="container-x">
@@ -110,43 +107,6 @@ export function Sponsors() {
         ))}
       </div>
 
-      <div className="container-x mt-16 md:mt-20">
-        <Reveal className="relative overflow-hidden rounded-[2rem] border-2 border-ink bg-violet p-6 text-paper sm:p-10 md:rounded-[2.5rem] lg:p-14">
-          <div className="grid-lines absolute inset-0" aria-hidden="true" />
-          <div
-            aria-hidden="true"
-            className="absolute -right-24 -bottom-24 size-80 bg-violet-deep"
-            style={{ borderRadius: "46% 54% 38% 62% / 55% 44% 56% 45%" }}
-          />
-          <div className="relative grid gap-10 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-5">
-              <h3 className="display-md">{s.cta.title}</h3>
-              <p className="mt-5 max-w-md text-lg leading-relaxed text-paper/85">{s.cta.body}</p>
-              {sponsorship.deckUrl && (
-                <ButtonLink href={sponsorship.deckUrl} variant="lime" target="_blank" rel="noreferrer" className="mt-8">
-                  {s.cta.deck}
-                </ButtonLink>
-              )}
-            </div>
-
-            <ul className="grid gap-4 sm:grid-cols-3 lg:col-span-7">
-              {s.tiers.map((tier) => (
-                <li key={tier.key} className="glass rounded-[1.4rem] p-5">
-                  <p className="font-display text-xl font-bold tracking-tight">{tier.name}</p>
-                  <ul className="mt-3 grid gap-2 text-sm leading-snug text-paper/85">
-                    {tier.perks.map((perk) => (
-                      <li key={perk} className="flex gap-2">
-                        <span aria-hidden="true" className="mt-[0.4em] size-2 shrink-0 rotate-45 bg-lime" />
-                        {perk}
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
-      </div>
     </section>
   );
 }

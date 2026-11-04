@@ -15,7 +15,7 @@ export type LinkSource = (typeof linkSources)[number];
 export const navHrefs = ["#about", "#areas", "#projects", "#events", "#team", "#sponsors"] as const;
 export type NavHref = (typeof navHrefs)[number];
 
-export const areaKeys = ["ai", "ml", "robotics", "vision", "embedded", "automation"] as const;
+export const areaKeys = ["ai", "ml", "robotics", "automation", "embedded"] as const;
 export type AreaKey = (typeof areaKeys)[number];
 /** Project states: finished, being worked on, or an early prototype. */
 export const projectStatuses = ["done", "progress", "prototype"] as const;
@@ -25,13 +25,15 @@ export const projectVisuals = ["koubot", "scribble", "traffic", "quill"] as cons
 export type ProjectVisual = (typeof projectVisuals)[number];
 export const avatarVariants = [0, 1, 2, 3, 4, 5] as const;
 export type AvatarVariant = (typeof avatarVariants)[number];
-export const sponsorTiers = ["core", "partner", "supporter"] as const;
+export const sponsorTiers = ["diamond", "platinum", "gold", "silver"] as const;
 export type SponsorTier = (typeof sponsorTiers)[number];
 
 export interface SiteData {
   club: {
     short: string;
     email: string;
+    /** Shown in the footer under `email`. */
+    sponsorEmail: string;
     /** Membership form: every "Join the club" button points here. */
     joinUrl: string;
     /** Project proposal form: the "Pitch a project" button points here. */
@@ -49,11 +51,9 @@ export interface SiteData {
   sponsorship: {
     /** Each lane is padded with "your logo here" slots until it has this many cards. */
     minPerTier: number;
-    /** Link to a sponsorship deck (PDF). The button is hidden while this is empty. */
-    deckUrl: string;
   };
   /**
-   * e.g. { name: "Acme Robotics", tier: "core", href: "https://acme.example", logo: "/sponsors/acme.svg" }
+   * e.g. { name: "Acme Robotics", tier: "gold", href: "https://acme.example", logo: "/sponsors/acme.svg" }
    * Logos are uploaded in the admin panel, or put in public/sponsors/ (SVG preferred). Without a logo,
    * the name is shown as text.
    */
@@ -64,6 +64,7 @@ export const siteDefaults: SiteData = {
   club: {
     short: "ISC",
     email: "info@kouakillisistemler.org",
+    sponsorEmail: "sponsor@kouakillisistemler.org",
     joinUrl: "https://kouakillisistemler.org/basvuru",
     projectUrl: "https://kouakillisistemler.org/proje-oner/",
     socials: [
@@ -73,9 +74,9 @@ export const siteDefaults: SiteData = {
       { label: "GitHub", source: "github", href: "" },
     ],
   },
-  showSponsors: false,
+  showSponsors: true,
   discordHref: "",
-  sponsorship: { minPerTier: 3, deckUrl: "" },
+  sponsorship: { minPerTier: 3 },
   sponsors: [],
 };
 

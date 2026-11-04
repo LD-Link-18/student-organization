@@ -169,10 +169,9 @@ export const contentSchema = z.object({
     title: text,
     intro: text,
     tiers: z
-      .array(z.object({ key: z.enum(sponsorTiers), name: text, perks: z.array(text) }))
+      .array(z.object({ key: z.enum(sponsorTiers), name: text }))
       .check(z.superRefine(unique((t) => t.key, "tier"))),
     yourLogo: text,
-    cta: z.object({ title: text, body: text, deck: text }),
   }),
   join: z.object({
     words: triple,
@@ -209,13 +208,14 @@ export const siteSchema = z.object({
   club: z.object({
     short: text,
     email: z.email("Not an email address"),
+    sponsorEmail: z.email("Not an email address"),
     joinUrl: requiredLink,
     projectUrl: requiredLink,
     socials: z.array(z.object({ label: text, source: z.enum(linkSources), href: link })),
   }),
   showSponsors: z.boolean(),
   discordHref: link,
-  sponsorship: z.object({ minPerTier: z.int().check(z.gte(0, "0 to 12"), z.lte(12, "0 to 12")), deckUrl: link }),
+  sponsorship: z.object({ minPerTier: z.int().check(z.gte(0, "0 to 12"), z.lte(12, "0 to 12")) }),
   sponsors: z
     .array(z.object({ name: text, tier: z.enum(sponsorTiers), href: requiredLink, logo: z.optional(link) }))
     .check(z.superRefine(unique((s) => s.name, "sponsor name"))),

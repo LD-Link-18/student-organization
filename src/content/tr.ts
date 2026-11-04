@@ -76,7 +76,7 @@ export const tr: Content = {
 
   areas: {
     title: "Neler yapıyoruz",
-    intro: "Altı alan, tek laboratuvar. Birinden başla; üyelerimizin çoğu zamanla hepsine uğruyor.",
+    intro: "Beş alan, tek laboratuvar. Birinden başla; üyelerimizin çoğu zamanla hepsine uğruyor.",
     toolsLabel: "Araçlar",
     items: [
       {
@@ -99,22 +99,16 @@ export const tr: Content = {
         tools: ["ROS 2", "SLAM", "Gazebo"],
       },
       {
-        key: "vision",
-        title: "Bilgisayarlı Görü",
-        blurb: "Sadece benchmark'larda değil, gerçek kameralarda nesne tespiti, takip ve segmentasyon.",
-        tools: ["OpenCV", "YOLO"],
+        key: "automation",
+        title: "Otomasyon",
+        blurb: "Sıkıcı kısımları senin yerine halleden veri akışları, botlar ve kontrol döngüleri.",
+        tools: ["Python", "PLC", "CI/CD"],
       },
       {
         key: "embedded",
         title: "Gömülü Sistemler",
         blurb: "Birkaç yüz kilobayta sığdırılmış mikrodenetleyiciler, sensörler ve TinyML.",
         tools: ["ESP32", "STM32", "TinyML"],
-      },
-      {
-        key: "automation",
-        title: "Otomasyon",
-        blurb: "Sıkıcı kısımları senin yerine halleden veri akışları, botlar ve kontrol döngüleri.",
-        tools: ["Python", "PLC", "CI/CD"],
       },
     ],
   },
@@ -392,7 +386,7 @@ export const tr: Content = {
     title: ["Döngüdeki", "insanlar."],
     intro: "Bu yılın yönetim kurulu laboratuvarı ayakta tutuyor. Geri kalan herkes onu ilginç kılıyor.",
     focus: (focus) => `İlgi alanı: ${focus}`,
-    members: "+ 50 üye bizimle üretiyor",
+    members: "+ 150 üye bizimle üretiyor",
     takeSeat: "Yerini al",
     people: [
       { name: "Samet Mert Dik", focus: "doğal dil işleme", avatar: 0, href: "https://sametmertdik.com" },
@@ -409,38 +403,12 @@ export const tr: Content = {
     intro:
       "Sponsorlarımız, öğrencilerin tek başına karşılayamayacağı GPU'ları, sensörleri, hackathon ödüllerini ve yarışma yolculuklarını finanse ediyor.",
     tiers: [
-      {
-        key: "core",
-        name: "Ana Sponsor",
-        perks: [
-          "Robotlarımızda ve hackathon tişörtlerinde logonuz",
-          "Her dönem bir atölye ya da açılış konuşması",
-          "Üyelerimizin CV kitapçığına erken erişim",
-        ],
-      },
-      {
-        key: "partner",
-        name: "İş Ortağı",
-        perks: [
-          "Etkinlik sayfalarında ve afişlerde logonuz",
-          "Birlikte atölye ya da teknik sohbet düzenleme",
-          "Hackathonda işe alım masası",
-        ],
-      },
-      {
-        key: "supporter",
-        name: "Destekçi",
-        perks: ["Bu sitede ve Discord sunucumuzda logonuz", "Her etkinlikte teşekkür", "Demo günümüze davet"],
-      },
+      { key: "diamond", name: "Elmas" },
+      { key: "platinum", name: "Platinyum" },
+      { key: "gold", name: "Altın" },
+      { key: "silver", name: "Gümüş" },
     ],
-    count: (sponsors, open) =>
-      [sponsors > 0 ? `${sponsors} sponsor` : "", open > 0 ? `${open} yer açık` : ""].filter(Boolean).join(", "),
     yourLogo: "Logonuz burada",
-    cta: {
-      title: "Logonuz robotlarımızda yer alsın.",
-      body: `${club.semester} için ilk sponsor kadromuzu oluşturuyoruz. Bir kademe seçin ya da neyi desteklemek istediğinizi anlatın; paketi birlikte şekillendirelim.`,
-      deck: "Sponsorluk dosyası (PDF)",
-    },
   },
 
   join: {

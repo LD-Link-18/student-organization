@@ -37,12 +37,11 @@ const areaOptions = [
   { value: "ai", label: "Artificial intelligence" },
   { value: "ml", label: "Machine learning" },
   { value: "robotics", label: "Robotics" },
-  { value: "vision", label: "Computer vision" },
-  { value: "embedded", label: "Embedded systems" },
   { value: "automation", label: "Automation" },
+  { value: "embedded", label: "Embedded systems" },
 ] as const;
 const avatarOptions = [0, 1, 2, 3, 4, 5].map((v) => ({ value: v, label: `Pattern ${v + 1}` }));
-const tierLabels: Record<(typeof sponsorTiers)[number], string> = { core: "Core sponsor", partner: "Partner", supporter: "Supporter" };
+const tierLabels: Record<(typeof sponsorTiers)[number], string> = { diamond: "Diamond", platinum: "Platinum", gold: "Gold", silver: "Silver" };
 const tierOptions = sponsorTiers.map((t) => ({ value: t, label: tierLabels[t] }));
 
 const linkHint = "Starts with https:// (or / for a page on this site).";
@@ -104,6 +103,7 @@ function ClubForm() {
         <Text scope="site" path={["club", "joinUrl"]} label="Membership form" hint={`Every "Join the club" button. ${linkHint}`} />
         <Text scope="site" path={["club", "projectUrl"]} label="Project proposal form" hint={`The "Pitch a project" buttons. ${linkHint}`} />
         <Text scope="site" path={["club", "email"]} label="Contact email" />
+        <Text scope="site" path={["club", "sponsorEmail"]} label="Sponsorship email" />
         <List scope="site" path={["club", "socials"]} label="Social channels" hint="Leave a channel empty and its links go to the coming-soon page." itemTitle={useSocialTitle()} fixed>
           {(i) => <Text scope="site" path={["club", "socials", i, "href"]} label="Address" hint={linkHint} />}
         </List>
@@ -501,17 +501,12 @@ function SponsorsForm() {
         <BiText path={["sponsors", "title"]} label="Heading" />
         <BiText path={["sponsors", "intro"]} label="Intro" multiline />
         <BiText path={["sponsors", "yourLogo"]} label="Empty slot label" />
-        <Text scope="site" path={["sponsorship", "deckUrl"]} label="Sponsorship deck (PDF link)" hint="Empty: the button is hidden." />
-        <BiText path={["sponsors", "cta", "deck"]} label="Deck button" />
-        <BiText path={["sponsors", "cta", "title"]} label="Call-out: title" />
-        <BiText path={["sponsors", "cta", "body"]} label="Call-out: text" multiline />
       </Group>
       <Group title="Tiers">
         <List path={["sponsors", "tiers"]} label="Tiers" itemTitle={(i) => draft.tr.sponsors.tiers[i]?.name} fixed>
           {(i) => (
             <>
               <BiText path={["sponsors", "tiers", i, "name"]} label="Name" />
-              <BiStrings path={["sponsors", "tiers", i, "perks"]} label="Perks" />
             </>
           )}
         </List>
@@ -523,7 +518,7 @@ function SponsorsForm() {
           label="Sponsors"
           hint="Each tier is filled up with empty slots to the minimum below."
           itemTitle={(i) => draft.site.sponsors[i]?.name}
-          newItem={() => ({ name: "", tier: "core", href: "" })}
+          newItem={() => ({ name: "", tier: "silver", href: "" })}
           addLabel="Add sponsor"
         >
           {(i) => (

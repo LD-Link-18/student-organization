@@ -76,7 +76,7 @@ export const en: Content = {
 
   areas: {
     title: "What we build",
-    intro: "Six tracks, one lab. Pick one to start — most members end up drifting between all of them.",
+    intro: "Five tracks, one lab. Pick one to start — most members end up drifting between all of them.",
     toolsLabel: "Tools",
     items: [
       {
@@ -98,22 +98,16 @@ export const en: Content = {
         tools: ["ROS 2", "SLAM", "Gazebo"],
       },
       {
-        key: "vision",
-        title: "Computer Vision",
-        blurb: "Detection, tracking and segmentation on real cameras, not just benchmarks.",
-        tools: ["OpenCV", "YOLO"],
+        key: "automation",
+        title: "Automation",
+        blurb: "Pipelines, bots and control loops that do the boring parts for you.",
+        tools: ["Python", "PLC", "CI/CD"],
       },
       {
         key: "embedded",
         title: "Embedded Systems",
         blurb: "Microcontrollers, sensors and TinyML squeezed into a few hundred kilobytes.",
         tools: ["ESP32", "STM32", "TinyML"],
-      },
-      {
-        key: "automation",
-        title: "Automation",
-        blurb: "Pipelines, bots and control loops that do the boring parts for you.",
-        tools: ["Python", "PLC", "CI/CD"],
       },
     ],
   },
@@ -391,7 +385,7 @@ export const en: Content = {
     title: ["The humans", "in the loop."],
     intro: "This year's board keeps the lab running. Everyone else keeps it interesting.",
     focus: (focus) => `Into ${focus}`,
-    members: "+ 50 members building with us",
+    members: "+ 150 members building with us",
     takeSeat: "Take your seat",
     people: [
       { name: "Samet Mert Dik", focus: "natural language processing", avatar: 0, href: "https://sametmertdik.com" },
@@ -407,39 +401,12 @@ export const en: Content = {
     title: "Fuel the lab",
     intro: "Sponsors pay for the GPUs, sensors, hackathon prizes and competition travel that students can't cover alone.",
     tiers: [
-      {
-        key: "core",
-        name: "Core",
-        perks: [
-          "Logo on our robots and hackathon shirts",
-          "A workshop or keynote slot every semester",
-          "Early access to our members' CV book",
-        ],
-      },
-      {
-        key: "partner",
-        name: "Partner",
-        perks: ["Logo on event pages and posters", "Co-host a workshop or tech talk", "Recruiting table at the hackathon"],
-      },
-      {
-        key: "supporter",
-        name: "Supporter",
-        perks: ["Logo on this site and our Discord", "Shout-out at every event", "Invitation to our demo day"],
-      },
+      { key: "diamond", name: "Diamond" },
+      { key: "platinum", name: "Platinum" },
+      { key: "gold", name: "Gold" },
+      { key: "silver", name: "Silver" },
     ],
-    count: (sponsors, open) =>
-      [
-        sponsors > 0 ? `${sponsors} ${sponsors === 1 ? "sponsor" : "sponsors"}` : "",
-        open > 0 ? `${open} ${open === 1 ? "spot" : "spots"} open` : "",
-      ]
-        .filter(Boolean)
-        .join(", "),
     yourLogo: "Your logo here",
-    cta: {
-      title: "Put your logo on the robots.",
-      body: `We're building our first sponsor lineup for ${club.semester}. Pick a tier, or tell us what you'd like to support and we'll shape a package around it.`,
-      deck: "Sponsorship deck (PDF)",
-    },
   },
 
   join: {
